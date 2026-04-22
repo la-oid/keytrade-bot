@@ -205,3 +205,7 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Storage (PDFs, загруженные файлы, и т.д.)
+/storage/
+!/storage/.gitkeep
