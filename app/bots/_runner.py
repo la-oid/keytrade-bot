@@ -22,7 +22,7 @@ async def run_bot(bundle: BotBundle, include_routers: RouterIncluder, label: str
 
     async def on_startup() -> None:
         me = await bot.get_me()
-        tprint(f"@{me.username}    online")
+        print(f"@{me.username}    online")
         logger.warning(f"[{label}] bot info: @{me.username} {me.first_name} {me.id}")
 
     dp.startup.register(on_startup)
