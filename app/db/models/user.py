@@ -2,7 +2,6 @@ from sqlalchemy import Column, Integer, String, Boolean, DateTime, BigInteger, N
 from datetime import datetime
 
 from ..core import Base
-from shared.constants import DEFAULT_LANGUAGE
 
 
 class User(Base):
