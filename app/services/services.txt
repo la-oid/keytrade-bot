@@ -1,5 +1,0 @@
-services/
-├── key_generator.py     # Генерация ключей
-├── key_validator.py     # Проверка ключей при продаже
-├── pdf_service.py       # Сохранение/чтение PDF
-└── timer_service.py     # 15-минутный таймер на оплату
