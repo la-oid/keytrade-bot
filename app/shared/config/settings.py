@@ -16,10 +16,13 @@ class EnvBase(BaseSettings):
 
 class TelegramSettings(EnvBase):
     """Настройки Telegram"""
-    TOKEN: SecretStr = Field(..., description="Токен Telegram-бота")
-    
+    BUYER_TOKEN: SecretStr = Field(..., description="Токен правого бота (скупщик)")
+    SELLER_TOKEN: SecretStr = Field(..., description="Токен левого бота (продажник)")
+    ADMIN_TOKEN: SecretStr = Field(..., description="Токен админ-бота (контролер)")
+    ADMIN_IDS: list[int] = Field(default_factory=list, description="Список Telegram ID админов")
+
     model_config = SettingsConfigDict(
-        env_prefix = "TG_"
+        env_prefix="TG_"
     )
 
 

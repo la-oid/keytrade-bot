@@ -1,3 +1,3 @@
-from .helper import db, bot, dp
+from .helper import db, bots, BotBundle, Bots
 
-__all__ = ["db", "bot", "dp"]
+__all__ = ["db", "bots", "BotBundle", "Bots"]
