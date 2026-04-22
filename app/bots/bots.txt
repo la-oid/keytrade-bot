@@ -1,0 +1,37 @@
+bots/
+├── buyer_bot/          # Правый бот (скупщик — продаёт ключи)
+│   ├── handlers/
+│   │   ├── start.py
+│   │   ├── profile.py
+│   │   ├── wholesale.py     # Средний/крупный опт
+│   │   ├── payment.py       # СПБ/Крипта, PDF
+│   │   └── special_offer.py
+│   ├── keyboards/
+│   │   ├── main_menu.py     # Reply-клавиатура
+│   │   └── inline.py
+│   ├── states/              # FSM состояния
+│   └── main.py
+│
+├── seller_bot/         # Левый бот (продажник — скупает ключи)
+│   ├── handlers/
+│   │   ├── start.py
+│   │   ├── profile.py
+│   │   ├── tenders.py       # Площадка заказов
+│   │   ├── withdrawal.py    # Вывод средств
+│   │   └── company.py
+│   ├── keyboards/
+│   ├── states/
+│   └── main.py
+│
+└── admin_bot/          # Админ-бот (контролер)
+    ├── handlers/
+    │   ├── start.py
+    │   ├── tenders.py       # Создание/удаление тендеров
+    │   ├── payments.py      # Подтверждение оплат
+    │   ├── withdrawals.py   # Заявки на выплату
+    │   ├── offers.py        # Спецпредложения
+    │   ├── blocking.py      # Блокировка юзеров
+    │   └── pdf_access.py    # Доставание PDF
+    ├── keyboards/
+    ├── states/
+    └── main.py
