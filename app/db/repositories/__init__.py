@@ -1,5 +1,5 @@
 from .user import UserRepository
 from .key import KeyRepository
-from .tender import TenderRepository
+from .order import OrderRepository
 
-__all__ = ['UserRepository', 'KeyRepository', 'TenderRepository']
+__all__ = ['UserRepository', 'KeyRepository', 'OrderRepository']
