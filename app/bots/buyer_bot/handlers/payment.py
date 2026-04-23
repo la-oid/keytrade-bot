@@ -39,25 +39,12 @@ async def pay_spb_handler(call: CallbackQuery):
 
 
 @r.callback_query(F.data.in_(set(BANK_NAMES.keys())))
-async def choose_bank_handler(call: CallbackQuery, state: FSMContext):
-    """Банк выбран → экран ожидания с кнопками перейти/отменить."""
+async def choose_bank_handler(call: CallbackQuery, state: FSMContext, user):
+    """Банк выбран → сразу создаём платёж и показываем ожидание."""
     bank = BANK_NAMES[call.data]
-    await state.update_data(bank=bank)
-    await call.answer()
-    await call.message.edit_text(
-        texts.payment.CONFIRM_ORDER_TEXT.format(bank=bank),
-        reply_markup=buttons.payment.waiting
-    )
-
-
-# ─── Подтверждение и ожидание ──────────────────────────────────────────────────
-
-@r.callback_query(F.data == "go_to_payment")
-async def go_to_payment_handler(call: CallbackQuery, state: FSMContext, user):
     data = await state.get_data()
     amount = data.get("amount", 0)
     price = amount * KEY_PRICE
-    bank = data.get("bank")
 
     await db.payment.create_payment(
         user_id=user.telegram_id,
@@ -84,16 +71,6 @@ async def go_to_payment_handler(call: CallbackQuery, state: FSMContext, user):
 
 
 # ─── Отмена оплаты ─────────────────────────────────────────────────────────────
-
-@r.callback_query(F.data == "cancel_payment")
-async def cancel_payment_handler(call: CallbackQuery):
-    """Отменить → запрос подтверждения отмены."""
-    await call.answer()
-    await call.message.edit_text(
-        texts.payment.CONFIRM_CANCEL_TEXT,
-        reply_markup=buttons.payment.confirm_cancel
-    )
-
 
 @r.callback_query(F.data == "cancel_active")
 async def cancel_active_handler(call: CallbackQuery, state: FSMContext, user):
