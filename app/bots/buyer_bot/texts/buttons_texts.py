@@ -29,4 +29,5 @@ class MiscButtonTexts:
 class ButtonTexts:
     menu = MenuButtonTexts
     wholesale = WholesaleButtonTexts
+    payment = PaymentButtonTexts
     misc = MiscButtonTexts
