@@ -32,17 +32,6 @@ class PaymentTexts:
 
     CHOOSE_BANK = "Выберите банк:"
 
-    CONFIRM_ORDER_TEXT = (
-        "Банк: <b>{bank}</b>\n\n"
-        "Подтвердите оплату или отмените."
-    )
-
-    WAITING = "⏳ Ожидайте реквизиты для оплаты."
-
-    CONFIRM_CANCEL_TEXT = "Вы уверены, что хотите отменить оплату?"
-
-    CANCELLED_TEXT = "Оплата отменена."
-
     PENDING_TEXT = (
         "Количество: <b>{amount} шт.</b>\n"
         "Сумма: <b>{price} ₽</b>\n"
