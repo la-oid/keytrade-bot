@@ -44,18 +44,22 @@ async def change_amount_handler(call: CallbackQuery, state: FSMContext):
 
     if current_state == OrderStates.medium_wholesale:
         step = MEDIUM["step"]
-        amount += step if call.data == "amount_plus" else -step
-        amount = max(MEDIUM["min"], min(MEDIUM["max"], amount))
+        new_amount = amount + step if call.data == "amount_plus" else amount - step
+        new_amount = max(MEDIUM["min"], min(MEDIUM["max"], new_amount))
     else:
         step = LARGE["step"]
-        amount += step if call.data == "amount_plus" else -step
-        amount = max(LARGE["min"], amount)
+        new_amount = amount + step if call.data == "amount_plus" else amount - step
+        new_amount = max(LARGE["min"], new_amount)
 
-    await state.update_data(amount=amount)
     await call.answer()
+
+    if new_amount == amount:
+        return
+
+    await state.update_data(amount=new_amount)
     await call.message.edit_text(
-        texts.wholesale.WHOLESALE_TEXT.format(amount=amount, price=amount * KEY_PRICE),
-        reply_markup=buttons.wholesale.wholesale(amount, step)
+        texts.wholesale.WHOLESALE_TEXT.format(amount=new_amount, price=new_amount * KEY_PRICE),
+        reply_markup=buttons.wholesale.wholesale(new_amount, step)
     )
 
 
