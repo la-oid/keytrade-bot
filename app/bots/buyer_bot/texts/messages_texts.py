@@ -66,6 +66,8 @@ class PaymentTexts:
         "Количество: <b>{amount} шт.</b>"
     )
 
+    CANCELLED_TEXT = "Заказ отменён."
+
 
 class MiscTexts:
     """Общие тексты"""
