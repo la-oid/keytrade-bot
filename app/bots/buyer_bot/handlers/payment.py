@@ -95,8 +95,8 @@ async def cancel_payment_handler(call: CallbackQuery):
     )
 
 
-@r.callback_query(F.data == "confirm_cancel")
-async def confirm_cancel_handler(call: CallbackQuery, state: FSMContext, user):
+@r.callback_query(F.data == "cancel_active")
+async def cancel_active_handler(call: CallbackQuery, state: FSMContext, user):
     """Отмена подтверждена → отменяем в БД, уведомляем админов, возврат в меню."""
 
     pending = await db.payment.get_pending_payment(user.telegram_id)
