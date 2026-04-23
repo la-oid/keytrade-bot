@@ -19,15 +19,10 @@ class MenuKeyboards(BaseInlineKeyboard):
             ]
         )
     
-    @staticmethod
-    def wholesale(amount: int, step: int) -> InlineKeyboardMarkup:
+    @property
+    def back_to_menu(self) -> InlineKeyboardMarkup:
         return InlineKeyboardMarkup(
             inline_keyboard=[
-                [
-                    InlineKeyboardButton(text=f"- {step}", callback_data=f"amount_minus"),
-                    InlineKeyboardButton(text=f"+ {step}", callback_data=f"amount_plus"),
-                ],
-                [InlineKeyboardButton(text=f"Купить за {amount * KEY_PRICE} ₽", callback_data="confirm_order")],
-                [InlineKeyboardButton(text="← Назад", callback_data="back_to_menu")],
+                [InlineKeyboardButton(text=self.texts.misc.BACK, callback_data="back_to_menu")],
             ]
         )

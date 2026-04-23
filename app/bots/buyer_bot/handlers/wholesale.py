@@ -20,8 +20,8 @@ async def medium_wholesale_handler(call: CallbackQuery, state: FSMContext):
     await state.update_data(amount=MEDIUM["min"])
     await call.answer()
     await call.message.edit_text(
-        texts.menu.WHOLESALE_TEXT.format(amount=MEDIUM["min"], price=MEDIUM["min"] * KEY_PRICE),
-        reply_markup=buttons.menu.wholesale(MEDIUM["min"], MEDIUM["step"])
+        texts.wholesale.WHOLESALE_TEXT.format(amount=MEDIUM["min"], price=MEDIUM["min"] * KEY_PRICE),
+        reply_markup=buttons.wholesale.wholesale(MEDIUM["min"], MEDIUM["step"])
     )
 
 
@@ -31,8 +31,8 @@ async def large_wholesale_handler(call: CallbackQuery, state: FSMContext):
     await state.update_data(amount=LARGE["min"])
     await call.answer()
     await call.message.edit_text(
-        texts.menu.WHOLESALE_TEXT.format(amount=LARGE["min"], price=LARGE["min"] * KEY_PRICE),
-        reply_markup=buttons.menu.wholesale(LARGE["min"], LARGE["step"])
+        texts.wholesale.WHOLESALE_TEXT.format(amount=LARGE["min"], price=LARGE["min"] * KEY_PRICE),
+        reply_markup=buttons.wholesale.wholesale(LARGE["min"], LARGE["step"])
     )
 
 
@@ -54,8 +54,8 @@ async def change_amount_handler(call: CallbackQuery, state: FSMContext):
     await state.update_data(amount=amount)
     await call.answer()
     await call.message.edit_text(
-        texts.menu.WHOLESALE_TEXT.format(amount=amount, price=amount * KEY_PRICE),
-        reply_markup=buttons.menu.wholesale(amount, step)
+        texts.wholesale.WHOLESALE_TEXT.format(amount=amount, price=amount * KEY_PRICE),
+        reply_markup=buttons.wholesale.wholesale(amount, step)
     )
 
 
@@ -68,5 +68,6 @@ async def confirm_order_handler(call: CallbackQuery, state: FSMContext, user):
     await state.clear()
     await call.answer()
     await call.message.edit_text(
-        texts.menu.ORDER_CREATED_TEXT.format(amount=amount)
+        texts.wholesale.ORDER_CREATED_TEXT.format(amount=amount),
+        reply_markup=buttons.menu.start
     )

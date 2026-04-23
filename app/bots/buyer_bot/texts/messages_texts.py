@@ -13,11 +13,12 @@ class MenuTexts:
 
     SUPPORT_TEXT = "Поддержка"
 
+
+class WholesaleTexts:
     WHOLESALE_TEXT = (
         "Количество: <b>{amount} шт.</b>\n"
         "Сумма: <b>{price} ₽</b>"
     )
-
     ORDER_CREATED_TEXT = "Заказ на <b>{amount} шт.</b> создан!"
 
 
@@ -26,13 +27,8 @@ class MiscTexts:
     pass
 
 
-class ErrorsTexts:
-    """Тексты ошибок"""
-    pass
-
-
 class Texts:
     """Все тексты"""
     menu = MenuTexts
-    errors = ErrorsTexts
+    wholesale = WholesaleTexts
     misc = MiscTexts

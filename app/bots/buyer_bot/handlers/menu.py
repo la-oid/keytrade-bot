@@ -1,5 +1,6 @@
 from aiogram import Router, F
 from aiogram.types import CallbackQuery
+from aiogram.fsm.context import FSMContext
 
 from ..texts import Texts
 from ..keyboards import InlineKeyboards
@@ -28,3 +29,13 @@ async def about_handler(call: CallbackQuery):
 async def support_handler(call: CallbackQuery):
     await call.answer()
     await call.message.edit_text(texts.menu.SUPPORT_TEXT)
+
+
+@r.callback_query(F.data == "back_to_menu")
+async def back_to_menu_handler(call: CallbackQuery, state: FSMContext):
+    await state.clear()
+    await call.answer()
+    await call.message.edit_text(
+        texts.menu.START_TEXT,
+        reply_markup=buttons.menu.start
+    )
