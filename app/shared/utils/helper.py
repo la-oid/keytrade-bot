@@ -6,6 +6,7 @@ from aiogram.enums import ParseMode
 
 from app.shared.config import settings
 from app.db import Database
+from app.shared.middlewares import UserMiddleware
 
 
 @dataclass(frozen=True, slots=True)
@@ -20,7 +21,9 @@ def _make_bundle(token: str) -> BotBundle:
         token=token,
         default=DefaultBotProperties(parse_mode=ParseMode.HTML),
     )
-    return BotBundle(bot=bot, dp=Dispatcher())
+    dp = Dispatcher()
+    dp.update.middleware(UserMiddleware())
+    return BotBundle(bot=bot, dp=dp)
 
 
 @dataclass(frozen=True, slots=True)

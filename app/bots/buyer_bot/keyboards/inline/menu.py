@@ -1,6 +1,7 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 from .base import BaseInlineKeyboard
+from app.shared.constants import KEY_PRICE
 
 
 class MenuKeyboards(BaseInlineKeyboard):
@@ -15,5 +16,18 @@ class MenuKeyboards(BaseInlineKeyboard):
                 [InlineKeyboardButton(text=self.texts.menu.LARGE_WHOLESALE, callback_data="large_wholesale")],
                 [InlineKeyboardButton(text=self.texts.menu.ABOUT, callback_data="about")],
                 [InlineKeyboardButton(text=self.texts.menu.SUPPORT, callback_data="support")],
+            ]
+        )
+    
+    @staticmethod
+    def wholesale(amount: int, step: int) -> InlineKeyboardMarkup:
+        return InlineKeyboardMarkup(
+            inline_keyboard=[
+                [
+                    InlineKeyboardButton(text=f"- {step}", callback_data=f"amount_minus"),
+                    InlineKeyboardButton(text=f"+ {step}", callback_data=f"amount_plus"),
+                ],
+                [InlineKeyboardButton(text=f"Купить за {amount * KEY_PRICE} ₽", callback_data="confirm_order")],
+                [InlineKeyboardButton(text="← Назад", callback_data="back_to_menu")],
             ]
         )
