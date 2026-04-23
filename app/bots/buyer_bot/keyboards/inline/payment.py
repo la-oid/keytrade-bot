@@ -28,24 +28,6 @@ class PaymentKeyboards(BaseInlineKeyboard):
         )
     
     @property
-    def waiting(self) -> InlineKeyboardMarkup:
-        return InlineKeyboardMarkup(
-            inline_keyboard=[
-                [InlineKeyboardButton(text=self.texts.payment.GO_TO_PAYMENT, callback_data="go_to_payment")],
-                [InlineKeyboardButton(text=self.texts.payment.CANCEL_PAYMENT, callback_data="cancel_payment")],
-            ]
-        )
-
-    @property
-    def confirm_cancel(self) -> InlineKeyboardMarkup:
-        return InlineKeyboardMarkup(
-            inline_keyboard=[
-                [InlineKeyboardButton(text=self.texts.payment.CHANGED_MIND, callback_data="pay_spb")],
-                [InlineKeyboardButton(text=self.texts.payment.CONFIRM_CANCEL, callback_data="back_to_menu")],
-            ]
-        )
-    
-    @property
     def cancel_only(self) -> InlineKeyboardMarkup:
         return InlineKeyboardMarkup(
             inline_keyboard=[
