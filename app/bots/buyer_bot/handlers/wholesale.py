@@ -61,17 +61,3 @@ async def change_amount_handler(call: CallbackQuery, state: FSMContext):
         texts.wholesale.WHOLESALE_TEXT.format(amount=new_amount, price=new_amount * KEY_PRICE),
         reply_markup=buttons.wholesale.wholesale(new_amount, step)
     )
-
-
-@r.callback_query(F.data == "confirm_order")
-async def confirm_order_handler(call: CallbackQuery, state: FSMContext, user):
-    data = await state.get_data()
-    amount = data["amount"]
-
-    await db.order.create(user_id=user.id, amount=amount, price=amount * KEY_PRICE)
-    await state.clear()
-    await call.answer()
-    await call.message.edit_text(
-        texts.wholesale.ORDER_CREATED_TEXT.format(amount=amount),
-        reply_markup=buttons.menu.start
-    )

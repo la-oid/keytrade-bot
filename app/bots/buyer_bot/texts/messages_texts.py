@@ -15,11 +15,36 @@ class MenuTexts:
 
 
 class WholesaleTexts:
+    """Тексты, связанные с оптом"""
+
     WHOLESALE_TEXT = (
         "Количество: <b>{amount} шт.</b>\n"
         "Сумма: <b>{price} ₽</b>"
     )
+
     ORDER_CREATED_TEXT = "Заказ на <b>{amount} шт.</b> создан!"
+
+
+class PaymentTexts:
+    """Тексты, связанные с оплатой"""
+
+    CHOOSE_METHOD = "Выберите способ оплаты:"
+
+    CHOOSE_BANK = "Выберите банк:"
+
+    WAITING = "⏳ Ожидайте реквизиты для оплаты."
+
+    CONFIRM_CANCEL_TEXT = "Вы уверены, что хотите отменить оплату?"
+
+    CANCELLED_TEXT = "Оплата отменена."
+
+    ADMIN_NOTIFY = (
+        "💰 Новый заказ на оплату\n\n"
+        "Пользователь: <b>{name}</b> (ID: <code>{user_id}</code>)\n"
+        "Банк: <b>{bank}</b>\n"
+        "Сумма: <b>{price} ₽</b>\n"
+        "Количество: <b>{amount} шт.</b>"
+    )
 
 
 class MiscTexts:
@@ -31,4 +56,5 @@ class Texts:
     """Все тексты"""
     menu = MenuTexts
     wholesale = WholesaleTexts
+    payment = PaymentTexts
     misc = MiscTexts

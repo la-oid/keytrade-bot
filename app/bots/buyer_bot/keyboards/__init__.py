@@ -1,4 +1,4 @@
-from .inline import MenuKeyboards, MiscKeyboards, WholesaleKeyboards
+from .inline import MenuKeyboards, MiscKeyboards, WholesaleKeyboards, PaymentKeyboards
 
 
 class InlineKeyboards:
@@ -6,6 +6,7 @@ class InlineKeyboards:
         self.menu = MenuKeyboards()
         self.misc = MiscKeyboards()
         self.wholesale = WholesaleKeyboards()
+        self.payment = PaymentKeyboards()
 
 
 __all__ = ["InlineKeyboards"]
