@@ -18,6 +18,14 @@ class MenuKeyboards(BaseInlineKeyboard):
                 [InlineKeyboardButton(text=self.texts.menu.SUPPORT, callback_data="support")],
             ]
         )
+
+    @property
+    def profile(self) -> InlineKeyboardMarkup:
+        return InlineKeyboardMarkup(
+            inline_keyboard=[
+                [InlineKeyboardButton(text=self.texts.misc.BACK, callback_data="back_to_menu")]
+            ]
+        )
     
     @property
     def back_to_menu(self) -> InlineKeyboardMarkup:
