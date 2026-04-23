@@ -43,8 +43,23 @@ class PaymentTexts:
 
     CANCELLED_TEXT = "Оплата отменена."
 
+    PENDING_TEXT = (
+        "Количество: <b>{amount} шт.</b>\n"
+        "Сумма: <b>{price} ₽</b>\n"
+        "Банк: <b>{bank}</b>\n\n"
+        "⏳ Ожидайте реквизиты для оплаты."
+    )
+
     ADMIN_NOTIFY = (
         "💰 Новый заказ на оплату\n\n"
+        "Пользователь: <b>{name}</b> (ID: <code>{user_id}</code>)\n"
+        "Банк: <b>{bank}</b>\n"
+        "Сумма: <b>{price} ₽</b>\n"
+        "Количество: <b>{amount} шт.</b>"
+    )
+
+    ADMIN_CANCELLED = (
+        "❌ ЗАКАЗ ОТМЕНЁН\n\n"
         "Пользователь: <b>{name}</b> (ID: <code>{user_id}</code>)\n"
         "Банк: <b>{bank}</b>\n"
         "Сумма: <b>{price} ₽</b>\n"

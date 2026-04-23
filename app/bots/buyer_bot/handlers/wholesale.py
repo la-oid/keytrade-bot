@@ -7,6 +7,7 @@ from app.shared import db
 from ..states import OrderStates
 from ..texts import Texts
 from ..keyboards import InlineKeyboards
+from .payment import show_pending_payment
 
 r = Router()
 
@@ -15,7 +16,15 @@ buttons = InlineKeyboards()
 
 
 @r.callback_query(F.data == "medium_wholesale")
-async def medium_wholesale_handler(call: CallbackQuery, state: FSMContext):
+async def medium_wholesale_handler(call: CallbackQuery, state: FSMContext, user):
+    # Проверяем есть ли активный платёж
+
+    pending = await db.payment.get_pending_payment(user.telegram_id)
+    if pending:
+        await call.answer()
+        await show_pending_payment(call, pending.amount, pending.price, pending.bank)
+        return
+    
     await state.set_state(OrderStates.medium_wholesale)
     await state.update_data(amount=MEDIUM["min"])
     await call.answer()
@@ -26,7 +35,15 @@ async def medium_wholesale_handler(call: CallbackQuery, state: FSMContext):
 
 
 @r.callback_query(F.data == "large_wholesale")
-async def large_wholesale_handler(call: CallbackQuery, state: FSMContext):
+async def large_wholesale_handler(call: CallbackQuery, state: FSMContext, user):
+    # Проверяем есть ли активный платёж
+
+    pending = await db.payment.get_pending_payment(user.telegram_id)
+    if pending:
+        await call.answer()
+        await show_pending_payment(call, pending.amount, pending.price, pending.bank)
+        return
+    
     await state.set_state(OrderStates.large_wholesale)
     await state.update_data(amount=LARGE["min"])
     await call.answer()

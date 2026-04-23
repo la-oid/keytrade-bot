@@ -4,7 +4,7 @@ from aiogram.fsm.context import FSMContext
 
 from app.shared.constants import KEY_PRICE, BANKS
 from app.shared.config import settings
-from app.shared import bots
+from app.shared import db, bots
 from ..texts import Texts
 from ..keyboards import InlineKeyboards
 
@@ -54,14 +54,21 @@ async def choose_bank_handler(call: CallbackQuery, state: FSMContext):
 
 @r.callback_query(F.data == "go_to_payment")
 async def go_to_payment_handler(call: CallbackQuery, state: FSMContext, user):
-    """Перейти к оплате → ожидание реквизитов, уведомление админам."""
     data = await state.get_data()
     amount = data.get("amount", 0)
     price = amount * KEY_PRICE
     bank = data.get("bank")
 
+    await db.payment.create_payment(
+        user_id=user.telegram_id,
+        amount=amount,
+        price=price,
+        bank=bank,
+    )
+
+    await state.clear()
     await call.answer()
-    await call.message.edit_text(texts.payment.WAITING)
+    await show_pending_payment(call, amount, price, bank)
 
     for admin_id in settings.telegram.ADMIN_IDS:
         await bots.admin.bot.send_message(
@@ -89,11 +96,37 @@ async def cancel_payment_handler(call: CallbackQuery):
 
 
 @r.callback_query(F.data == "confirm_cancel")
-async def confirm_cancel_handler(call: CallbackQuery, state: FSMContext):
-    """Отмена подтверждена → чистим state, возврат в меню."""
+async def confirm_cancel_handler(call: CallbackQuery, state: FSMContext, user):
+    """Отмена подтверждена → отменяем в БД, уведомляем админов, возврат в меню."""
+
+    pending = await db.payment.get_pending_payment(user.telegram_id)
+    if pending:
+        await db.payment.cancel_payment(user.telegram_id)
+        for admin_id in settings.telegram.ADMIN_IDS:
+            await bots.admin.bot.send_message(
+                chat_id=admin_id,
+                text=texts.payment.ADMIN_CANCELLED.format(
+                    name=user.first_name or user.username,
+                    user_id=user.telegram_id,
+                    bank=pending.bank,
+                    price=pending.price,
+                    amount=pending.amount,
+                )
+            )
+
     await state.clear()
     await call.answer()
     await call.message.edit_text(
         texts.payment.CANCELLED_TEXT,
-        reply_markup=buttons.menu.start
+        reply_markup=buttons.menu.back_to_menu
+    )
+
+
+# ─── Helpers ───────────────────────────────────────────────────────────────────
+
+async def show_pending_payment(call: CallbackQuery, amount: int, price: float, bank: str):
+    """Показывает экран ожидания реквизитов."""
+    await call.message.edit_text(
+        texts.payment.PENDING_TEXT.format(amount=amount, price=price, bank=bank),
+        reply_markup=buttons.payment.cancel_only
     )
