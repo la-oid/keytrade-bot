@@ -72,6 +72,24 @@ async def choose_bank_handler(call: CallbackQuery, state: FSMContext, user):
 
 # ─── Отмена оплаты ─────────────────────────────────────────────────────────────
 
+@r.callback_query(F.data == "cancel_payment")
+async def cancel_payment_handler(call: CallbackQuery):
+    """Отменить → запрос подтверждения."""
+    await call.answer()
+    await call.message.edit_text(
+        texts.payment.CONFIRM_CANCEL_TEXT,
+        reply_markup=buttons.payment.confirm_cancel
+    )
+
+
+@r.callback_query(F.data == "back_to_pending")
+async def back_to_pending_handler(call: CallbackQuery, user):
+    """Передумал → возврат на экран ожидания."""
+    pending = await db.payment.get_pending_payment(user.telegram_id)
+    await call.answer()
+    await show_pending_payment(call, pending.amount, pending.price, pending.bank)
+
+
 @r.callback_query(F.data == "cancel_active")
 async def cancel_active_handler(call: CallbackQuery, state: FSMContext, user):
     """Отмена подтверждена → отменяем в БД, уведомляем админов, возврат в меню."""

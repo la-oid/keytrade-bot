@@ -17,6 +17,8 @@ class PaymentButtonTexts:
     SBER = "Сбербанк"
     TINKOFF = "Тинькофф"
     CANCEL_PAYMENT = "Отменить оплату"
+    CHANGED_MIND = "Я передумал"
+    CONFIRM_CANCEL = "Точно отменить"
     CANCEL_ACTIVE = "Отменить заказ"
 
 

@@ -31,7 +31,16 @@ class PaymentKeyboards(BaseInlineKeyboard):
     def cancel_only(self) -> InlineKeyboardMarkup:
         return InlineKeyboardMarkup(
             inline_keyboard=[
-                [InlineKeyboardButton(text=self.texts.payment.CANCEL_ACTIVE, callback_data="cancel_active")],
+                [InlineKeyboardButton(text=self.texts.payment.CANCEL_ACTIVE, callback_data="cancel_payment")],
                 [InlineKeyboardButton(text=self.texts.misc.BACK, callback_data="back_to_menu")],
+            ]
+        )
+
+    @property
+    def confirm_cancel(self) -> InlineKeyboardMarkup:
+        return InlineKeyboardMarkup(
+            inline_keyboard=[
+                [InlineKeyboardButton(text=self.texts.payment.CHANGED_MIND, callback_data="back_to_pending")],
+                [InlineKeyboardButton(text=self.texts.payment.CONFIRM_CANCEL, callback_data="cancel_active")],
             ]
         )
