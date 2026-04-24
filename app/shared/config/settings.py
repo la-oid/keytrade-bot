@@ -26,6 +26,15 @@ class TelegramSettings(EnvBase):
     )
 
 
+class AppSettings(EnvBase):
+    """Настройки приложения"""
+    PAYMENT_URL: str = Field(..., description="Базовый URL страницы оплаты")
+    
+    model_config = SettingsConfigDict(
+        env_prefix="APP_"
+    )
+
+
 class DatabaseSettings(EnvBase):
     """Настройки базы данных"""
     URL: str = Field(..., description="Строка подключения к базе данных")
@@ -38,6 +47,7 @@ class DatabaseSettings(EnvBase):
 class Settings(BaseSettings):
     """Центральный класс для всех настроек"""
     telegram: TelegramSettings = Field(default_factory=TelegramSettings)
+    app: AppSettings = Field(default_factory=AppSettings)
     database: DatabaseSettings = Field(default_factory=DatabaseSettings)
     
     @classmethod

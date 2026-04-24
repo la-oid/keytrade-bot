@@ -17,5 +17,6 @@ async def start_handler(msg: Message, user):
     # Отвечаем обычным приветствием с меню
     
     await msg.answer(
-        "Hello!"
+        texts.menu.START_TEXT,
+        reply_markup=buttons.menu.start
     )
