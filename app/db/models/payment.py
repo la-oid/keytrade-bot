@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, String, DateTime, BigInteger, Numeric, F
 from datetime import datetime
 
 from ..core import Base
+from ..enums import PaymentStatus
 
 
 class Payment(Base):
@@ -13,6 +14,7 @@ class Payment(Base):
     price = Column(Numeric(15, 2), nullable=False)                                                  # Сумма к оплате
     bank = Column(String(50), nullable=False)                                                       # Банк (Сбербанк/Тинькофф)
     payment_link = Column(String(512), nullable=True)                                               # URL страницы оплаты
-    status = Column(String(20), default="pending")                                                  # pending / cancelled / completed
+    status = Column(String(20), default=PaymentStatus.PENDING_LINK)                                 # Статус платежа
+    deadline = Column(DateTime, nullable=True)                                                      # Время истечения текущего статуса
     created_at = Column(DateTime, default=datetime.utcnow)                                          # Дата создания
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)                # Дата обновления
