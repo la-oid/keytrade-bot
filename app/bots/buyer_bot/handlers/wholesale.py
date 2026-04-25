@@ -5,10 +5,10 @@ from aiogram.fsm.context import FSMContext
 from app.shared.constants import KEY_PRICE, MEDIUM, LARGE
 from app.shared import db
 from app.db.enums import PaymentStatus
+from .payment import show_active_payment
 from ..states import OrderStates
 from ..texts import Texts
 from ..keyboards import InlineKeyboards
-from .payment import show_pending_payment
 
 r = Router()
 
@@ -19,11 +19,9 @@ buttons = InlineKeyboards()
 @r.callback_query(F.data == "medium_wholesale")
 async def medium_wholesale_handler(call: CallbackQuery, state: FSMContext, user):
     # Проверяем есть ли активный платёж
-
-    pending = await db.payment.get_by_status(user.telegram_id, PaymentStatus.PENDING_LINK)
-    if pending:
-        await call.answer()
-        await show_pending_payment(call, pending.amount, pending.price, pending.bank)
+    
+    await call.answer()
+    if await show_active_payment(call, user):
         return
     
     await state.set_state(OrderStates.medium_wholesale)
@@ -39,10 +37,8 @@ async def medium_wholesale_handler(call: CallbackQuery, state: FSMContext, user)
 async def large_wholesale_handler(call: CallbackQuery, state: FSMContext, user):
     # Проверяем есть ли активный платёж
 
-    pending = await db.payment.get_by_status(user.telegram_id, PaymentStatus.PENDING_LINK)
-    if pending:
-        await call.answer()
-        await show_pending_payment(call, pending.amount, pending.price, pending.bank)
+    await call.answer()
+    if await show_active_payment(call, user):
         return
     
     await state.set_state(OrderStates.large_wholesale)

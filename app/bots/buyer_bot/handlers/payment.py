@@ -122,7 +122,29 @@ async def cancel_active_handler(call: CallbackQuery, state: FSMContext, user):
 
 async def show_pending_payment(call: CallbackQuery, amount: int, price: float, bank: str):
     """Показывает экран ожидания реквизитов."""
+    
     await call.message.edit_text(
         texts.payment.PENDING_TEXT.format(amount=amount, price=price, bank=bank),
         reply_markup=buttons.payment.cancel_only
     )
+
+async def show_active_payment(call: CallbackQuery, user) -> bool:
+    """Если есть активный платёж — показывает экран и возвращает True. Иначе False."""
+
+    handlers = {
+        PaymentStatus.PENDING_LINK: lambda p: show_pending_payment(call, p.amount, p.price, p.bank),
+        PaymentStatus.PENDING_PAY:  lambda p: call.message.edit_text(
+            texts.payment.PAYMENT_PAGE.format(payment_id=p.id),
+            reply_markup=buttons.payment.payment_page(url=p.payment_link),
+            parse_mode="HTML",
+        ),
+        PaymentStatus.PENDING_PDF:  lambda p: call.message.edit_text(texts.payment.WAITING_PDF),
+    }
+
+    for status, action in handlers.items():
+        payment = await db.payment.get_by_status(user.telegram_id, status)
+        if payment:
+            await action(payment)
+            return True
+
+    return False
