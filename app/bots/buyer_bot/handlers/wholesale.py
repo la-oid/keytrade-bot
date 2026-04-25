@@ -4,6 +4,7 @@ from aiogram.fsm.context import FSMContext
 
 from app.shared.constants import KEY_PRICE, MEDIUM, LARGE
 from app.shared import db
+from app.db.enums import PaymentStatus
 from ..states import OrderStates
 from ..texts import Texts
 from ..keyboards import InlineKeyboards
@@ -19,7 +20,7 @@ buttons = InlineKeyboards()
 async def medium_wholesale_handler(call: CallbackQuery, state: FSMContext, user):
     # Проверяем есть ли активный платёж
 
-    pending = await db.payment.get_pending_payment(user.telegram_id)
+    pending = await db.payment.get_by_status(user.telegram_id, PaymentStatus.PENDING_LINK)
     if pending:
         await call.answer()
         await show_pending_payment(call, pending.amount, pending.price, pending.bank)
@@ -38,7 +39,7 @@ async def medium_wholesale_handler(call: CallbackQuery, state: FSMContext, user)
 async def large_wholesale_handler(call: CallbackQuery, state: FSMContext, user):
     # Проверяем есть ли активный платёж
 
-    pending = await db.payment.get_pending_payment(user.telegram_id)
+    pending = await db.payment.get_by_status(user.telegram_id, PaymentStatus.PENDING_LINK)
     if pending:
         await call.answer()
         await show_pending_payment(call, pending.amount, pending.price, pending.bank)

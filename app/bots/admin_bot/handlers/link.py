@@ -5,6 +5,7 @@ from urllib.parse import urlencode
 
 from app.shared.config import settings
 from app.shared import db, bots
+from app.db.enums import PaymentStatus
 from ..states import LinkStates
 
 from ..texts import Texts
@@ -60,8 +61,8 @@ async def enter_user_id_handler(msg: Message, state: FSMContext):
     requisite = data["requisite"]
 
     # Берём активный pending-платёж пользователя
-    payment = await db.payment.get_pending_payment(user_id)
-    if not payment:
+    pending = await db.payment.get_by_status(user_id, PaymentStatus.PENDING_LINK)
+    if not pending:
         await msg.answer(texts.link.NO_PENDING_PAYMENT)
         return
 
@@ -69,11 +70,11 @@ async def enter_user_id_handler(msg: Message, state: FSMContext):
     url = f"{settings.app.PAYMENT_URL}?{params}"
 
     # Сохраняем ссылку в БД
-    await db.payment.set_payment_link(payment.id, url)
+    await db.payment.set_payment_link(pending.id, url)
 
     await bots.buyer.bot.send_message(
         chat_id=user_id,
-        text=buyer_texts.payment.PAYMENT_PAGE.format(payment_id=payment.id),
+        text=buyer_texts.payment.PAYMENT_PAGE.format(payment_id=pending.id),
         reply_markup=buyer_buttons.payment.payment_page(url=url),
         parse_mode="HTML"
     )

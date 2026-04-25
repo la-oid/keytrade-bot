@@ -5,6 +5,7 @@ from aiogram.fsm.context import FSMContext
 from app.shared.constants import KEY_PRICE, BANKS
 from app.shared.config import settings
 from app.shared import db, bots
+from app.db.enums import PaymentStatus
 from ..texts import Texts
 from ..keyboards import InlineKeyboards
 
@@ -85,7 +86,7 @@ async def cancel_payment_handler(call: CallbackQuery):
 @r.callback_query(F.data == "back_to_pending")
 async def back_to_pending_handler(call: CallbackQuery, user):
     """Передумал → возврат на экран ожидания."""
-    pending = await db.payment.get_pending_payment(user.telegram_id)
+    pending = await db.payment.get_by_status(user.telegram_id, PaymentStatus.PENDING_LINK)
     await call.answer()
     await show_pending_payment(call, pending.amount, pending.price, pending.bank)
 
@@ -94,7 +95,7 @@ async def back_to_pending_handler(call: CallbackQuery, user):
 async def cancel_active_handler(call: CallbackQuery, state: FSMContext, user):
     """Отмена подтверждена → отменяем в БД, уведомляем админов, возврат в меню."""
 
-    pending = await db.payment.get_pending_payment(user.telegram_id)
+    pending = await db.payment.get_by_status(user.telegram_id, PaymentStatus.PENDING_LINK)
     if pending:
         await db.payment.cancel_payment(user.telegram_id)
         for admin_id in settings.telegram.ADMIN_IDS:
