@@ -2,7 +2,7 @@ import asyncio
 import sys
 from loguru import logger
 
-from app.shared import db
+from app.shared import db, scheduler
 from app.bots import start_buyer_bot, start_seller_bot, start_admin_bot
 
 
@@ -19,9 +19,14 @@ async def main():
     """
     Точка входа: инициализирует БД и запускает 3 бота параллельно.
     """
+
     # Инициализация БД (создаёт таблицы, если их нет)
     await db.init()
     logger.info("База данных инициализирована")
+
+    # Запускаем scheduler
+    scheduler.start()
+    logger.info("Scheduler запущен")
 
     try:
         # Запускаем все 3 бота параллельно
@@ -32,6 +37,10 @@ async def main():
             start_admin_bot(),
         )
     finally:
+        # Останавливаем scheduler
+        scheduler.shutdown()
+        logger.info("Scheduler остановлен")
+
         # Закрываем соединения с БД при остановке
         await db.dispose()
         logger.info("Соединения с БД закрыты")
