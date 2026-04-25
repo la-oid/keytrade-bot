@@ -97,7 +97,7 @@ async def cancel_active_handler(call: CallbackQuery, state: FSMContext, user):
 
     pending = await db.payment.get_by_status(user.telegram_id, PaymentStatus.PENDING_LINK)
     if pending:
-        await db.payment.cancel_payment(user.telegram_id)
+        await db.payment.set_status(pending.id, PaymentStatus.CANCELLED)
         for admin_id in settings.telegram.ADMIN_IDS:
             await bots.admin.bot.send_message(
                 chat_id=admin_id,
