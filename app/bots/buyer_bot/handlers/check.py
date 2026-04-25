@@ -2,8 +2,9 @@ from pathlib import Path
 from datetime import datetime
 from aiogram import Router, F
 from aiogram.types import CallbackQuery, Message
+from aiogram.types import FSInputFile
 
-from app.shared import db, bots
+from app.shared import db, bots, settings
 from app.shared.constants import PDF_STORAGE
 from app.db.enums import PaymentStatus
 from ..texts import Texts
@@ -64,3 +65,21 @@ async def receive_pdf_handler(msg: Message, user):
 
     # Подтверждаем получение пользователю
     await msg.answer(texts.payment.PDF_RECEIVED)
+
+    # Уведомляем админов: текст + сам PDF-файл
+    pdf_file = FSInputFile(path)
+    caption = texts.payment.ADMIN_PDF_RECEIVED.format(
+        name=user.first_name or user.username,
+        user_id=user.telegram_id,
+        bank=payment.bank,
+        price=payment.price,
+        amount=payment.amount,
+        payment_id=payment.id,
+    )
+
+    for admin_id in settings.telegram.ADMIN_IDS:
+        await bots.admin.bot.send_document(
+            chat_id=admin_id,
+            document=pdf_file,
+            caption=caption,
+        )

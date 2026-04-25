@@ -74,6 +74,15 @@ class PaymentTexts:
     
     PDF_RECEIVED = "Квитанция получена. Ожидайте подтверждения."
 
+    ADMIN_PDF_RECEIVED = (
+        "💳 Заказ оплачен\n\n"
+        "Пользователь: <b>{name}</b> (ID: <code>{user_id}</code>)\n"
+        "Банк: <b>{bank}</b>\n"
+        "Сумма: <b>{price} ₽</b>\n"
+        "Количество: <b>{amount} шт.</b>\n"
+        "ID платежа: <code>{payment_id}</code>"
+    )   
+
 
 class MiscTexts:
     """Общие тексты"""
