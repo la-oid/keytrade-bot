@@ -14,6 +14,7 @@ class Payment(Base):
     price = Column(Numeric(15, 2), nullable=False)                                                  # Сумма к оплате
     bank = Column(String(50), nullable=False)                                                       # Банк (Сбербанк/Тинькофф)
     payment_link = Column(String(512), nullable=True)                                               # URL страницы оплаты
+    pdf_path = Column(String(512), nullable=True)                                                   # Путь к сохранённому PDF
     status = Column(String(20), default=PaymentStatus.PENDING_LINK)                                 # Статус платежа
     deadline = Column(DateTime, nullable=True)                                                      # Время истечения текущего статуса
     created_at = Column(DateTime, default=datetime.utcnow)                                          # Дата создания

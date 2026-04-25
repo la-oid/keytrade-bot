@@ -79,6 +79,16 @@ class PaymentRepository:
             payment.status = PaymentStatus.PENDING_PAY
             payment.deadline = _deadline_for(PaymentStatus.PENDING_PAY)
             return True
+        
+    async def set_pdf_path(self, payment_id: int, path: str) -> bool:
+        """Привязывает PDF и переводит в статус pending_review."""
+        async with self.db.async_session() as session, session.begin():
+            payment = await self._get(session, payment_id)
+            if not payment:
+                return False
+            payment.pdf_path = path
+            payment.status = PaymentStatus.PENDING_REVIEW
+            return True
 
     async def _get(self, session, payment_id: int) -> Optional[Payment]:
         return (await session.execute(select(Payment).where(Payment.id == payment_id))).scalars().first()

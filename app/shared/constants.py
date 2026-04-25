@@ -4,3 +4,5 @@ MEDIUM = {"min": 100, "max": 500, "step": 50}
 LARGE = {"min": 1000, "step": 100}
 
 BANKS = ["Сбербанк", "Тинькофф"]
+
+PDF_STORAGE = "storage/pdf"
