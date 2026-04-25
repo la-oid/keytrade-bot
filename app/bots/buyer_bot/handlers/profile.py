@@ -17,13 +17,18 @@ buttons = InlineKeyboards()
 async def my_orders_handler(call: CallbackQuery, user):
     """Список заказов пользователя."""
     keyboard = await buttons.profile.orders_list(user.telegram_id)
-    has_orders = len(keyboard.inline_keyboard) > 1  # больше одной кнопки = есть заказы
+    has_orders = len(keyboard.inline_keyboard) > 1
 
     await call.answer()
-    await call.message.edit_text(
-        texts.profile.ORDERS_LIST if has_orders else texts.profile.NO_ORDERS,
-        reply_markup=keyboard,
-    )
+    
+    text = texts.profile.ORDERS_LIST if has_orders else texts.profile.NO_ORDERS
+
+    # Если сообщение с документом — удаляем и шлём новое
+    if call.message.document:
+        await call.message.delete()
+        await call.message.answer(text, reply_markup=keyboard)
+    else:
+        await call.message.edit_text(text, reply_markup=keyboard)
 
 
 @r.callback_query(F.data.startswith("order_"))
