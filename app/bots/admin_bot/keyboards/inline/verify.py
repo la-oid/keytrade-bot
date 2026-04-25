@@ -18,7 +18,6 @@ class VerifyKeyboards(BaseInlineKeyboard):
             )]
             for p in payments
         ]
-        rows.append([InlineKeyboardButton(text=self.texts.misc.BACK, callback_data="back_to_menu")])
         return InlineKeyboardMarkup(inline_keyboard=rows)
 
     def confirm(self, payment_id: int) -> InlineKeyboardMarkup:
@@ -27,7 +26,6 @@ class VerifyKeyboards(BaseInlineKeyboard):
                 [InlineKeyboardButton(
                     text=self.texts.verify.PAYMENT_OK,
                     callback_data=f"verify_confirm_{payment_id}",
-                )],
-                [InlineKeyboardButton(text=self.texts.misc.BACK, callback_data="back_to_menu")],
+                )]
             ]
         )
