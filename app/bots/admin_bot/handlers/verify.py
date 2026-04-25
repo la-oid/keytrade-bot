@@ -32,7 +32,7 @@ async def enter_user_id_handler(msg: Message, state: FSMContext):
 
     user_id = int(msg.text)
     keyboard = await buttons.verify.orders_list(user_id)
-    has_orders = len(keyboard.inline_keyboard) > 1
+    has_orders = len(keyboard.inline_keyboard) > 0
 
     await state.clear()
     await msg.answer(
