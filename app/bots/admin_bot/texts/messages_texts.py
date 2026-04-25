@@ -15,10 +15,6 @@ class LinkTexts:
 
     INVALID_DATA = "Неверный формат. Введите 3 параметра через запятую."
 
-    ENTER_USER_ID = "Введите Telegram ID пользователя:"
-
-    INVALID_USER_ID = "ID должен быть числом."
-
     PAYMENT_LINK = "Ваши реквизиты для оплаты:\n\n{url}"
 
     LINK_SENT = "Ссылка успешно отправлена пользователю {user_id}."
@@ -26,13 +22,37 @@ class LinkTexts:
     NO_PENDING_PAYMENT = "У пользователя нет активного заказа."
 
 
+class VerifyTexts:
+    """Тексты раздела проверки оплаты"""
+
+    NO_PAYMENTS = "У пользователя нет заказов на проверке."
+
+    ORDERS_LIST = "Заказы пользователя <code>{user_id}</code>:"
+
+    ORDER_DETAIL = (
+        "Заказ №{id}\n\n"
+        "Пользователь: <code>{user_id}</code>\n"
+        "Банк: <b>{bank}</b>\n"
+        "Сумма: <b>{price} ₽</b>\n"
+        "Количество: <b>{amount} шт.</b>"
+    )
+
+    PAYMENT_CONFIRMED = "Оплата подтверждена."
+
+    PAYMENT_COMPLETED = "Оплата прошла. В личном кабинете вы всегда сможете получить доступ к ключам."
+
+
 class MiscTexts:
     """Общие тексты"""
-    pass
+
+    ENTER_USER_ID = "Введите Telegram ID пользователя:"
+    
+    INVALID_USER_ID = "ID должен быть числом."
 
 
 class Texts:
     """Все тексты"""
     menu = MenuTexts
     link = LinkTexts
+    verify = VerifyTexts
     misc = MiscTexts

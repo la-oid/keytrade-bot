@@ -11,7 +11,6 @@ class MenuKeyboards(BaseInlineKeyboard):
         return InlineKeyboardMarkup(
             inline_keyboard=[
                 [InlineKeyboardButton(text=self.texts.menu.GET_LINK, callback_data="get_link")],
-                [InlineKeyboardButton(text=self.texts.menu.CREATE_ORDER, callback_data="create_order")],
                 [InlineKeyboardButton(text=self.texts.menu.CHECK_PAYMENT, callback_data="check_payment")],
             ]
         )

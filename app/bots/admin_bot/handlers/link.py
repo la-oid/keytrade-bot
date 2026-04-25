@@ -44,14 +44,14 @@ async def enter_data_handler(msg: Message, state: FSMContext):
     bank, amount, requisite = parts
     await state.update_data(bank=bank, amount=amount, requisite=requisite)
     await state.set_state(LinkStates.waiting_user_id)
-    await msg.answer(texts.link.ENTER_USER_ID)
+    await msg.answer(texts.misc.ENTER_USER_ID)
 
 
 @r.message(LinkStates.waiting_user_id)
 async def enter_user_id_handler(msg: Message, state: FSMContext):
     """ID введён → генерируем ссылку и отправляем пользователю."""
     if not msg.text.isdigit():
-        await msg.answer(texts.link.INVALID_USER_ID)
+        await msg.answer(texts.misc.INVALID_USER_ID)
         return
 
     user_id = int(msg.text)
@@ -75,8 +75,7 @@ async def enter_user_id_handler(msg: Message, state: FSMContext):
     await bots.buyer.bot.send_message(
         chat_id=user_id,
         text=buyer_texts.payment.PAYMENT_PAGE.format(payment_id=pending.id),
-        reply_markup=buyer_buttons.payment.payment_page(url=url),
-        parse_mode="HTML"
+        reply_markup=buyer_buttons.payment.payment_page(url=url)
     )
 
     await state.clear()
