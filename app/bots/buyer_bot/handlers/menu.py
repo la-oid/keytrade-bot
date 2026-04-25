@@ -15,7 +15,7 @@ buttons = InlineKeyboards()
 async def profile_handler(call: CallbackQuery, user):
     await call.answer()
     await call.message.edit_text(
-        texts.menu.PROFILE_TEXT.format(user_id=user.telegram_id, orders="Заказов пока нет"),
+        texts.menu.PROFILE_TEXT.format(user_id=user.telegram_id),
         reply_markup=buttons.menu.profile
     )
 

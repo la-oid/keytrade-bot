@@ -135,8 +135,7 @@ async def show_active_payment(call: CallbackQuery, user) -> bool:
         PaymentStatus.PENDING_LINK: lambda p: show_pending_payment(call, p.amount, p.price, p.bank),
         PaymentStatus.PENDING_PAY:  lambda p: call.message.edit_text(
             texts.payment.PAYMENT_PAGE.format(payment_id=p.id),
-            reply_markup=buttons.payment.payment_page(url=p.payment_link),
-            parse_mode="HTML",
+            reply_markup=buttons.payment.payment_page(url=p.payment_link)
         ),
         PaymentStatus.PENDING_PDF:  lambda p: call.message.edit_text(texts.payment.WAITING_PDF),
     }

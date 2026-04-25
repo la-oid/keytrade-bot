@@ -3,15 +3,26 @@ class MenuTexts:
 
     START_TEXT = "Добрый день! Вас приветствует бот по продаже ключей."
 
-    PROFILE_TEXT = (
-        "ID: {user_id}\n"
-        "Список заказов:\n\n"
-        "{orders}"
-    )
+    PROFILE_TEXT = "ID: <code>{user_id}</code>"
 
     ABOUT_TEXT = "О магазине"
 
     SUPPORT_TEXT = "Поддержка"
+
+
+class ProfileTexts:
+    """Тексты профиля и заказов"""
+
+    ORDERS_LIST = "Ваши заказы:"
+
+    NO_ORDERS = "У вас пока нет заказов."
+
+    ORDER_PENDING = (
+        "Ваш заказ находится в очереди на обработку, пожалуйста, ожидайте.\n"
+        "При возникновении вопросов, пишите в поддержку."
+    )
+
+    ORDER_COMPLETED = "Заказ выполнен.\n\nПолучено: <b>{amount}</b> ключей."
 
 
 class WholesaleTexts:
@@ -71,8 +82,6 @@ class PaymentTexts:
     )
 
     WRONG_FORMAT = "Неверный формат. Пришлите файл в формате PDF."
-    
-    PDF_RECEIVED = "Квитанция получена. Ожидайте подтверждения."
 
     ADMIN_PDF_RECEIVED = (
         "💳 Заказ оплачен\n\n"
@@ -81,7 +90,7 @@ class PaymentTexts:
         "Сумма: <b>{price} ₽</b>\n"
         "Количество: <b>{amount} шт.</b>\n"
         "ID платежа: <code>{payment_id}</code>"
-    )   
+    )
 
 
 class MiscTexts:
@@ -92,6 +101,7 @@ class MiscTexts:
 class Texts:
     """Все тексты"""
     menu = MenuTexts
+    profile = ProfileTexts
     wholesale = WholesaleTexts
     payment = PaymentTexts
     misc = MiscTexts

@@ -39,11 +39,12 @@ class PaymentRepository:
         async with self.db.async_session() as session:
             return await self._get(session, payment_id)
 
-    async def get_by_status(self, user_id: int, status: PaymentStatus, many: bool = False) -> Payment | list[Payment] | None:
-        """Возвращает платёж(и) пользователя по статусу."""
+    async def get_by_status(self, user_id: int, status: PaymentStatus | list[PaymentStatus], many: bool = False) -> Payment | list[Payment] | None:
+        """Возвращает платёж(и) пользователя по статусу или списку статусов."""
+        statuses = status if isinstance(status, list) else [status]
         async with self.db.async_session() as session:
             result = (await session.execute(
-                select(Payment).where(Payment.user_id == user_id, Payment.status == status)
+                select(Payment).where(Payment.user_id == user_id, Payment.status.in_(statuses))
             )).scalars()
             return result.all() if many else result.first()
 

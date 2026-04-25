@@ -23,7 +23,8 @@ class MenuKeyboards(BaseInlineKeyboard):
     def profile(self) -> InlineKeyboardMarkup:
         return InlineKeyboardMarkup(
             inline_keyboard=[
-                [InlineKeyboardButton(text=self.texts.misc.BACK, callback_data="back_to_menu")]
+                [InlineKeyboardButton(text=self.texts.profile.ORDERS, callback_data="my_orders")],
+                [InlineKeyboardButton(text=self.texts.misc.BACK, callback_data="back_to_menu")],
             ]
         )
     

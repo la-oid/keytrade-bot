@@ -29,6 +29,7 @@ class TelegramSettings(EnvBase):
 class AppSettings(EnvBase):
     """Настройки приложения"""
     PAYMENT_URL: str = Field(..., description="Базовый URL страницы оплаты")
+    SUPPORT_URL: str = Field(..., description="Ссылка на аккаунт поддержки")
     
     model_config = SettingsConfigDict(
         env_prefix="APP_"

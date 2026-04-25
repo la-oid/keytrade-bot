@@ -63,8 +63,11 @@ async def receive_pdf_handler(msg: Message, user):
     # Сохраняем путь в БД и переводим в PENDING_REVIEW
     await db.payment.set_pdf_path(payment.id, str(path))
 
-    # Подтверждаем получение пользователю
-    await msg.answer(texts.payment.PDF_RECEIVED)
+    # Возвращаем покупателя на экран "Мои заказы"
+    await msg.answer(
+        texts.profile.ORDERS_LIST,
+        reply_markup=await buttons.profile.orders_list(user.telegram_id),
+    )
 
     # Уведомляем админов: текст + сам PDF-файл
     pdf_file = FSInputFile(path)
@@ -76,7 +79,7 @@ async def receive_pdf_handler(msg: Message, user):
         amount=payment.amount,
         payment_id=payment.id,
     )
-
+    
     for admin_id in settings.telegram.ADMIN_IDS:
         await bots.admin.bot.send_document(
             chat_id=admin_id,

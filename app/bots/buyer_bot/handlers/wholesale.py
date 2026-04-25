@@ -26,7 +26,6 @@ async def medium_wholesale_handler(call: CallbackQuery, state: FSMContext, user)
     
     await state.set_state(OrderStates.medium_wholesale)
     await state.update_data(amount=MEDIUM["min"])
-    await call.answer()
     await call.message.edit_text(
         texts.wholesale.WHOLESALE_TEXT.format(amount=MEDIUM["min"], price=MEDIUM["min"] * KEY_PRICE),
         reply_markup=buttons.wholesale.wholesale(MEDIUM["min"], MEDIUM["step"])
@@ -43,7 +42,6 @@ async def large_wholesale_handler(call: CallbackQuery, state: FSMContext, user):
     
     await state.set_state(OrderStates.large_wholesale)
     await state.update_data(amount=LARGE["min"])
-    await call.answer()
     await call.message.edit_text(
         texts.wholesale.WHOLESALE_TEXT.format(amount=LARGE["min"], price=LARGE["min"] * KEY_PRICE),
         reply_markup=buttons.wholesale.wholesale(LARGE["min"], LARGE["step"])
