@@ -7,9 +7,9 @@ from app.db.enums import PaymentStatus
 
 # Куда переходят просроченные статусы
 EXPIRY_TRANSITIONS: dict[PaymentStatus, PaymentStatus] = {
-    PaymentStatus.PENDING_PAY: PaymentStatus.FROZEN,
-    PaymentStatus.PENDING_PDF: PaymentStatus.FROZEN,
-    PaymentStatus.FROZEN:      PaymentStatus.CANCELLED,
+    PaymentStatus.PENDING_PAY:    PaymentStatus.PENDING_REVIEW,
+    PaymentStatus.PENDING_PDF:    PaymentStatus.PENDING_REVIEW,
+    PaymentStatus.PENDING_REVIEW: PaymentStatus.CANCELLED,
 }
 
 

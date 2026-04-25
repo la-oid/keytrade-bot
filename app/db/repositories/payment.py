@@ -10,8 +10,7 @@ DEADLINES: dict[PaymentStatus, int | None] = {
     PaymentStatus.PENDING_LINK:   None,   # Заказ создан, ждём ссылку от админа — без таймера
     PaymentStatus.PENDING_PAY:    15,     # Ссылка отправлена, у пользователя A мин чтобы нажать "Перевёл"
     PaymentStatus.PENDING_PDF:    10,     # Нажал "Перевёл", у него B мин чтобы прислать PDF
-    PaymentStatus.FROZEN:         240,    # Заморозка на C мин, после — отмена
-    PaymentStatus.PENDING_REVIEW: None,   # PDF получен, ждём проверки админа — без таймера
+    PaymentStatus.PENDING_REVIEW: 240,    # PDF получен, ждём проверки админа — у него C мин чтобы проверить
     PaymentStatus.COMPLETED:      None,   # Финальный успех — без таймера
     PaymentStatus.CANCELLED:      None,   # Финальная отмена — без таймера
 }
