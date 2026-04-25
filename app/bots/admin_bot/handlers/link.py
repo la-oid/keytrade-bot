@@ -1,17 +1,25 @@
 from aiogram import Router, F
 from aiogram.types import CallbackQuery, Message
 from aiogram.fsm.context import FSMContext
+from urllib.parse import urlencode
 
 from app.shared.config import settings
-from app.shared import bots
+from app.shared import db, bots
 from ..states import LinkStates
+
 from ..texts import Texts
 from ..keyboards import InlineKeyboards
+
+from app.bots.buyer_bot.texts import Texts as BuyerTexts
+from app.bots.buyer_bot.keyboards import InlineKeyboards as BuyerKeyboards
 
 r = Router()
 
 texts = Texts()
 buttons = InlineKeyboards()
+
+buyer_texts = BuyerTexts()
+buyer_buttons = BuyerKeyboards()
 
 
 @r.callback_query(F.data == "get_link")
@@ -19,7 +27,7 @@ async def get_link_handler(call: CallbackQuery, state: FSMContext):
     """Получение ссылки → просим ввести данные."""
     await state.set_state(LinkStates.waiting_data)
     await call.answer()
-    await call.message.answer(texts.link.ENTER_DATA)
+    await call.message.edit_text(texts.link.ENTER_DATA)
 
 
 @r.message(LinkStates.waiting_data)
@@ -51,11 +59,23 @@ async def enter_user_id_handler(msg: Message, state: FSMContext):
     amount = data["amount"]
     requisite = data["requisite"]
 
-    url = f"{settings.app.PAYMENT_URL}?bank={bank}&amount={amount}&requisite={requisite}"
+    # Берём активный pending-платёж пользователя
+    payment = await db.payment.get_pending_payment(user_id)
+    if not payment:
+        await msg.answer(texts.link.NO_PENDING_PAYMENT)
+        return
+
+    params = urlencode({"bank": bank, "amount": amount, "requisite": requisite})
+    url = f"{settings.app.PAYMENT_URL}?{params}"
+
+    # Сохраняем ссылку в БД
+    await db.payment.set_payment_link(payment.id, url)
 
     await bots.buyer.bot.send_message(
         chat_id=user_id,
-        text=texts.link.PAYMENT_LINK.format(url=url)
+        text=buyer_texts.payment.PAYMENT_PAGE.format(payment_id=payment.id),
+        reply_markup=buyer_buttons.payment.payment_page(url=url),
+        parse_mode="HTML"
     )
 
     await state.clear()

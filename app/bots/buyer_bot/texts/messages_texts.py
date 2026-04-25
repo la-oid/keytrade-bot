@@ -39,6 +39,8 @@ class PaymentTexts:
         "⏳ Ожидайте реквизиты для оплаты."
     )
 
+    CONFIRM_CANCEL_TEXT = "Вы уверены, что хотите отменить оплату?"
+
     ADMIN_NOTIFY = (
         "💰 Новый заказ на оплату\n\n"
         "Пользователь: <b>{name}</b> (ID: <code>{user_id}</code>)\n"
@@ -56,6 +58,12 @@ class PaymentTexts:
     )
 
     CANCELLED_TEXT = "Заказ отменён."
+
+    PAYMENT_PAGE = (
+        "Заказ номер: <code>{payment_id}</code>\n\n"
+        "Внимание, переводите только с указанного вами ранее банка! "
+        "В ином случае заказ обработан не будет."
+    )
 
 
 class MiscTexts:

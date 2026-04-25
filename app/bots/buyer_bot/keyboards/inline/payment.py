@@ -44,3 +44,11 @@ class PaymentKeyboards(BaseInlineKeyboard):
                 [InlineKeyboardButton(text=self.texts.payment.CONFIRM_CANCEL, callback_data="cancel_active")],
             ]
         )
+    
+    def payment_page(self, url: str) -> InlineKeyboardMarkup:
+        return InlineKeyboardMarkup(
+            inline_keyboard=[
+                [InlineKeyboardButton(text=self.texts.payment.OPEN_LINK, url=url)],
+                [InlineKeyboardButton(text=self.texts.payment.SENT, callback_data="payment_sent")],
+            ]
+        )

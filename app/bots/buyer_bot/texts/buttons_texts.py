@@ -20,6 +20,8 @@ class PaymentButtonTexts:
     CHANGED_MIND = "Я передумал"
     CONFIRM_CANCEL = "Точно отменить"
     CANCEL_ACTIVE = "Отменить заказ"
+    OPEN_LINK = "Открыть ссылку"
+    SENT = "Перевел"
 
 
 class MiscButtonTexts:

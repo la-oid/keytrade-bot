@@ -23,6 +23,8 @@ class LinkTexts:
 
     LINK_SENT = "Ссылка успешно отправлена пользователю {user_id}."
 
+    NO_PENDING_PAYMENT = "У пользователя нет активного заказа."
+
 
 class MiscTexts:
     """Общие тексты"""

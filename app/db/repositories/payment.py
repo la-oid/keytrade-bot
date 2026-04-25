@@ -27,6 +27,30 @@ class PaymentRepository:
                     Payment.status == "pending"
                 )
             )).scalars().first()
+        
+    async def set_payment_link(self, payment_id: int, link: str) -> bool:
+        """Привязывает ссылку к уже созданному платежу."""
+        async with self.db.async_session() as session:
+            async with session.begin():
+                payment = (await session.execute(
+                    select(Payment).where(Payment.id == payment_id)
+                )).scalars().first()
+                if not payment:
+                    return False
+                payment.payment_link = link
+                return True
+
+    async def set_payment_link(self, payment_id: int, link: str) -> bool:
+        """Привязывает ссылку к уже созданному платежу."""
+        async with self.db.async_session() as session:
+            async with session.begin():
+                payment = (await session.execute(
+                    select(Payment).where(Payment.id == payment_id)
+                )).scalars().first()
+                if not payment:
+                    return False
+                payment.payment_link = link
+                return True
 
     async def cancel_payment(self, user_id: int) -> bool:
         """Отменяет активный платёж пользователя. Возвращает True если был найден."""

@@ -1,10 +1,9 @@
-from .inline import MenuKeyboards, MiscKeyboards
+from .inline import MenuKeyboards
 
 
 class InlineKeyboards:
     def __init__(self):
         self.menu = MenuKeyboards()
-        self.misc = MiscKeyboards()
 
 
 __all__ = ["InlineKeyboards"]

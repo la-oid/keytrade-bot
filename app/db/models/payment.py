@@ -12,6 +12,7 @@ class Payment(Base):
     amount = Column(Integer, nullable=False)                                                        # Количество ключей
     price = Column(Numeric(15, 2), nullable=False)                                                  # Сумма к оплате
     bank = Column(String(50), nullable=False)                                                       # Банк (Сбербанк/Тинькофф)
+    payment_link = Column(String(512), nullable=True)                                               # URL страницы оплаты
     status = Column(String(20), default="pending")                                                  # pending / cancelled / completed
     created_at = Column(DateTime, default=datetime.utcnow)                                          # Дата создания
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)                # Дата обновления
