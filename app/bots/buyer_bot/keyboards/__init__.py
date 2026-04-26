@@ -1,4 +1,5 @@
 from .inline import MenuKeyboards, ProfileKeyboards, WholesaleKeyboards, PaymentKeyboards
+from .reply import MenuReplyKeyboards
 
 
 class InlineKeyboards:
@@ -9,4 +10,9 @@ class InlineKeyboards:
         self.payment = PaymentKeyboards()
 
 
-__all__ = ["InlineKeyboards"]
+class ReplyKeyboards:
+    def __init__(self):
+        self.menu = MenuReplyKeyboards()
+
+
+__all__ = ["InlineKeyboards", "ReplyKeyboards"]
