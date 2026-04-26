@@ -16,6 +16,5 @@ class User(Base):
     is_blocked = Column(Boolean, default=False)                                         # Заблокирован ли пользователь
     completed_orders_count = Column(Integer, default=0)                                 # Кол-во выполненных заказов 
     balance = Column(Numeric(15, 2), default=0)                                         # Баланс пользователя
-    last_order_amount = Column(Numeric(15, 2), default=0)                               # Последняя введённая сумма заказа
     created_at = Column(DateTime, default=datetime.utcnow)                              # Дата создания записи
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)    # Дата обновления записи

@@ -3,6 +3,7 @@ from aiogram.types import CallbackQuery
 from aiogram.types import BufferedInputFile
 
 from app.shared import db
+from app.services import key_service
 from app.db.enums import PaymentStatus
 from ..texts import Texts
 from ..keyboards import InlineKeyboards
@@ -49,8 +50,9 @@ async def order_detail_handler(call: CallbackQuery):
         # Удаляем старое сообщение и шлём документ с подписью + кнопкой
         await call.message.delete()
 
-        keys_text = "\n".join(f"key_{i:05d}" for i in range(payment.amount))
-        file = BufferedInputFile(keys_text.encode("utf-8"), filename=f"keys_order_{payment.id}.txt")
+        # Берём ключи привязанные к платежу из БД
+        content, filename = await key_service.get_keys_file(payment.id)
+        file = BufferedInputFile(content, filename=filename)
 
         await call.message.answer_document(
             document=file,

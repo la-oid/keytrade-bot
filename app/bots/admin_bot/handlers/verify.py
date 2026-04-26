@@ -4,6 +4,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types.input_file import BufferedInputFile
 
 from app.shared import db, bots
+from app.services import key_service
 from app.db.enums import PaymentStatus
 from ..states import VerifyStates
 from ..texts import Texts
@@ -72,6 +73,13 @@ async def verify_confirm_handler(call: CallbackQuery):
     await call.answer()
     if not payment or payment.status != PaymentStatus.PENDING_REVIEW:
         return
+    
+    # Генерируем ключи и сохраняем в БД с привязкой к платежу
+    await key_service.generate_for_payment(
+        owner_id=payment.user_id,
+        payment_id=payment.id,
+        count=payment.amount,
+    )
 
     # Переводим в COMPLETED
     await db.payment.set_status(payment.id, PaymentStatus.COMPLETED)
@@ -79,9 +87,9 @@ async def verify_confirm_handler(call: CallbackQuery):
     # Уведомляем админа
     await call.message.edit_text(texts.verify.PAYMENT_CONFIRMED)
 
-    # Генерируем файл с ключами (пока заглушка)
-    keys_text = "\n".join(f"key_{i:05d}" for i in range(payment.amount))
-    file = BufferedInputFile(keys_text.encode("utf-8"), filename=f"keys_order_{payment.id}.txt")
+    # Берём ключи из БД и формируем файл
+    content, filename = await key_service.get_keys_file(payment.id)
+    file = BufferedInputFile(content, filename=filename)
 
     # Отправляем покупателю файл с подписью
     await bots.buyer.bot.send_document(
