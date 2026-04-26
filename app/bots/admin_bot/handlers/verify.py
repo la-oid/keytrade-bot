@@ -73,6 +73,12 @@ async def verify_confirm_handler(call: CallbackQuery):
     await call.answer()
     if not payment or payment.status != PaymentStatus.PENDING_REVIEW:
         return
+
+    # Переводим в COMPLETED
+    await db.payment.set_status(payment.id, PaymentStatus.COMPLETED)
+
+    # Сразу убираем кнопку с сообщения
+    await call.message.edit_text(texts.verify.PAYMENT_CONFIRMED)
     
     # Генерируем ключи и сохраняем в БД с привязкой к платежу
     await key_service.generate_for_payment(
@@ -80,12 +86,6 @@ async def verify_confirm_handler(call: CallbackQuery):
         payment_id=payment.id,
         count=payment.amount,
     )
-
-    # Переводим в COMPLETED
-    await db.payment.set_status(payment.id, PaymentStatus.COMPLETED)
-
-    # Уведомляем админа
-    await call.message.edit_text(texts.verify.PAYMENT_CONFIRMED)
 
     # Берём ключи из БД и формируем файл
     content, filename = await key_service.get_keys_file(payment.id)
