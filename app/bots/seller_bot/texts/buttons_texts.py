@@ -1,9 +1,12 @@
 class MenuButtonTexts:
-    pass
+    PROFILE  = "Профиль"
+    MARKET   = "Площадка заказов"
+    ABOUT    = "О компании"
+    SUPPORT  = "Поддержка"
 
 
 class MiscButtonTexts:
-    pass
+    BACK = "← Назад"
 
 
 class ButtonTexts:

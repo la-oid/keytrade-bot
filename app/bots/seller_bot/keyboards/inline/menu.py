@@ -5,4 +5,5 @@ from .base import BaseInlineKeyboard
 
 class MenuKeyboards(BaseInlineKeyboard):
     """Клавиатуры основного меню."""
+    
     pass
