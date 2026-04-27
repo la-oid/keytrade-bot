@@ -1,6 +1,7 @@
 from aiogram import Router, F
-from aiogram.types import CallbackQuery
+from aiogram.types import CallbackQuery, Message
 from aiogram.fsm.context import FSMContext
+from aiogram.exceptions import TelegramBadRequest
 
 from app.shared.constants import KEY_PRICE, BANKS
 from app.shared.config import settings
@@ -33,10 +34,13 @@ async def confirm_order_handler(call: CallbackQuery):
 async def pay_spb_handler(call: CallbackQuery):
     """СБП → выбор банка."""
     await call.answer()
-    await call.message.edit_text(
-        texts.payment.CHOOSE_BANK,
-        reply_markup=buttons.payment.choose_bank
-    )
+    try:
+        await call.message.edit_text(
+            texts.payment.CHOOSE_BANK,
+            reply_markup=buttons.payment.choose_bank
+        )
+    except TelegramBadRequest:
+        pass
 
 
 @r.callback_query(F.data.in_(set(BANK_NAMES.keys())))
@@ -112,32 +116,37 @@ async def cancel_active_handler(call: CallbackQuery, state: FSMContext, user):
 
     await state.clear()
     await call.answer()
-    await call.message.edit_text(
-        texts.payment.CANCELLED_TEXT,
-        reply_markup=buttons.menu.back_to_menu
-    )
+    await call.message.edit_text(texts.payment.CANCELLED_TEXT)
 
 
 # ─── Helpers ───────────────────────────────────────────────────────────────────
 
-async def show_pending_payment(call: CallbackQuery, amount: int, price: float, bank: str):
+async def show_pending_payment(target: Message | CallbackQuery, amount: int, price: float, bank: str):
     """Показывает экран ожидания реквизитов."""
-    
-    await call.message.edit_text(
-        texts.payment.PENDING_TEXT.format(amount=amount, price=price, bank=bank),
-        reply_markup=buttons.payment.cancel_only
-    )
 
-async def show_active_payment(call: CallbackQuery, user) -> bool:
+    text = texts.payment.PENDING_TEXT.format(amount=amount, price=price, bank=bank)
+
+    if isinstance(target, CallbackQuery): 
+        await target.message.edit_text(
+            text, 
+            reply_markup=buttons.payment.cancel_only
+        )
+    else: 
+        await target.answer(
+            text, 
+            reply_markup=buttons.payment.cancel_only
+        )
+
+async def show_active_payment(msg: Message, user) -> bool:
     """Если есть активный платёж — показывает экран и возвращает True. Иначе False."""
 
     handlers = {
-        PaymentStatus.PENDING_LINK: lambda p: show_pending_payment(call, p.amount, p.price, p.bank),
-        PaymentStatus.PENDING_PAY:  lambda p: call.message.edit_text(
+        PaymentStatus.PENDING_LINK: lambda p: show_pending_payment(msg, p.amount, p.price, p.bank),
+        PaymentStatus.PENDING_PAY:  lambda p: msg.answer(
             texts.payment.PAYMENT_PAGE.format(payment_id=p.id),
             reply_markup=buttons.payment.payment_page(url=p.payment_link)
         ),
-        PaymentStatus.PENDING_PDF:  lambda p: call.message.edit_text(texts.payment.WAITING_PDF),
+        PaymentStatus.PENDING_PDF:  lambda p: msg.answer(texts.payment.WAITING_PDF),
     }
 
     for status, action in handlers.items():

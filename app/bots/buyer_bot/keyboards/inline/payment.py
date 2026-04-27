@@ -10,8 +10,7 @@ class PaymentKeyboards(BaseInlineKeyboard):
     def choose_method(self) -> InlineKeyboardMarkup:
         return InlineKeyboardMarkup(
             inline_keyboard=[
-                [InlineKeyboardButton(text=self.texts.payment.SPB, callback_data="pay_spb")],
-                [InlineKeyboardButton(text=self.texts.misc.BACK, callback_data="back_to_menu")],
+                [InlineKeyboardButton(text=self.texts.payment.SPB, callback_data="pay_spb")]
             ]
         )
 
@@ -23,7 +22,7 @@ class PaymentKeyboards(BaseInlineKeyboard):
                     InlineKeyboardButton(text=bank, callback_data=f"bank_{bank.lower()}")
                     for bank in BANKS
                 ],
-                [InlineKeyboardButton(text=self.texts.misc.BACK, callback_data="pay_spb")],
+                [InlineKeyboardButton(text=self.texts.misc.BACK, callback_data="confirm_order")],
             ]
         )
     
@@ -31,8 +30,7 @@ class PaymentKeyboards(BaseInlineKeyboard):
     def cancel_only(self) -> InlineKeyboardMarkup:
         return InlineKeyboardMarkup(
             inline_keyboard=[
-                [InlineKeyboardButton(text=self.texts.payment.CANCEL_ACTIVE, callback_data="cancel_payment")],
-                [InlineKeyboardButton(text=self.texts.misc.BACK, callback_data="back_to_menu")],
+                [InlineKeyboardButton(text=self.texts.payment.CANCEL_ACTIVE, callback_data="cancel_payment")]
             ]
         )
 
