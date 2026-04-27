@@ -7,7 +7,7 @@ from app.shared import db, bots
 from app.services import key_service
 from app.db.enums import PaymentStatus
 from ..states import VerifyStates
-from ..texts import Texts
+from ..texts import Texts, ButtonTexts
 from ..keyboards import InlineKeyboards
 
 r = Router()
@@ -16,12 +16,12 @@ texts = Texts()
 buttons = InlineKeyboards()
 
 
-@r.callback_query(F.data == "check_payment")
-async def check_payment_handler(call: CallbackQuery, state: FSMContext):
+@r.message(F.text == ButtonTexts.menu.CHECK_PAYMENT)
+async def check_payment_handler(msg: Message, state: FSMContext):
     """Проверка оплаты → просим ID пользователя."""
+    await msg.delete()
     await state.set_state(VerifyStates.waiting_user_id)
-    await call.answer()
-    await call.message.edit_text(texts.misc.ENTER_USER_ID)
+    await msg.answer(texts.misc.ENTER_USER_ID)
 
 
 @r.message(VerifyStates.waiting_user_id)

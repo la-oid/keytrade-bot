@@ -1,4 +1,5 @@
 from .inline import MenuKeyboards, VerifyKeyboards
+from .reply import MenuReplyKeyboards
 
 
 class InlineKeyboards:
@@ -7,4 +8,9 @@ class InlineKeyboards:
         self.verify = VerifyKeyboards()
 
 
-__all__ = ["InlineKeyboards"]
+class ReplyKeyboards:
+    def __init__(self):
+        self.menu = MenuReplyKeyboards()
+
+
+__all__ = ["InlineKeyboards", "ReplyKeyboards"]

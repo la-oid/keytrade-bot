@@ -8,7 +8,7 @@ from app.shared import db, bots
 from app.db.enums import PaymentStatus
 from ..states import LinkStates
 
-from ..texts import Texts
+from ..texts import Texts, ButtonTexts
 from ..keyboards import InlineKeyboards
 
 from app.bots.buyer_bot.texts import Texts as BuyerTexts
@@ -23,12 +23,12 @@ buyer_texts = BuyerTexts()
 buyer_buttons = BuyerKeyboards()
 
 
-@r.callback_query(F.data == "get_link")
-async def get_link_handler(call: CallbackQuery, state: FSMContext):
+@r.message(F.text == ButtonTexts.menu.GET_LINK)
+async def get_link_handler(msg: Message, state: FSMContext):
     """Получение ссылки → просим ввести данные."""
+    await msg.delete()
     await state.set_state(LinkStates.waiting_data)
-    await call.answer()
-    await call.message.edit_text(texts.link.ENTER_DATA)
+    await msg.answer(texts.link.ENTER_DATA)
 
 
 @r.message(LinkStates.waiting_data)
@@ -79,7 +79,4 @@ async def enter_user_id_handler(msg: Message, state: FSMContext):
     )
 
     await state.clear()
-    await msg.answer(
-        texts.link.LINK_SENT.format(user_id=user_id),
-        reply_markup=buttons.menu.start
-    )
+    await msg.answer(texts.link.LINK_SENT.format(user_id=user_id))

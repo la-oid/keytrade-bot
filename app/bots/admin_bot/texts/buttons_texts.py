@@ -1,7 +1,11 @@
 class MenuButtonTexts:
     GET_LINK = "Получение ссылки"
-    CREATE_ORDER = "Создание заказа"
     CHECK_PAYMENT = "Проверка оплаты"
+    USER_ACCOUNT = "Управление счетом"
+    SPECIAL_OFFERS = "Спецпредложения"
+    CREATE_PIE = "Создать/удалить Пай"
+    PAYOUTS = "Заявки на выплату"
+    BLOCK_USER = "Блокировка"
 
 
 class VerifyButtonTexts:
