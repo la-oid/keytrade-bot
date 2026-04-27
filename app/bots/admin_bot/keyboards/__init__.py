@@ -1,4 +1,4 @@
-from .inline import MenuKeyboards, VerifyKeyboards
+from .inline import MenuKeyboards, VerifyKeyboards, OrderKeyboards
 from .reply import MenuReplyKeyboards
 
 
@@ -6,6 +6,7 @@ class InlineKeyboards:
     def __init__(self):
         self.menu = MenuKeyboards()
         self.verify = VerifyKeyboards()
+        self.order = OrderKeyboards()
 
 
 class ReplyKeyboards:

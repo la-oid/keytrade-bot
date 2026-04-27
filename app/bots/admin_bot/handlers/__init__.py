@@ -1,8 +1,10 @@
 from .start import r as start_router
 from .link import r as link_router
 from .verify import r as verify_router
+from .order import r as order_router
 
 def include_routers(dp):
     dp.include_router(start_router)
     dp.include_router(link_router)
     dp.include_router(verify_router)
+    dp.include_router(order_router)

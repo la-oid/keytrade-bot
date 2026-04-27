@@ -42,6 +42,38 @@ class VerifyTexts:
     PAYMENT_COMPLETED = "Оплата прошла. В личном кабинете вы всегда сможете получить доступ к ключам."
 
 
+class OrderTexts:
+
+    CURRENT_ORDERS = "Текущие паи: {count}"
+
+    ORDER_DETAIL = (
+        "Пай #{id}\n\n"
+        "Ключей: <b>{total_keys}</b>\n"
+        "Цена за ключ: <b>{price_per_key} ₽</b>\n"
+        "Истекает: <b>{expires_at} UTC</b>"
+    )
+
+    ENTER_KEYS_COUNT = "Введите количество ключей в пае:"
+
+    ENTER_PRICE = (
+        "Введите цену за один ключ (в рублях).\n\n"
+        "Пример: <code>85</code> или <code>99.5</code>"
+    )
+
+    ORDER_CREATED = (
+        "Пай #{order_id} создан.\n\n"
+        "Ключей: <b>{total_keys}</b>\n"
+        "Цена: <b>{price_per_key} ₽/шт</b>\n"
+        "Истекает: <b>{expires_at} UTC</b>"
+    )
+
+    ORDER_DELETED   = "Пай #{order_id} удалён.\n\n"
+    ORDER_NOT_FOUND = "Пай не найден — возможно, уже истёк."
+
+    INVALID_NUMBER = "Введите целое число."
+    INVALID_PRICE  = "Введите корректную цену (больше 0)."
+
+
 class MiscTexts:
     """Общие тексты"""
 
@@ -55,4 +87,5 @@ class Texts:
     menu = MenuTexts
     link = LinkTexts
     verify = VerifyTexts
+    order = OrderTexts
     misc = MiscTexts
