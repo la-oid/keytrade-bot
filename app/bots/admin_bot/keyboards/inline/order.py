@@ -21,8 +21,7 @@ class OrderKeyboards(BaseInlineKeyboard):
             [InlineKeyboardButton(
                 text=self.texts.order.ORDER_ROW.format(
                     id=o.id,
-                    total_keys=o.total_keys,
-                    price_per_key=o.price_per_key,
+                    total_keys=o.total_keys
                 ),
                 callback_data=f"order_delete_{o.id}",
             )]

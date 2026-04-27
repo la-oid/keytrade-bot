@@ -18,7 +18,7 @@ class OrderButtonTexts:
     CREATE    = "Создать пай"
     BACK      = "← Назад"
     DELETE    = "Удалить"
-    ORDER_ROW = "#{id} — {total_keys} ключей · {price_per_key} ₽/шт"
+    ORDER_ROW = "#{id} — {total_keys} ключей"
 
 
 class MiscButtonTexts:

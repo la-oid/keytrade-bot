@@ -43,20 +43,19 @@ class VerifyTexts:
 
 
 class OrderTexts:
-    """Тексты раздела проверки паев"""
+    """Тексты раздела паёв"""
  
     CURRENT_ORDERS = "Текущие паи: {count}"
  
     ENTER_CREATE_DATA = (
         "Введите данные через запятую:\n\n"
-        "<b>Кол-во ключей, Цена за ключ, Время жизни (ч)</b>\n\n"
-        "Пример: <code>500, 85, 3</code>"
+        "<b>Кол-во ключей, Время жизни (ч)</b>\n\n"
+        "Пример: <code>500, 3</code>"
     )
  
     ORDER_CREATED = (
         "Пай #{order_id} создан.\n\n"
         "Ключей: <b>{total_keys}</b>\n"
-        "Цена: <b>{price_per_key} ₽/шт</b>\n"
         "Истекает: <b>{expires_at} UTC</b>"
     )
  
@@ -64,15 +63,14 @@ class OrderTexts:
  
     ORDER_DELETED = (
         "Пай #{order_id} удалён.\n"
-        "Сумма пая: <b>{total_sum:.2f} ₽</b>"
+        "Ключей было: <b>{total_keys}</b>"
     )
  
-    ORDER_NOT_FOUND  = "Пай не найден — возможно, уже истёк."
-    INVALID_DATA     = (
-        "Неверный формат. Введите три значения через запятую.\n"
-        "Пример: <code>500, 85, 3</code>"
+    ORDER_NOT_FOUND = "Пай не найден — возможно, уже истёк."
+    INVALID_DATA    = (
+        "Неверный формат. Введите два значения через запятую.\n"
+        "Пример: <code>500, 3</code>"
     )
-    INVALID_PRICE    = "Цена должна быть числом больше 0."
 
 
 class MiscTexts:

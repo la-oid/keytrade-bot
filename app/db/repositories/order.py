@@ -12,12 +12,11 @@ class OrderRepository:
 
     # ─── CREATE ──────────────────────────────────────────────────────────────
 
-    async def create(self, total_keys: int, price_per_key: float, expires_at: datetime, is_fake: bool = False) -> Order:
+    async def create(self, total_keys: int, expires_at: datetime, is_fake: bool = False) -> Order:
         """Создаёт новый пай."""
         async with self.db.async_session() as session, session.begin():
             order = Order(
                 total_keys=total_keys,
-                price_per_key=price_per_key,
                 expires_at=expires_at,
                 is_fake=is_fake,
             )

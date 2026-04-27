@@ -65,10 +65,9 @@ async def order_create_handler(msg: Message, state: FSMContext):
         await msg.answer(texts.order.INVALID_DATA)
         return
 
-    keys_count, price, lifetime_hours = parsed
+    keys_count, lifetime_hours = parsed
     order = await order_service.create(
         total_keys=keys_count,
-        price_per_key=price,
         lifetime_hours=lifetime_hours,
     )
     await state.clear()
@@ -77,7 +76,6 @@ async def order_create_handler(msg: Message, state: FSMContext):
         texts.order.ORDER_CREATED.format(
             order_id=order.id,
             total_keys=order.total_keys,
-            price_per_key=order.price_per_key,
             expires_at=order.expires_at.strftime("%d.%m.%Y %H:%M"),
         ),
         reply_markup=buttons.order.back_to_menu(),
@@ -112,13 +110,13 @@ async def order_delete_handler(call: CallbackQuery):
         )
         return
 
-    total_sum = float(order.total_keys * order.price_per_key)
+    keys_count = order.total_keys
     await db.order.delete(order_id)
 
     await call.message.edit_text(
         texts.order.ORDER_DELETED.format(
             order_id=order_id,
-            total_sum=total_sum,
+            total_keys=keys_count,
         ),
         reply_markup=buttons.order.back_to_delete_list(),
     )
