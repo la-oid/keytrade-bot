@@ -5,7 +5,7 @@ from app.shared import db
 from app.db import Database
 from app.db.models.order import Order
 from app.shared.constants import PIE_FAKE_COUNT_MIN, PIE_FAKE_COUNT_MAX
-from app.utils import random_keys_count, random_lifetime, random_price
+from app.utils import random_keys_count, random_lifetime, random_price, lifetime_from_hours
 
 
 class OrderService:
@@ -14,12 +14,12 @@ class OrderService:
     def __init__(self, db: Database):
         self.db = db
 
-    async def create(self, total_keys: int, price_per_key: float) -> Order:
+    async def create(self, total_keys: int, price_per_key: float, lifetime_hours: int) -> Order:
         """Создаёт реальный пай с заданными параметрами."""
         return await self.db.order.create(
             total_keys=total_keys,
             price_per_key=price_per_key,
-            expires_at=random_lifetime(),
+            expires_at=lifetime_from_hours(lifetime_hours),
             is_fake=False,
         )
 

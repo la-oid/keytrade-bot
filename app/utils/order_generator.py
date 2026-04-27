@@ -28,3 +28,7 @@ def random_price() -> float:
 def validate_keys_count(value: int) -> bool:
     """Проверяет что значение в допустимом диапазоне и кратно шагу."""
     return PIE_MIN_KEYS <= value <= PIE_MAX_KEYS and value % PIE_STEP == 0
+
+def lifetime_from_hours(hours: int) -> datetime:
+    """Время истечения пая через заданное количество часов."""
+    return datetime.utcnow() + timedelta(hours=hours)

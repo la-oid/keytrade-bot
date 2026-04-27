@@ -43,35 +43,36 @@ class VerifyTexts:
 
 
 class OrderTexts:
-
+    """Тексты раздела проверки паев"""
+ 
     CURRENT_ORDERS = "Текущие паи: {count}"
-
-    ORDER_DETAIL = (
-        "Пай #{id}\n\n"
-        "Ключей: <b>{total_keys}</b>\n"
-        "Цена за ключ: <b>{price_per_key} ₽</b>\n"
-        "Истекает: <b>{expires_at} UTC</b>"
+ 
+    ENTER_CREATE_DATA = (
+        "Введите данные через запятую:\n\n"
+        "<b>Кол-во ключей, Цена за ключ, Время жизни (ч)</b>\n\n"
+        "Пример: <code>500, 85, 3</code>"
     )
-
-    ENTER_KEYS_COUNT = "Введите количество ключей в пае:"
-
-    ENTER_PRICE = (
-        "Введите цену за один ключ (в рублях).\n\n"
-        "Пример: <code>85</code> или <code>99.5</code>"
-    )
-
+ 
     ORDER_CREATED = (
         "Пай #{order_id} создан.\n\n"
         "Ключей: <b>{total_keys}</b>\n"
         "Цена: <b>{price_per_key} ₽/шт</b>\n"
         "Истекает: <b>{expires_at} UTC</b>"
     )
-
-    ORDER_DELETED   = "Пай #{order_id} удалён.\n\n"
-    ORDER_NOT_FOUND = "Пай не найден — возможно, уже истёк."
-
-    INVALID_NUMBER = "Введите целое число."
-    INVALID_PRICE  = "Введите корректную цену (больше 0)."
+ 
+    DELETE_LIST = "Выберите пай для удаления:"
+ 
+    ORDER_DELETED = (
+        "Пай #{order_id} удалён.\n"
+        "Сумма пая: <b>{total_sum:.2f} ₽</b>"
+    )
+ 
+    ORDER_NOT_FOUND  = "Пай не найден — возможно, уже истёк."
+    INVALID_DATA     = (
+        "Неверный формат. Введите три значения через запятую.\n"
+        "Пример: <code>500, 85, 3</code>"
+    )
+    INVALID_PRICE    = "Цена должна быть числом больше 0."
 
 
 class MiscTexts:
