@@ -1,87 +1,95 @@
 from typing import Optional
+from datetime import datetime
 from sqlalchemy.future import select
+from sqlalchemy import func
 
-from ..models import Order
+from ..models.order import Order
 
 
 class OrderRepository:
     def __init__(self, db):
         self.db = db
 
-    async def create_order(self, keys_count: int, price_per_key: float) -> Order:
-        """
-        Создаёт новый заказ на фиксированное количество ключей.
-        Вызывается админом при добавлении заказа через админ-бот.
-        """
-        async with self.db.async_session() as session:
-            async with session.begin():
-                # Создаём запись заказа в БД
-                order = Order(
-                    keys_count=keys_count,
-                    price_per_key=price_per_key,
-                    is_completed=False
-                )
-                session.add(order)
-                await session.flush()
-                await session.refresh(order)
-                return order
+    # ─── CREATE ──────────────────────────────────────────────────────────────
 
+    async def create(self, total_keys: int, price_per_key: float, expires_at: datetime, is_fake: bool = False) -> Order:
+        """Создаёт новый пай."""
+        async with self.db.async_session() as session, session.begin():
+            order = Order(
+                total_keys=total_keys,
+                price_per_key=price_per_key,
+                expires_at=expires_at,
+                is_fake=is_fake,
+            )
+            session.add(order)
+            await session.flush()
+            await session.refresh(order)
+            return order
 
-    async def get_order_by_id(self, order_id: int) -> Optional[Order]:
-        """
-        Возвращает заказ по ID или None, если не найден.
-        """
-        async with self.db.async_session() as session:
-            return await self._get_order(session, order_id)
+    # ─── GET ─────────────────────────────────────────────────────────────────
 
-
-    async def get_active_orders(self) -> list[Order]:
-        """
-        Возвращает все невыполненные заказы для отображения на площадке.
-        """
+    async def get_by_id(self, order_id: int) -> Optional[Order]:
+        """Возвращает пай по ID или None."""
         async with self.db.async_session() as session:
             return (await session.execute(
-                select(Order).where(Order.is_completed == False)
+                select(Order).where(Order.id == order_id)
+            )).scalars().first()
+
+    async def get_all_active(self) -> list[Order]:
+        """Возвращает все активные паи (и реальные, и фейковые) у которых не истёк срок."""
+        async with self.db.async_session() as session:
+            return (await session.execute(
+                select(Order)
+                .where(Order.expires_at > datetime.utcnow())
+                .order_by(Order.created_at.desc())
             )).scalars().all()
 
-
-    async def complete_order(self, order_id: int, user_telegram_id: int) -> Optional[Order]:
-        """
-        Закрывает заказ: помечает как выполненный и записывает исполнителя.
-        Вызывается после успешной проверки ключей пользователя.
-        Возвращает обновлённый заказ или None (если заказ не найден или уже выполнен).
-        """
+    async def count_active_fakes(self) -> int:
+        """Считает активные фейковые паи. Нужно scheduler'у для поддержания их числа."""
         async with self.db.async_session() as session:
-            async with session.begin():
-                order = await self._get_order(session, order_id)
-                # Если заказ не найден или уже выполнен - ничего не делаем
-                if not order or order.is_completed:
-                    return None
-                order.is_completed = True
-                order.completed_by = user_telegram_id
-                await session.flush()
-                await session.refresh(order)
-                return order
+            result = await session.execute(
+                select(func.count()).select_from(Order).where(
+                    Order.is_fake == True,
+                    Order.expires_at > datetime.utcnow(),
+                )
+            )
+            return result.scalar() or 0
 
+    # ─── UPDATE ──────────────────────────────────────────────────────────────
 
-    async def delete_order(self, order_id: int) -> bool:
-        """
-        Удаляет заказ по ID.
-        Возвращает True - успешно, False - заказ не найден.
-        """
-        async with self.db.async_session() as session:
-            async with session.begin():
-                order = await self._get_order(session, order_id)
-                if not order:
-                    return False
+    async def set_active(self, order_id: int, is_active: bool) -> bool:
+        """Открывает или закрывает пай. True — успешно, False — не найден."""
+        async with self.db.async_session() as session, session.begin():
+            order = await self._get(session, order_id)
+            if not order:
+                return False
+            order.is_active = is_active
+            return True
+
+    # ─── DELETE ──────────────────────────────────────────────────────────────
+
+    async def delete(self, order_id: int) -> bool:
+        """Удаляет пай по ID. True — успешно, False — не найден."""
+        async with self.db.async_session() as session, session.begin():
+            order = await self._get(session, order_id)
+            if not order:
+                return False
+            await session.delete(order)
+            return True
+
+    async def delete_expired(self) -> int:
+        """Удаляет все истёкшие паи. Вызывается из scheduler. Возвращает количество удалённых."""
+        async with self.db.async_session() as session, session.begin():
+            expired = (await session.execute(
+                select(Order).where(Order.expires_at <= datetime.utcnow())
+            )).scalars().all()
+            for order in expired:
                 await session.delete(order)
-                return True
+            return len(expired)
 
+    # ─── PRIVATE ─────────────────────────────────────────────────────────────
 
-    async def _get_order(self, session, order_id: int) -> Optional[Order]:
-        """
-        Приватный метод для получения заказа по ID.
-        """
+    async def _get(self, session, order_id: int) -> Optional[Order]:
         return (await session.execute(
             select(Order).where(Order.id == order_id)
         )).scalars().first()

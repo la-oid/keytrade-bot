@@ -3,6 +3,7 @@ from loguru import logger
 
 from .helper import db
 from app.db.enums import PaymentStatus
+from app.services import order_service
 
 
 # Куда переходят просроченные статусы
@@ -24,3 +25,4 @@ async def check_expired():
 
 scheduler = AsyncIOScheduler()
 scheduler.add_job(check_expired, "interval", seconds=30, id="check_expired_payments")
+scheduler.add_job(order_service.maintain_fakes, "interval", minutes=5,  id="maintain_fake_orders")
