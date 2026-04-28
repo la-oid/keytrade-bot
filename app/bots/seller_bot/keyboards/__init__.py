@@ -1,4 +1,4 @@
-from .inline import MenuKeyboards, MarketKeyboards, ProfileKeyboards
+from .inline import MenuKeyboards, MarketKeyboards, ProfileKeyboards, CashoutKeyboards
 from .reply import MenuReplyKeyboards
 
 
@@ -7,6 +7,7 @@ class InlineKeyboards:
         self.menu = MenuKeyboards()
         self.market = MarketKeyboards()
         self.profile = ProfileKeyboards()
+        self.cashout = CashoutKeyboards()
 
 
 class ReplyKeyboards:

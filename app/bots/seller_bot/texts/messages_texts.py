@@ -27,6 +27,38 @@ class ProfileTexts:
     )
 
 
+class CashoutTexts:
+    """Тексты вывода средств"""
+ 
+    CHOOSE_AMOUNT = (
+        "Сколько хотите вывести?\n\n"
+        "Текущий баланс: <b>{balance:.2f} ₽</b>"
+    )
+ 
+    ENTER_AMOUNT = (
+        "Введите сумму для вывода.\n\n"
+        "Сумма должна быть кратна {step} ₽ и не превышать ваш баланс."
+    )
+ 
+    CHOOSE_METHOD = "Выберите метод получения средств:"
+ 
+    ENTER_CARD = (
+        "Введите номер карты (16 цифр).\n\n"
+        "Пример: <code>1234567890123456</code>"
+    )
+ 
+    CREATED = (
+        "Заявка #{cashout_id} создана.\n\n"
+        "Сумма: <b>{amount:.2f} ₽</b>\n"
+        "Карта: <b>{card}</b>\n\n"
+        "Средства заморожены. Статус можно отследить в личном кабинете."
+    )
+ 
+    NOT_ENOUGH   = "На балансе недостаточно средств."
+    INVALID_AMOUNT = "Неверная сумма. Введите число кратное {step} ₽, не превышающее ваш баланс."
+    INVALID_CARD   = "Неверный номер карты. Введите 16 цифр без пробелов."
+
+
 class MarketTexts:
     """Тексты площадки заказов"""
 
@@ -70,5 +102,6 @@ class Texts:
     """Все тексты"""
     menu = MenuTexts
     profile = ProfileTexts
+    cashout = CashoutTexts
     market  = MarketTexts
     misc = MiscTexts

@@ -16,6 +16,12 @@ class ProfileButtonTexts:
     WITHDRAW_STATUS = "Узнать статус заявки"
 
 
+class CashoutButtonTexts:
+    ALL_AMOUNT    = "Вся сумма"
+    CUSTOM_AMOUNT = "Другая сумма"
+    CARD          = "На карту"
+
+
 class MiscButtonTexts:
     BACK = "← Назад"
 
@@ -24,4 +30,5 @@ class ButtonTexts:
     menu = MenuButtonTexts
     market = MarketButtonTexts
     profile = ProfileButtonTexts
+    cashout = CashoutButtonTexts
     misc = MiscButtonTexts

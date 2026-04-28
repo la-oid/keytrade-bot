@@ -3,7 +3,7 @@ from sqlalchemy.orm import sessionmaker
 from loguru import logger
 
 from .base import Base
-from ..repositories import UserRepository, KeyRepository, OrderRepository, PaymentRepository
+from ..repositories import UserRepository, KeyRepository, OrderRepository, PaymentRepository, CashoutRepository
 
 
 class Database:
@@ -21,6 +21,7 @@ class Database:
         self.key = KeyRepository(self)
         self.order = OrderRepository(self)
         self.payment = PaymentRepository(self)
+        self.cashout = CashoutRepository(self)
 
     async def init(self):
         """Инициализация базы данных: создание таблиц"""
