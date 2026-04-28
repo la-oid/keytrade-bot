@@ -23,6 +23,7 @@ async def profile_handler(event: Message | CallbackQuery, user):
     text = texts.profile.PROFILE_TEXT.format(
         user_id=user.telegram_id,
         balance=user.balance or 0,
+        frozen=user.frozen_balance or 0,
         completed=user.completed_orders_count or 0,
     )
     keyboard = buttons.profile.profile()
