@@ -14,6 +14,7 @@ class MarketButtonTexts:
 class ProfileButtonTexts:
     WITHDRAW        = "Вывод средств"
     WITHDRAW_STATUS = "Узнать статус заявки"
+    WITHDRAW_HISTORY = "История выводов"
 
 
 class CashoutButtonTexts:
@@ -21,6 +22,7 @@ class CashoutButtonTexts:
     CUSTOM_AMOUNT = "Другая сумма"
     CARD          = "На карту"
     SUPPORT       = "Поддержка"
+    HISTORY_ROW   = "#{id} — {amount:.2f} ₽"
 
 
 class MiscButtonTexts:

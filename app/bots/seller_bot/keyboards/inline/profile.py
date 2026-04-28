@@ -18,5 +18,9 @@ class ProfileKeyboards(BaseInlineKeyboard):
                     text=self.texts.profile.WITHDRAW_STATUS,
                     callback_data="profile_withdraw_status",
                 )],
+                [InlineKeyboardButton(
+                    text=self.texts.profile.WITHDRAW_HISTORY,
+                    callback_data="profile_withdraw_history",
+                )],
             ]
         )

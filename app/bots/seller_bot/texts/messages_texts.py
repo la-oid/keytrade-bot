@@ -61,6 +61,20 @@ class CashoutTexts:
         "Статус: <b>{status}</b>"
     )
 
+    HISTORY_TITLE = "Ваши выводы:"
+
+    HISTORY_DETAIL = (
+        "Заявка #{id}\n\n"
+        "Сумма: <b>{amount:.2f} ₽</b>\n"
+        "Карта: <b>{card}</b>\n"
+        "Статус: <b>{status}</b>"
+    )
+
+    CASHOUT_COMPLETED_NOTIFY = (
+        "Заявка #{id} выполнена.\n"
+        "Сумма <b>{amount:.2f} ₽</b> переведена."
+    )
+
     STATUS_PENDING   = "В очереди на вывод"
     STATUS_COMPLETED = "Выполнено"
     STATUS_CANCELLED = "Отменено"

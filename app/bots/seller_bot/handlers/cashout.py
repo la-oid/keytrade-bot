@@ -90,18 +90,6 @@ async def cashout_amount_handler(msg: Message, state: FSMContext, user):
     )
 
 
-# ─── Назад к выбору суммы ────────────────────────────────────────────────────
-
-@r.callback_query(F.data == "cashout_back_to_amount")
-async def cashout_back_to_amount(call: CallbackQuery, state: FSMContext, user):
-    await call.answer()
-    await state.clear()
-    await call.message.edit_text(
-        texts.cashout.CHOOSE_AMOUNT.format(balance=user.balance or 0),
-        reply_markup=buttons.cashout.amount_choice(),
-    )
-
-
 # ─── Метод: карта ────────────────────────────────────────────────────────────
 
 @r.callback_query(F.data == "cashout_card")
@@ -183,4 +171,46 @@ async def cashout_status_handler(msg: Message, state: FSMContext, user):
             status=status_text,
         ),
         reply_markup=buttons.cashout.status_actions(),
+    )
+
+
+# ─── История выводов ─────────────────────────────────────────────────────────
+ 
+@r.callback_query(F.data == "profile_withdraw_history")
+async def cashout_history_handler(call: CallbackQuery, user):
+    """Кнопка 'История выводов' → список всех транзакций."""
+    await call.answer()
+    cashouts = await db.cashout.get_by_status(
+        user_id=user.telegram_id,
+        status=[CashoutStatus.PENDING, CashoutStatus.COMPLETED, CashoutStatus.CANCELLED],
+        many=True,
+    )
+    await call.message.edit_text(
+        texts.cashout.HISTORY_TITLE,
+        reply_markup=buttons.cashout.history_list(cashouts),
+    )
+ 
+ 
+@r.callback_query(F.data.startswith("cashout_history_"))
+async def cashout_history_detail_handler(call: CallbackQuery, user):
+    """Нажали на транзакцию → показываем детали."""
+    cashout_id = int(call.data.split("_")[2])
+    cashout = await db.cashout.get_by_id(cashout_id)
+ 
+    await call.answer()
+ 
+    if not cashout or cashout.user_id != user.telegram_id:
+        await call.message.edit_text(texts.cashout.STATUS_NOT_FOUND)
+        return
+ 
+    status_text = STATUS_TEXTS.get(cashout.status, lambda t: "")(texts)
+ 
+    await call.message.edit_text(
+        texts.cashout.HISTORY_DETAIL.format(
+            id=cashout.id,
+            amount=cashout.amount,
+            card=f"**** **** **** {cashout.card_number[-4:]}",
+            status=status_text,
+        ),
+        reply_markup=buttons.cashout.history_detail_back(),
     )

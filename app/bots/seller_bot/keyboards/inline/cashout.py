@@ -36,7 +36,7 @@ class CashoutKeyboards(BaseInlineKeyboard):
                 )],
                 [InlineKeyboardButton(
                     text=self.texts.misc.BACK,
-                    callback_data="cashout_back_to_amount",
+                    callback_data="profile_withdraw",
                 )],
             ]
         )
@@ -54,4 +54,33 @@ class CashoutKeyboards(BaseInlineKeyboard):
                     callback_data="profile",
                 )],
             ]
+        )
+    
+    def history_list(self, cashouts: list) -> InlineKeyboardMarkup:
+        """Список всех транзакций + кнопка Назад."""
+        rows = [
+            [InlineKeyboardButton(
+                text=self.texts.cashout.HISTORY_ROW.format(
+                    id=c.id,
+                    amount=c.amount,
+                ),
+                callback_data=f"cashout_history_{c.id}",
+            )]
+            for c in cashouts
+        ]
+        rows.append([InlineKeyboardButton(
+            text=self.texts.cashout.BACK,
+            callback_data="profile",
+        )])
+        return InlineKeyboardMarkup(inline_keyboard=rows)
+ 
+    def history_detail_back(self) -> InlineKeyboardMarkup:
+        """Назад к истории выводов."""
+        return InlineKeyboardMarkup(
+            inline_keyboard=[[
+                InlineKeyboardButton(
+                    text=self.texts.cashout.BACK,
+                    callback_data="profile_withdraw_history",
+                )
+            ]]
         )
