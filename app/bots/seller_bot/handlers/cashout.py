@@ -1,9 +1,9 @@
-import random
 from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext
 
 from app.shared import db
+from app.shared.config import settings
 from app.shared.constants import CASHOUT_STEP
 from app.db.enums import CashoutStatus
 from ..states import CashoutStates
@@ -15,12 +15,19 @@ r = Router()
 texts = Texts()
 buttons = InlineKeyboards()
 
+# Тексты статусов
+STATUS_TEXTS = {
+    CashoutStatus.PENDING:   lambda t: t.cashout.STATUS_PENDING,
+    CashoutStatus.COMPLETED: lambda t: t.cashout.STATUS_COMPLETED,
+    CashoutStatus.CANCELLED: lambda t: t.cashout.STATUS_CANCELLED,
+}
+
 
 # ─── Открыть вывод средств ───────────────────────────────────────────────────
 
 @r.callback_query(F.data == "profile_withdraw")
 async def cashout_start(call: CallbackQuery, user):
-    """Кнопка 'Вывод средств' → редактируем на экран выбора суммы."""
+    """Кнопка 'Вывод средств' → экран выбора суммы."""
     await call.answer()
     await call.message.edit_text(
         texts.cashout.CHOOSE_AMOUNT.format(balance=user.balance or 0),
@@ -32,7 +39,6 @@ async def cashout_start(call: CallbackQuery, user):
 
 @r.callback_query(F.data == "cashout_all")
 async def cashout_all_handler(call: CallbackQuery, state: FSMContext, user):
-    """Вся сумма → сразу к выбору метода."""
     await call.answer()
     balance = float(user.balance or 0)
 
@@ -54,7 +60,6 @@ async def cashout_all_handler(call: CallbackQuery, state: FSMContext, user):
 
 @r.callback_query(F.data == "cashout_custom")
 async def cashout_custom_handler(call: CallbackQuery, state: FSMContext):
-    """Другая сумма → просим ввести."""
     await call.answer()
     await state.set_state(CashoutStates.waiting_amount)
     await call.message.edit_text(texts.cashout.ENTER_AMOUNT.format(step=CASHOUT_STEP))
@@ -62,7 +67,6 @@ async def cashout_custom_handler(call: CallbackQuery, state: FSMContext):
 
 @r.message(CashoutStates.waiting_amount)
 async def cashout_amount_handler(msg: Message, state: FSMContext, user):
-    """Ввод суммы → валидируем и переходим к методу."""
     raw = msg.text.strip().replace(",", ".")
 
     try:
@@ -98,11 +102,10 @@ async def cashout_back_to_amount(call: CallbackQuery, state: FSMContext, user):
     )
 
 
-# ─── Метод: карта → ввод номера ──────────────────────────────────────────────
+# ─── Метод: карта ────────────────────────────────────────────────────────────
 
 @r.callback_query(F.data == "cashout_card")
 async def cashout_card_handler(call: CallbackQuery, state: FSMContext):
-    """Выбрана карта → просим ввести номер."""
     await call.answer()
     await state.set_state(CashoutStates.waiting_card_number)
     await call.message.edit_text(texts.cashout.ENTER_CARD)
@@ -110,7 +113,6 @@ async def cashout_card_handler(call: CallbackQuery, state: FSMContext):
 
 @r.message(CashoutStates.waiting_card_number)
 async def cashout_card_number_handler(msg: Message, state: FSMContext, user):
-    """Номер карты введён → создаём заявку, замораживаем баланс."""
     card = msg.text.strip().replace(" ", "")
 
     if not card.isdigit() or len(card) != 16:
@@ -121,15 +123,12 @@ async def cashout_card_number_handler(msg: Message, state: FSMContext, user):
     amount = data["amount"]
 
     # Замораживаем баланс
-    new_balance = float(user.balance or 0) - amount
-    new_frozen = float(user.frozen_balance or 0) + amount
     await db.user.upsert_user(
         user.telegram_id,
-        balance=new_balance,
-        frozen_balance=new_frozen,
+        balance=float(user.balance or 0) - amount,
+        frozen_balance=float(user.frozen_balance or 0) + amount,
     )
 
-    # Создаём заявку
     cashout = await db.cashout.create(
         user_id=user.telegram_id,
         amount=amount,
@@ -138,12 +137,50 @@ async def cashout_card_number_handler(msg: Message, state: FSMContext, user):
 
     await state.clear()
     await msg.delete()
-
-    # Показываем статус заявки (пока рандом ID)
     await msg.answer(
         texts.cashout.CREATED.format(
             cashout_id=cashout.id,
             amount=amount,
             card=f"**** **** **** {card[-4:]}",
         )
+    )
+
+
+# ─── Узнать статус заявки ────────────────────────────────────────────────────
+
+@r.callback_query(F.data == "profile_withdraw_status")
+async def cashout_status_start(call: CallbackQuery, state: FSMContext):
+    """Кнопка 'Узнать статус заявки' → просим ввести ID."""
+    await call.answer()
+    await state.set_state(CashoutStates.waiting_status_id)
+    await call.message.edit_text(texts.cashout.ENTER_STATUS_ID)
+
+
+@r.message(CashoutStates.waiting_status_id)
+async def cashout_status_handler(msg: Message, state: FSMContext, user):
+    """ID введён → ищем заявку и показываем статус."""
+    raw = msg.text.strip()
+
+    if not raw.isdigit():
+        await msg.answer(texts.cashout.INVALID_STATUS_ID)
+        return
+
+    cashout_id = int(raw)
+    cashout = await db.cashout.get_by_id(cashout_id)
+
+    if not cashout or cashout.user_id != user.telegram_id:
+        await msg.answer(texts.cashout.STATUS_NOT_FOUND)
+        return
+
+    status_text = STATUS_TEXTS.get(cashout.status, lambda t: "")(texts)
+
+    await state.clear()
+    await msg.delete()
+    await msg.answer(
+        texts.cashout.STATUS_INFO.format(
+            cashout_id=cashout.id,
+            amount=cashout.amount,
+            status=status_text,
+        ),
+        reply_markup=buttons.cashout.status_actions(),
     )

@@ -20,6 +20,7 @@ class CashoutButtonTexts:
     ALL_AMOUNT    = "Вся сумма"
     CUSTOM_AMOUNT = "Другая сумма"
     CARD          = "На карту"
+    SUPPORT       = "Поддержка"
 
 
 class MiscButtonTexts:

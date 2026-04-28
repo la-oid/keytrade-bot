@@ -53,10 +53,24 @@ class CashoutTexts:
         "Карта: <b>{card}</b>\n\n"
         "Средства заморожены. Статус можно отследить в личном кабинете."
     )
+
+    ENTER_STATUS_ID = "Введите номер заявки:"
+
+    STATUS_INFO = (
+        "Заявка #{cashout_id}\n\n"
+        "Сумма: <b>{amount:.2f} ₽</b>\n"
+        "Статус: <b>{status}</b>"
+    )
+
+    STATUS_PENDING   = "В очереди на вывод"
+    STATUS_COMPLETED = "Выполнено"
+    STATUS_CANCELLED = "Отменено"
  
     NOT_ENOUGH   = "На балансе недостаточно средств."
     INVALID_AMOUNT = "Неверная сумма. Введите число кратное {step} ₽, не превышающее ваш баланс."
     INVALID_CARD   = "Неверный номер карты. Введите 16 цифр без пробелов."
+    INVALID_STATUS_ID = "Введите корректный номер заявки."
+    STATUS_NOT_FOUND  = "Заявка не найдена."
 
 
 class MarketTexts:
