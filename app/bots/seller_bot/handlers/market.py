@@ -101,7 +101,13 @@ async def market_keys_received(msg: Message, state: FSMContext, user):
     await db.order.set_active(order.id, False)
     payout = order.total_keys * KEY_PRICE
     new_balance = (user.balance or 0) + payout
-    await db.user.upsert_user(user.telegram_id, balance=new_balance)
+    new_count = (user.completed_orders_count or 0) + 1
+    
+    await db.user.upsert_user(
+        user.telegram_id,
+        balance=new_balance,
+        completed_orders_count=new_count,
+    )
 
     await state.clear()
     await status_msg.edit_text(texts.market.SUCCESS.format(payout=payout))
