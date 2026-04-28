@@ -73,8 +73,12 @@ async def market_keys_received(msg: Message, state: FSMContext, user):
     if not msg.document.file_name.lower().endswith(".txt"):
         await msg.answer(texts.market.INVALID_FORMAT)
         return
+    
+    # Удаляем сообщение пользователя с файлом
+    # await msg.delete()
 
-    await msg.answer(texts.market.CHECKING)
+    # Отправляем "идёт проверка" и запоминаем чтобы потом редактировать
+    status_msg = await msg.answer(texts.market.CHECKING)
 
     # Скачиваем и парсим файл
     file = await msg.bot.get_file(msg.document.file_id)
@@ -84,13 +88,13 @@ async def market_keys_received(msg: Message, state: FSMContext, user):
 
     # Количество не совпадает или парсинг провалился
     if not keys or len(keys) != order.total_keys:
-        await msg.answer(texts.market.INVALID_FORMAT)
+        await status_msg.edit_text(texts.market.INVALID_FORMAT)
         return
 
     # Атомарно: validate + sell внутри key_service
     sold = await key_service.sell(keys, owner_id=user.telegram_id, order_id=order.id)
     if not sold:
-        await msg.answer(texts.market.INVALID_FORMAT)
+        await status_msg.edit_text(texts.market.INVALID_FORMAT)
         return
 
     # Закрываем пай и зачисляем баланс
@@ -100,7 +104,7 @@ async def market_keys_received(msg: Message, state: FSMContext, user):
     await db.user.upsert_user(user.telegram_id, balance=new_balance)
 
     await state.clear()
-    await msg.answer(texts.market.SUCCESS.format(payout=payout))
+    await status_msg.edit_text(texts.market.SUCCESS.format(payout=payout))
 
 
 @r.message(MarketStates.waiting_keys_file)
