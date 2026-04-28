@@ -11,6 +11,11 @@ class MarketButtonTexts:
     ORDER_ROW = "#{id} — {total_keys} ключей"
 
 
+class ProfileButtonTexts:
+    WITHDRAW        = "Вывод средств"
+    WITHDRAW_STATUS = "Узнать статус заявки"
+
+
 class MiscButtonTexts:
     BACK = "← Назад"
 
@@ -18,4 +23,5 @@ class MiscButtonTexts:
 class ButtonTexts:
     menu = MenuButtonTexts
     market = MarketButtonTexts
+    profile = ProfileButtonTexts
     misc = MiscButtonTexts

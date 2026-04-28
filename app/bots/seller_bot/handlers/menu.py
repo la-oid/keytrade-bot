@@ -18,14 +18,21 @@ buttons = InlineKeyboards()
 @r.callback_query(F.data == "profile")
 @r.message(F.text == ButtonTexts.menu.PROFILE)
 async def profile_handler(event: Message | CallbackQuery, user):
-    text = texts.menu.PROFILE_TEXT.format(user_id=user.telegram_id)
+    """Профиль — ID, баланс, кол-во выполненных заказов + кнопки."""
+
+    text = texts.profile.PROFILE_TEXT.format(
+        user_id=user.telegram_id,
+        balance=user.balance or 0,
+        completed=user.completed_orders_count or 0,
+    )
+    keyboard = buttons.profile.profile()
 
     if isinstance(event, CallbackQuery):
         await event.answer()
-        await event.message.edit_text(text)
+        await event.message.edit_text(text, reply_markup=keyboard)
     else:
         await event.delete()
-        await event.answer(text)
+        await event.answer(text, reply_markup=keyboard)
 
 
 # ─── Площадка заказов ────────────────────────────────────────────────────────

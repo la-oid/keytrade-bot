@@ -20,7 +20,11 @@ class MenuTexts:
 class ProfileTexts:
     """Тексты профиля"""
  
-    pass
+    PROFILE_TEXT = (
+        "<b>ID:</b> <code>{user_id}</code>\n"
+        "<b>Баланс:</b> {balance:.2f} ₽\n"
+        "<b>Выполнено заказов:</b> {completed}"
+    )
 
 
 class MarketTexts:
