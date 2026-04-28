@@ -1,5 +1,6 @@
 from aiogram import Router
 from aiogram.filters import CommandStart
+from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 
 from app.shared import db
@@ -13,8 +14,9 @@ reply = ReplyKeyboards()
 
 
 @r.message(CommandStart())
-async def start_handler(msg: Message, user):
+async def start_handler(msg: Message, user, state: FSMContext):
     # Отвечаем обычным приветствием с меню
+    await state.clear()
     
     await msg.answer(
         texts.menu.START_TEXT,
