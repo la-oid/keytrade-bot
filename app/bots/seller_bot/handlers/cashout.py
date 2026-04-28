@@ -180,11 +180,13 @@ async def cashout_status_handler(msg: Message, state: FSMContext, user):
 async def cashout_history_handler(call: CallbackQuery, user):
     """Кнопка 'История выводов' → список всех транзакций."""
     await call.answer()
+    
     cashouts = await db.cashout.get_by_status(
         user_id=user.telegram_id,
-        status=[CashoutStatus.PENDING, CashoutStatus.COMPLETED, CashoutStatus.CANCELLED],
+        status=CashoutStatus.COMPLETED,
         many=True,
     )
+    
     await call.message.edit_text(
         texts.cashout.HISTORY_TITLE,
         reply_markup=buttons.cashout.history_list(cashouts),
