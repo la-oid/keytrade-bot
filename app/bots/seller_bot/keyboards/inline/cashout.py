@@ -69,7 +69,7 @@ class CashoutKeyboards(BaseInlineKeyboard):
             for c in cashouts
         ]
         rows.append([InlineKeyboardButton(
-            text=self.texts.cashout.BACK,
+            text=self.texts.misc.BACK,
             callback_data="profile",
         )])
         return InlineKeyboardMarkup(inline_keyboard=rows)
@@ -79,7 +79,7 @@ class CashoutKeyboards(BaseInlineKeyboard):
         return InlineKeyboardMarkup(
             inline_keyboard=[[
                 InlineKeyboardButton(
-                    text=self.texts.cashout.BACK,
+                    text=self.texts.misc.BACK,
                     callback_data="profile_withdraw_history",
                 )
             ]]
