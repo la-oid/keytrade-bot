@@ -8,7 +8,7 @@ from app.services import key_service
 from ..states import MarketStates
 from ..texts import Texts
 from ..keyboards import InlineKeyboards
-from ..utils import parse_keys_file
+from ..utils import parse_keys_file, min_duration
 
 r = Router()
 
@@ -60,6 +60,7 @@ async def market_accept_handler(call: CallbackQuery, state: FSMContext):
 # ─── Получили .txt → проверяем и продаём ─────────────────────────────────────
 
 @r.message(MarketStates.waiting_keys_file, F.document)
+@min_duration(15)
 async def market_keys_received(msg: Message, state: FSMContext, user):
     """Получили файл → парсим, валидируем, продаём."""
     data = await state.get_data()
