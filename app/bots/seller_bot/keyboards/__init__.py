@@ -1,11 +1,11 @@
-from .inline import MenuKeyboards, MiscKeyboards
+from .inline import MenuKeyboards, MarketKeyboards
 from .reply import MenuReplyKeyboards
 
 
 class InlineKeyboards:
     def __init__(self):
         self.menu = MenuKeyboards()
-        self.misc = MiscKeyboards()
+        self.market = MarketKeyboards()
 
 
 class ReplyKeyboards:

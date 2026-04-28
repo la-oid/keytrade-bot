@@ -1,4 +1,4 @@
 from .menu import MenuKeyboards
-from .misc import MiscKeyboards
+from .market import MarketKeyboards
 
-__all__ = ["MenuKeyboards", "MiscKeyboards"]
+__all__ = ["MenuKeyboards", "MarketKeyboards"]
