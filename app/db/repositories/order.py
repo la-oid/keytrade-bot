@@ -39,7 +39,9 @@ class OrderRepository:
         async with self.db.async_session() as session:
             return (await session.execute(
                 select(Order)
-                .where(Order.expires_at > datetime.utcnow())
+                .where(
+                    Order.is_active == True,
+                    Order.expires_at > datetime.utcnow())
                 .order_by(Order.created_at.desc())
             )).scalars().all()
 
@@ -49,6 +51,7 @@ class OrderRepository:
             result = await session.execute(
                 select(func.count()).select_from(Order).where(
                     Order.is_fake == True,
+                    Order.is_active == True,
                     Order.expires_at > datetime.utcnow(),
                 )
             )
