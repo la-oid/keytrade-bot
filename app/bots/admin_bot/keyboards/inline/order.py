@@ -27,7 +27,7 @@ class OrderKeyboards(BaseInlineKeyboard):
             )]
             for o in orders
         ]
-        rows.append([InlineKeyboardButton(text=self.texts.order.BACK, callback_data="order_back")])
+        rows.append([InlineKeyboardButton(text=self.texts.misc.BACK, callback_data="order_back")])
         return InlineKeyboardMarkup(inline_keyboard=rows)
 
     def back_to_delete_list(self) -> InlineKeyboardMarkup:
@@ -35,7 +35,7 @@ class OrderKeyboards(BaseInlineKeyboard):
         return InlineKeyboardMarkup(
             inline_keyboard=[[
                 InlineKeyboardButton(
-                    text=self.texts.order.BACK,
+                    text=self.texts.misc.BACK,
                     callback_data="order_delete_menu",
                 )
             ]]
@@ -46,7 +46,7 @@ class OrderKeyboards(BaseInlineKeyboard):
         return InlineKeyboardMarkup(
             inline_keyboard=[[
                 InlineKeyboardButton(
-                    text=self.texts.order.BACK,
+                    text=self.texts.misc.BACK,
                     callback_data="order_back",
                 )
             ]]

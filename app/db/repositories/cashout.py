@@ -44,6 +44,14 @@ class CashoutRepository:
                 ).order_by(Cashout.created_at.desc())
             )).scalars()
             return result.all() if many else result.first()
+        
+    async def get_all_by_status(self, status: CashoutStatus) -> list[Cashout]:
+        """Возвращает все заявки по статусу — для админа."""
+        async with self.db.async_session() as session:
+            return (await session.execute(
+                select(Cashout).where(Cashout.status == status)
+                .order_by(Cashout.created_at.desc())
+            )).scalars().all()
 
     # ─── UPDATE ──────────────────────────────────────────────────────────────
 

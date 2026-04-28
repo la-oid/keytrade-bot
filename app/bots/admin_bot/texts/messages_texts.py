@@ -73,6 +73,28 @@ class OrderTexts:
     )
 
 
+class CashoutTexts:
+    """Тексты раздела заявок на выплату"""
+ 
+    CURRENT_CASHOUTS = "Текущие заявки на выплату:"
+ 
+    CASHOUT_DETAIL = (
+        "Заявка #{id}\n\n"
+        "Пользователь: <code>{user_id}</code>\n"
+        "Сумма: <b>{amount:.2f} ₽</b>\n"
+        "Карта: <code>{card}</code>"
+    )
+ 
+    CASHOUT_COMPLETED = "Заявка #{id} выполнена. Сумма: <b>{amount:.2f} ₽</b>"
+ 
+    CASHOUT_NOT_FOUND = "Заявка не найдена или уже обработана."
+
+    CASHOUT_COMPLETED_NOTIFY = (
+        "Заявка #{id} выполнена.\n"
+        "Сумма <b>{amount:.2f} ₽</b> переведена."
+    )
+
+
 class MiscTexts:
     """Общие тексты"""
 
@@ -87,4 +109,5 @@ class Texts:
     link = LinkTexts
     verify = VerifyTexts
     order = OrderTexts
+    cashout = CashoutTexts
     misc = MiscTexts

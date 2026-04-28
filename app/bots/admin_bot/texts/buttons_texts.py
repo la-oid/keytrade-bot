@@ -16,17 +16,22 @@ class VerifyButtonTexts:
 
 class OrderButtonTexts:
     CREATE    = "Создать пай"
-    BACK      = "← Назад"
     DELETE    = "Удалить"
     ORDER_ROW = "#{id} — {total_keys} ключей"
 
 
+class CashoutButtonTexts:
+    COMPLETE    = "Выполнен"
+    CASHOUT_ROW = "#{id} — {amount:.2f} ₽"
+
+
 class MiscButtonTexts:
-    pass
+    BACK = "← Назад"
 
 
 class ButtonTexts:
     menu = MenuButtonTexts
     verify = VerifyButtonTexts
     order = OrderButtonTexts
+    cashout = CashoutButtonTexts
     misc = MiscButtonTexts
