@@ -45,14 +45,16 @@ class OrderRepository:
                 .order_by(Order.created_at.desc())
             )).scalars().all()
 
-    async def count_active_fakes(self) -> int:
-        """Считает активные фейковые паи. Нужно scheduler'у для поддержания их числа."""
+    async def count_active_fakes_by_range(self, min_keys: int, max_keys: int) -> int:
+        """Считает активные фейки в заданном диапазоне ключей."""
         async with self.db.async_session() as session:
             result = await session.execute(
                 select(func.count()).select_from(Order).where(
                     Order.is_fake == True,
                     Order.is_active == True,
                     Order.expires_at > datetime.utcnow(),
+                    Order.total_keys >= min_keys,
+                    Order.total_keys <= max_keys,
                 )
             )
             return result.scalar() or 0

@@ -2,7 +2,7 @@ import random
 from datetime import datetime, timedelta
 
 from app.shared.constants import (
-    PIE_MIN_KEYS, PIE_MAX_KEYS, PIE_STEP,
+    PIE_KEYS_MIN, PIE_KEYS_MID, PIE_KEYS_MAX, PIE_KEYS_STEP,
     PIE_MIN_LIFETIME_HOURS, PIE_MAX_LIFETIME_HOURS,
 )
 
@@ -13,15 +13,18 @@ def random_lifetime() -> datetime:
     return datetime.utcnow() + timedelta(hours=hours)
 
 
-def random_keys_count() -> int:
-    """Случайное количество ключей в диапазоне [PIE_MIN_KEYS, PIE_MAX_KEYS], кратно PIE_STEP."""
-    steps = (PIE_MAX_KEYS - PIE_MIN_KEYS) // PIE_STEP
-    return PIE_MIN_KEYS + random.randint(0, steps) * PIE_STEP
+def random_keys_low() -> int:
+    """Случайное кол-во ключей из нижнего диапазона [PIE_KEYS_MIN, PIE_KEYS_MID]."""
+    low  = PIE_KEYS_MIN // PIE_KEYS_STEP
+    high = PIE_KEYS_MID // PIE_KEYS_STEP
+    return random.randint(low, high) * PIE_KEYS_STEP
 
 
-def validate_keys_count(value: int) -> bool:
-    """Проверяет что значение в допустимом диапазоне и кратно шагу."""
-    return PIE_MIN_KEYS <= value <= PIE_MAX_KEYS and value % PIE_STEP == 0
+def random_keys_high() -> int:
+    """Случайное кол-во ключей из верхнего диапазона [PIE_KEYS_MID, PIE_KEYS_MAX]."""
+    low  = PIE_KEYS_MID // PIE_KEYS_STEP
+    high = PIE_KEYS_MAX // PIE_KEYS_STEP
+    return random.randint(low, high) * PIE_KEYS_STEP
 
 
 def lifetime_from_hours(hours: int) -> datetime:
