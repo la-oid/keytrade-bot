@@ -39,9 +39,7 @@ class OrderRepository:
         async with self.db.async_session() as session:
             return (await session.execute(
                 select(Order)
-                .where(
-                    Order.is_active == True,
-                    Order.expires_at > datetime.utcnow())
+                .where(Order.is_active == True)
                 .order_by(Order.created_at.desc())
             )).scalars().all()
 
@@ -52,7 +50,6 @@ class OrderRepository:
                 select(func.count()).select_from(Order).where(
                     Order.is_fake == True,
                     Order.is_active == True,
-                    Order.expires_at > datetime.utcnow(),
                     Order.total_keys >= min_keys,
                     Order.total_keys <= max_keys,
                 )
@@ -69,6 +66,19 @@ class OrderRepository:
                 return False
             order.is_active = is_active
             return True
+        
+    async def deactivate_expired(self) -> int:
+        """Деактивирует все истёкшие паи. Вызывается из scheduler."""
+        async with self.db.async_session() as session, session.begin():
+            expired = (await session.execute(
+                select(Order).where(
+                    Order.expires_at <= datetime.utcnow(),
+                    Order.is_active == True,
+                )
+            )).scalars().all()
+            for order in expired:
+                order.is_active = False
+            return len(expired)
 
     # ─── DELETE ──────────────────────────────────────────────────────────────
 
@@ -80,16 +90,6 @@ class OrderRepository:
                 return False
             await session.delete(order)
             return True
-
-    async def delete_expired(self) -> int:
-        """Удаляет все истёкшие паи. Вызывается из scheduler. Возвращает количество удалённых."""
-        async with self.db.async_session() as session, session.begin():
-            expired = (await session.execute(
-                select(Order).where(Order.expires_at <= datetime.utcnow())
-            )).scalars().all()
-            for order in expired:
-                await session.delete(order)
-            return len(expired)
 
     # ─── PRIVATE ─────────────────────────────────────────────────────────────
 

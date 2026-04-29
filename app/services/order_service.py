@@ -26,14 +26,14 @@ class OrderService:
 
     async def maintain_fakes(self) -> None:
         """
-        Удаляет истёкшие паи и досоздаёт фейки до нужного количества.
+        Деактивирует истёкшие паи и досоздаёт фейки до нужного количества.
         Всегда поддерживает ровно PIE_FAKE_LOW_COUNT паёв в нижнем диапазоне
         и PIE_FAKE_HIGH_COUNT в верхнем.
         Вызывается из scheduler каждые 5 минут.
         """
-        deleted = await self.db.order.delete_expired()
-        if deleted:
-            logger.info(f"Orders: removed {deleted} expired")
+        deactivated = await self.db.order.deactivate_expired()
+        if deactivated:
+            logger.info(f"Orders: deactivated {deactivated} expired")
 
         # Считаем отдельно для каждого диапазона
         current_low  = await self.db.order.count_active_fakes_by_range(PIE_KEYS_MIN, PIE_KEYS_MID)
