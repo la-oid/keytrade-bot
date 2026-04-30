@@ -8,7 +8,6 @@ from app.shared.constants import (
     FIRST_OFFER_KEYS,
     FIRST_OFFER_DURATION_HOURS,
 )
-from app.bots.buyer_bot import send_offer
 
 
 class SpecialOfferService:
@@ -24,6 +23,8 @@ class SpecialOfferService:
         Создаёт спецпредложение и отправляет уведомление.
         Вызывается из scheduler.
         """
+        from app.bots.buyer_bot import send_offer
+        
         threshold = datetime.utcnow() - timedelta(hours=FIRST_OFFER_DELAY_HOURS)
         users = await self.db.user.get_users_for_first_offer(threshold)
 
