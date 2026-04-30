@@ -25,6 +25,11 @@ class CashoutButtonTexts:
     CASHOUT_ROW = "#{id} — {amount:.2f} ₽"
 
 
+class BlockButtonTexts:
+    BLOCK   = "🔒 Заблокировать"
+    UNBLOCK = "🔓 Разблокировать"
+
+
 class MiscButtonTexts:
     BACK = "← Назад"
 
@@ -34,4 +39,5 @@ class ButtonTexts:
     verify = VerifyButtonTexts
     order = OrderButtonTexts
     cashout = CashoutButtonTexts
+    block = BlockButtonTexts
     misc = MiscButtonTexts

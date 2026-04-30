@@ -95,6 +95,22 @@ class CashoutTexts:
     )
 
 
+class BlockTexts:
+    """Тексты раздела блокировки"""
+ 
+    ENTER_USER_ID = "Введите Telegram ID пользователя:"
+ 
+    USER_NOT_FOUND = "Пользователь не найден."
+ 
+    USER_STATUS = (
+        "Пользователь <code>{user_id}</code>\n"
+        "Статус: <b>{status}</b>"
+    )
+ 
+    STATUS_ACTIVE  = "Активен"
+    STATUS_BLOCKED = "Заблокирован"
+
+
 class MiscTexts:
     """Общие тексты"""
 
