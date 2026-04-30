@@ -114,7 +114,7 @@ async def cashout_card_number_handler(msg: Message, state: FSMContext, user):
     await db.user.upsert_user(
         user.telegram_id,
         balance=float(user.balance or 0) - amount,
-        frozen_balance=float(user.frozen_balance or 0) + amount,
+        # frozen_balance=float(user.frozen_balance or 0) + amount,
     )
 
     cashout = await db.cashout.create(

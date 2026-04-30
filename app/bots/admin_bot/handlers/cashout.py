@@ -89,10 +89,10 @@ async def cashout_complete_handler(call: CallbackQuery):
     await db.cashout.set_status(cashout_id, CashoutStatus.COMPLETED)
 
     # Размораживаем ровно столько сколько было в заявке
-    user = await db.user.get_user_by_telegram_id(cashout.user_id)
-    if user:
-        new_frozen = max(0, float(user.frozen_balance or 0) - float(cashout.amount))
-        await db.user.upsert_user(user.telegram_id, frozen_balance=new_frozen)
+    # user = await db.user.get_user_by_telegram_id(cashout.user_id)
+    # if user:
+    #     new_frozen = max(0, float(user.frozen_balance or 0) - float(cashout.amount))
+    #     await db.user.upsert_user(user.telegram_id, frozen_balance=new_frozen)
 
     # Уведомляем продавца в seller_bot
     await bots.seller.bot.send_message(
