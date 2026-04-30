@@ -10,7 +10,7 @@ class SpecialOffer(Base):
     __tablename__ = "special_offers"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(BigInteger, ForeignKey("users.telegram_id"), nullable=False, unique=True, index=True)  # Один оффер на юзера
+    user_id = Column(BigInteger, ForeignKey("users.telegram_id"), nullable=False, index=True)               # Один оффер на юзера
     keys_count = Column(Integer, nullable=False)                                                            # Кол-во ключей в предложении
     custom_text = Column(String, nullable=True)                                                             # Кастомный текст предложения (опционально)
     expires_at = Column(DateTime, nullable=False)                                                           # До когда действует
