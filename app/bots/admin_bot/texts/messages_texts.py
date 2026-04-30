@@ -111,6 +111,30 @@ class BlockTexts:
     STATUS_BLOCKED = "Заблокирован"
 
 
+class AccountTexts:
+    """Тексты раздела управления счётом"""
+ 
+    ACCOUNT_INFO = (
+        "Пользователь <code>{user_id}</code>\n\n"
+        "Баланс: <b>{balance:.2f} ₽</b>\n"
+        "Заморожено: <b>{frozen:.2f} ₽</b>"
+    )
+ 
+    ENTER_AMOUNT = "Введите сумму:"
+ 
+    CONFIRM_TEXT = (
+        "{action} <b>{amount:.2f} ₽</b>\n"
+        "Пользователь: <code>{user_id}</code>\n\n"
+        "Подтвердить?"
+    )
+ 
+    ACTION_ADD      = "Начислить"
+    ACTION_SUBTRACT = "Списать"
+ 
+    USER_NOT_FOUND = "Пользователь не найден."
+    INVALID_AMOUNT = "Введите корректную сумму (больше 0)."
+
+
 class MiscTexts:
     """Общие тексты"""
 
@@ -126,4 +150,5 @@ class Texts:
     verify = VerifyTexts
     order = OrderTexts
     cashout = CashoutTexts
+    account = AccountTexts
     misc = MiscTexts

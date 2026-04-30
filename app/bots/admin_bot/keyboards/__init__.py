@@ -1,4 +1,4 @@
-from .inline import MenuKeyboards, VerifyKeyboards, OrderKeyboards, CashoutKeyboards, BlockKeyboards
+from .inline import MenuKeyboards, VerifyKeyboards, OrderKeyboards, CashoutKeyboards, BlockKeyboards, AccountKeyboards
 from .reply import MenuReplyKeyboards
 
 
@@ -9,6 +9,7 @@ class InlineKeyboards:
         self.order = OrderKeyboards()
         self.cashout = CashoutKeyboards()
         self.block = BlockKeyboards()
+        self.account = AccountKeyboards()
 
 
 class ReplyKeyboards:

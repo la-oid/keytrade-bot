@@ -30,6 +30,14 @@ class BlockButtonTexts:
     UNBLOCK = "🔓 Разблокировать"
 
 
+class AccountButtonTexts:
+    ADD         = "➕ Добавить"
+    SUBTRACT    = "➖ Отнять"
+    FREEZE_ALL  = "🔒 Заморозить всё"
+    UNFREEZE_ALL = "🔓 Разморозить всё"
+    CONFIRM     = "✅ Подтвердить"
+
+
 class MiscButtonTexts:
     BACK = "← Назад"
 
@@ -40,4 +48,5 @@ class ButtonTexts:
     order = OrderButtonTexts
     cashout = CashoutButtonTexts
     block = BlockButtonTexts
+    account = AccountButtonTexts
     misc = MiscButtonTexts
