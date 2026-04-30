@@ -150,5 +150,6 @@ class Texts:
     verify = VerifyTexts
     order = OrderTexts
     cashout = CashoutTexts
+    block = BlockTexts
     account = AccountTexts
     misc = MiscTexts
