@@ -21,9 +21,11 @@ class ProfileTexts:
     PROFILE_TEXT = (
         "<b>ID:</b> <code>{user_id}</code>\n"
         "<b>Баланс:</b> {balance:.2f} ₽\n"
-        "<b>Заморожено:</b> {frozen:.2f} ₽\n"
+        "{frozen_line}"
         "<b>Выполнено заказов:</b> {completed}"
     )
+
+    FROZEN_LINE = "<b>Заморожено:</b> {frozen:.2f} ₽\n"
 
 
 class CashoutTexts:

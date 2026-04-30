@@ -20,10 +20,13 @@ buttons = InlineKeyboards()
 async def profile_handler(event: Message | CallbackQuery, user):
     """Профиль — ID, баланс, кол-во выполненных заказов + кнопки."""
 
+    frozen = float(user.frozen_balance or 0)
+    frozen_line = texts.profile.FROZEN_LINE.format(frozen=frozen) if frozen > 0 else ""
+
     text = texts.profile.PROFILE_TEXT.format(
         user_id=user.telegram_id,
         balance=user.balance or 0,
-        frozen=user.frozen_balance or 0,
+        frozen_line=frozen_line,
         completed=user.completed_orders_count or 0,
     )
     keyboard = buttons.profile.profile()
