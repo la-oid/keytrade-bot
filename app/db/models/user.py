@@ -17,5 +17,6 @@ class User(Base):
     completed_orders_count = Column(Integer, default=0)                                 # Кол-во выполненных заказов 
     balance = Column(Numeric(15, 2), default=0)                                         # Баланс пользователя
     frozen_balance = Column(Numeric(15, 2), default=0)                                  # Замороженный баланс
+    first_offer_sent = Column(Boolean, default=False)                                   # Отправлено ли первое спецпредложение
     created_at = Column(DateTime, default=datetime.utcnow)                              # Дата создания записи
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)    # Дата обновления записи

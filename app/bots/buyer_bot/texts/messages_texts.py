@@ -93,6 +93,24 @@ class PaymentTexts:
     )
 
 
+class SpecialOfferTexts:
+    """Тексты спецпредложений"""
+
+    OFFER_TEXT = (
+        "🎁 <b>Спецпредложение</b>\n\n"
+        "Количество ключей: <b>{keys_count}</b>\n"
+        "Итого к оплате: <b>{total_price} ₽</b>\n\n"
+        "Предложение действует до: <b>{expires_at} UTC</b>"
+    )
+
+    OFFER_DECLINED = (
+        "Предложение ещё действует до <b>{expires_at} UTC</b>.\n\n"
+        "Посмотреть предложение вы сможете в личном кабинете (Профиль)."
+    )
+
+    NO_OFFER = "Активных спецпредложений нет."
+
+
 class MiscTexts:
     """Общие тексты"""
     pass
@@ -104,4 +122,5 @@ class Texts:
     profile = ProfileTexts
     wholesale = WholesaleTexts
     payment = PaymentTexts
+    special_offer = SpecialOfferTexts
     misc = MiscTexts

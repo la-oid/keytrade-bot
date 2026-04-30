@@ -15,7 +15,7 @@ buttons = InlineKeyboards()
 @r.message(F.text == ButtonTexts.menu.PROFILE)
 async def profile_handler(event: Message | CallbackQuery, user):
     text = texts.menu.PROFILE_TEXT.format(user_id=user.telegram_id)
-    kb = buttons.menu.profile
+    kb = await buttons.menu.profile(user.telegram_id)
 
     if isinstance(event, CallbackQuery):
         await event.answer()

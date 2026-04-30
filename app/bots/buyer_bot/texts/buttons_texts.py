@@ -10,6 +10,7 @@ class ProfileButtonTexts:
     ORDERS = "Мои заказы"
     ORDER = "#{id} — {amount} шт., {price} ₽"
     SUPPORT = "Написать в поддержку"
+    SPECIAL_OFFER = "🎁 Спец предложение"
 
 
 class WholesaleButtonTexts:
@@ -30,6 +31,12 @@ class PaymentButtonTexts:
     SENT = "Перевел"
 
 
+class SpecialOfferButtonTexts:
+    ACCEPT          = "Принять"
+    DECLINE         = "Подумаю"
+    BACK_TO_PROFILE = "← В профиль"
+
+
 class MiscButtonTexts:
     BACK = "← Назад"
 
@@ -39,4 +46,5 @@ class ButtonTexts:
     profile = ProfileButtonTexts
     wholesale = WholesaleButtonTexts
     payment = PaymentButtonTexts
+    special_offer = SpecialOfferButtonTexts
     misc = MiscButtonTexts

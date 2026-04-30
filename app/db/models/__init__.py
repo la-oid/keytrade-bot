@@ -3,5 +3,6 @@ from .key import Key
 from .order import Order
 from .payment import Payment
 from .cashout import Cashout
+from .special_offer import SpecialOffer
 
-__all__ = ['User', 'Key', 'Order', 'Payment', 'Cashout']
+__all__ = ['User', 'Key', 'Order', 'Payment', 'Cashout', 'SpecialOffer']

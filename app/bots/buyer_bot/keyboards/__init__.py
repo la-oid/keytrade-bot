@@ -1,4 +1,4 @@
-from .inline import MenuKeyboards, ProfileKeyboards, WholesaleKeyboards, PaymentKeyboards
+from .inline import MenuKeyboards, ProfileKeyboards, WholesaleKeyboards, PaymentKeyboards, SpecialOfferKeyboards
 from .reply import MenuReplyKeyboards
 
 
@@ -8,6 +8,7 @@ class InlineKeyboards:
         self.profile = ProfileKeyboards()
         self.wholesale = WholesaleKeyboards()
         self.payment = PaymentKeyboards()
+        self.special_offer = SpecialOfferKeyboards()
 
 
 class ReplyKeyboards:
