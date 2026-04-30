@@ -11,13 +11,14 @@ class SpecialOfferRepository:
 
     # ─── CREATE ──────────────────────────────────────────────────────────────
 
-    async def create(self, user_id: int, keys_count: int, expires_at: datetime) -> SpecialOffer:
+    async def create(self, user_id: int, keys_count: int, expires_at: datetime, custom_text: str | None = None) -> SpecialOffer:
         """Создаёт спецпредложение для пользователя."""
         async with self.db.async_session() as session, session.begin():
             offer = SpecialOffer(
                 user_id=user_id,
                 keys_count=keys_count,
                 expires_at=expires_at,
+                custom_text=custom_text,
             )
             session.add(offer)
             await session.flush()

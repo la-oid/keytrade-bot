@@ -38,6 +38,11 @@ class AccountButtonTexts:
     CONFIRM     = "✅ Подтвердить"
 
 
+class SpecialOfferButtonTexts:
+    CONFIRM = "✅ Да, отправить"
+    RETRY   = "✏️ Ввести заново"
+
+
 class MiscButtonTexts:
     BACK = "← Назад"
 
@@ -49,4 +54,5 @@ class ButtonTexts:
     cashout = CashoutButtonTexts
     block = BlockButtonTexts
     account = AccountButtonTexts
+    special_offer = SpecialOfferButtonTexts
     misc = MiscButtonTexts

@@ -135,6 +135,30 @@ class AccountTexts:
     INVALID_AMOUNT = "Введите корректную сумму (больше 0)."
 
 
+class SpecialOfferTexts:
+    """Тексты раздела спецпредложений"""
+ 
+    ENTER_DATA = (
+        "Введите данные через запятую:\n\n"
+        "<b>Кол-во ключей, Время жизни (ч)</b>\n\n"
+        "Пример: <code>10, 48</code>"
+    )
+ 
+    ENTER_TEXT = "Введите текст спецпредложения:"
+ 
+    CONFIRM_PREVIEW = (
+        "Проверьте данные:\n\n"
+        "Пользователь: <code>{user_id}</code>\n"
+        "Ключей: <b>{keys_count}</b>\n"
+        "Время жизни: <b>{lifetime_hours} ч</b>\n"
+        "Истекает: <b>{expires_at} UTC</b>\n\n"
+        "Текст:\n{custom_text}"
+    )
+ 
+    SENT        = "Спецпредложение отправлено пользователю <code>{user_id}</code>."
+    SEND_FAILED = "Не удалось отправить пользователю <code>{user_id}</code>. Возможно, он не запускал бот."
+
+
 class MiscTexts:
     """Общие тексты"""
 
@@ -152,4 +176,5 @@ class Texts:
     cashout = CashoutTexts
     block = BlockTexts
     account = AccountTexts
+    special_offer = SpecialOfferTexts
     misc = MiscTexts

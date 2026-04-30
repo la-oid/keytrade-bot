@@ -9,13 +9,13 @@ texts   = Texts()
 buttons = InlineKeyboards()
 
 
-async def send_offer(target: int | Message | CallbackQuery, keys_count: int, expires_at) -> bool:
+async def send_offer(target: int | Message | CallbackQuery, keys_count: int, expires_at, custom_text: str | None = None) -> bool:
     """
     Отправляет спецпредложение.
     Используется везде: scheduler, admin, профиль.
     """
 
-    text = texts.special_offer.OFFER_TEXT.format(
+    text = custom_text or texts.special_offer.OFFER_TEXT.format(
         keys_count=keys_count,
         total_price=keys_count * KEY_PRICE,
         expires_at=expires_at.strftime("%d.%m.%Y %H:%M"),

@@ -4,5 +4,14 @@ from .order import OrderKeyboards
 from .cashout import CashoutKeyboards
 from .block import BlockKeyboards
 from .account import AccountKeyboards
+from .special_offer import SpecialOfferKeyboards
 
-__all__ = ["MenuKeyboards", "VerifyKeyboards", "OrderKeyboards", "CashoutKeyboards", "BlockKeyboards", "AccountKeyboards"]
+__all__ = [
+    "MenuKeyboards", 
+    "VerifyKeyboards", 
+    "OrderKeyboards", 
+    "CashoutKeyboards", 
+    "BlockKeyboards", 
+    "AccountKeyboards",
+    "SpecialOfferKeyboards"
+]
