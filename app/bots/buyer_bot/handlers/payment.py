@@ -53,6 +53,7 @@ async def choose_bank_handler(call: CallbackQuery, state: FSMContext, user):
 
     # Блокируем если amount не валидный или уже есть активный платёж
     if not amount or await show_active_payment(call, user):
+        await call.message.delete()
         await call.answer()
         return
 
