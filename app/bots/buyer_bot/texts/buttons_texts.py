@@ -37,6 +37,11 @@ class SpecialOfferButtonTexts:
     BACK_TO_PROFILE = "← В профиль"
 
 
+class CryptoButtonTexts:
+    CRYPTO = "Крипта"
+    PAID   = "Я оплатил"
+
+
 class MiscButtonTexts:
     BACK = "← Назад"
 
@@ -47,4 +52,5 @@ class ButtonTexts:
     wholesale = WholesaleButtonTexts
     payment = PaymentButtonTexts
     special_offer = SpecialOfferButtonTexts
+    crypto = CryptoButtonTexts
     misc = MiscButtonTexts

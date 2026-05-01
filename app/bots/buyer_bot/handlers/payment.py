@@ -7,6 +7,7 @@ from app.shared.constants import KEY_PRICE, BANKS
 from app.shared.config import settings
 from app.shared import db, bots
 from app.db.enums import PaymentStatus
+from ..utils import create_payment_and_notify, show_pending_payment, notify_admins
 from ..texts import Texts
 from ..keyboards import InlineKeyboards
 
@@ -45,40 +46,26 @@ async def pay_spb_handler(call: CallbackQuery):
 
 @r.callback_query(F.data.in_(set(BANK_NAMES.keys())))
 async def choose_bank_handler(call: CallbackQuery, state: FSMContext, user):
-    """Банк выбран → сразу создаём платёж и показываем ожидание."""
-    bank = BANK_NAMES[call.data]
-    data = await state.get_data()
+    """Банк выбран → создаём платёж и показываем ожидание."""
+    bank   = BANK_NAMES[call.data]
+    data   = await state.get_data()
     amount = data.get("amount", 0)
-    price = amount * KEY_PRICE
 
-    # Блокируем если amount не валидный или уже есть активный платёж
-    if not amount or await show_active_payment(call, user):
-        await call.message.delete()
-        await call.answer()
+    payment = await create_payment_and_notify(call, user, PaymentStatus.PENDING_LINK, amount, bank=bank)
+    if not payment:
         return
-
-    await db.payment.create_payment(
-        user_id=user.telegram_id,
-        amount=amount,
-        price=price,
-        bank=bank,
-    )
 
     await state.clear()
     await call.answer()
-    await show_pending_payment(call, amount, price, bank)
 
-    for admin_id in settings.telegram.ADMIN_IDS:
-        await bots.admin.bot.send_message(
-            chat_id=admin_id,
-            text=texts.payment.ADMIN_NOTIFY.format(
-                name=user.first_name or user.username,
-                user_id=user.telegram_id,
-                bank=bank,
-                price=price,
-                amount=amount,
-            )
-        )
+    # Уведомляем админов
+    await notify_admins(texts.payment.ADMIN_NOTIFY.format(
+        name=user.first_name or user.username,
+        user_id=user.telegram_id,
+        bank=bank,
+        price=payment.price,
+        amount=payment.amount,
+    ))
 
 
 # ─── Отмена оплаты ─────────────────────────────────────────────────────────────
@@ -108,61 +95,16 @@ async def cancel_active_handler(call: CallbackQuery, state: FSMContext, user):
     pending = await db.payment.get_by_status(user.telegram_id, PaymentStatus.PENDING_LINK)
     if pending:
         await db.payment.set_status(pending.id, PaymentStatus.CANCELLED)
-        for admin_id in settings.telegram.ADMIN_IDS:
-            await bots.admin.bot.send_message(
-                chat_id=admin_id,
-                text=texts.payment.ADMIN_CANCELLED.format(
-                    name=user.first_name or user.username,
-                    user_id=user.telegram_id,
-                    bank=pending.bank,
-                    price=pending.price,
-                    amount=pending.amount,
-                )
-            )
+        
+        # Уведомляем админов об отмене
+        await notify_admins(texts.payment.ADMIN_CANCELLED.format(
+            name=user.first_name or user.username,
+            user_id=user.telegram_id,
+            bank=pending.bank,
+            price=pending.price,
+            amount=pending.amount,
+        ))
 
     await state.clear()
     await call.answer()
     await call.message.edit_text(texts.payment.CANCELLED_TEXT)
-
-
-# ─── Helpers ───────────────────────────────────────────────────────────────────
-
-async def show_pending_payment(target: Message | CallbackQuery, amount: int, price: float, bank: str):
-    """Показывает экран ожидания реквизитов."""
-
-    text = texts.payment.PENDING_TEXT.format(amount=amount, price=price, bank=bank)
-
-    if isinstance(target, CallbackQuery): 
-        await target.message.edit_text(
-            text, 
-            reply_markup=buttons.payment.cancel_only
-        )
-    else: 
-        await target.answer(
-            text, 
-            reply_markup=buttons.payment.cancel_only
-        )
-
-async def show_active_payment(msg: Message | CallbackQuery, user) -> bool:
-    """Если есть активный платёж — показывает экран и возвращает True. Иначе False."""
-
-    # Если передан CallbackQuery — сохраняем его и извлекаем Message
-    call = msg if isinstance(msg, CallbackQuery) else None
-    if call: msg = msg.message
-
-    handlers = {
-        PaymentStatus.PENDING_LINK: lambda p: show_pending_payment(msg, p.amount, p.price, p.bank),
-        PaymentStatus.PENDING_PAY:  lambda p: msg.answer(
-            texts.payment.PAYMENT_PAGE.format(payment_id=p.id),
-            reply_markup=buttons.payment.payment_page(url=p.payment_link)
-        ),
-        PaymentStatus.PENDING_PDF:  lambda p: msg.answer(texts.payment.WAITING_PDF),
-    }
-
-    for status, action in handlers.items():
-        payment = await db.payment.get_by_status(user.telegram_id, status)
-        if payment:
-            await action(payment)
-            return True
-
-    return False

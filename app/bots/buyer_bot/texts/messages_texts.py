@@ -111,6 +111,50 @@ class SpecialOfferTexts:
     NO_OFFER = "Активных спецпредложений нет."
 
 
+class CryptoTexts:
+    """Тексты крипто оплаты"""
+ 
+    CHOOSE_NETWORK = (
+        "Заказ номер: <code>{payment_id}</code>\n\n"
+        "Выберите сеть для оплаты.\n\n"
+        "Внимание, вывод производится исключительно через USDT.\n"
+        "Текущий курс: <b>{rate} ₽</b> за 1 USDT."
+    )
+ 
+    NETWORK_ADDRESS = (
+        "Сеть: <b>{network}</b>\n\n"
+        "Адрес кошелька:\n"
+        "<code>{address}</code>\n\n"
+        "Сумма к оплате: <b>{usdt_amount} USDT</b>\n\n"
+        "Скопируйте адрес и переведите точную сумму.\n"
+        "После оплаты нажмите «Я оплатил»."
+    )
+ 
+    SEND_HASH = (
+        "Скиньте хэш транзакции.\n\n"
+        "Формат: <code>{hash_format}</code>\n"
+        "Пробелы в хэше будут удалены автоматически."
+    )
+ 
+    INVALID_HASH = (
+        "Неверный формат хэша.\n\n"
+        "Ожидаемый формат: <code>{hash_format}</code>\n"
+        "Отправьте хэш ещё раз."
+    )
+ 
+    ADMIN_NOTIFY = (
+        "💎 Новый крипто заказ\n\n"
+        "Пользователь: <b>{name}</b> (ID: <code>{user_id}</code>)\n"
+        "Сеть: <b>{network}</b>\n"
+        "Сумма: <b>{price} ₽</b>\n"
+        "Количество: <b>{amount} шт.</b>\n"
+        "ID платежа: <code>{payment_id}</code>\n"
+        "Хэш: <code>{tx_hash}</code>"
+    )
+ 
+    RATE_ERROR = "Не удалось получить курс. Попробуйте позже."
+
+
 class MiscTexts:
     """Общие тексты"""
     pass
@@ -123,4 +167,5 @@ class Texts:
     wholesale = WholesaleTexts
     payment = PaymentTexts
     special_offer = SpecialOfferTexts
+    crypto = CryptoTexts
     misc = MiscTexts

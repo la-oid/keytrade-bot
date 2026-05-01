@@ -9,6 +9,7 @@ from ..enums import PaymentStatus
 DEADLINES: dict[PaymentStatus, int | None] = {
     PaymentStatus.PENDING_LINK:   None,   # Заказ создан, ждём ссылку от админа — без таймера
     PaymentStatus.PENDING_PAY:    15,     # Ссылка отправлена, у пользователя A мин чтобы нажать "Перевёл"
+    PaymentStatus.PENDING_HASH:   10,     # крипта: нажал "Я оплатил", 10 мин чтобы прислать хэш
     PaymentStatus.PENDING_PDF:    10,     # Нажал "Перевёл", у него B мин чтобы прислать PDF
     PaymentStatus.PENDING_REVIEW: 240,    # PDF получен, ждём проверки админа — у него C мин чтобы проверить
     PaymentStatus.COMPLETED:      None,   # Финальный успех — без таймера
@@ -25,7 +26,7 @@ class PaymentRepository:
     def __init__(self, db):
         self.db = db
 
-    async def create_payment(self, user_id: int, amount: int, price: float, bank: str, payment_link: str | None = None) -> Payment:
+    async def create_payment(self, user_id: int, status: PaymentStatus, amount: int, price: float, bank: str, payment_link: str | None = None) -> Payment:
         """Создаёт платёж со статусом pending_link."""
         async with self.db.async_session() as session, session.begin():
             payment = Payment(user_id=user_id, amount=amount, price=price, bank=bank, payment_link=payment_link)
@@ -88,6 +89,16 @@ class PaymentRepository:
                 return False
             payment.pdf_path = path
             payment.status = PaymentStatus.PENDING_REVIEW
+            return True
+        
+    async def set_tx_hash(self, payment_id: int, tx_hash: str) -> bool:
+        """Сохраняет хэш транзакции и переводит в PENDING_REVIEW."""
+        async with self.db.async_session() as session, session.begin():
+            payment = await self._get(session, payment_id)
+            if not payment:
+                return False
+            payment.tx_hash = tx_hash
+            payment.status  = PaymentStatus.PENDING_REVIEW
             return True
 
     async def _get(self, session, payment_id: int) -> Optional[Payment]:
