@@ -5,7 +5,7 @@ from aiogram.types import CallbackQuery, Message
 from aiogram.types import FSInputFile
 
 from app.shared import db, bots, settings
-from app.shared.constants import PDF_STORAGE
+from app.shared.paths import PDF_DIR
 from app.db.enums import PaymentStatus
 from ..texts import Texts
 from ..keyboards import InlineKeyboards
@@ -16,7 +16,7 @@ texts = Texts()
 buttons = InlineKeyboards()
 
 # Папка для PDF
-storage = Path(PDF_STORAGE)
+storage = Path(PDF_DIR)
 storage.mkdir(parents=True, exist_ok=True)
 
 

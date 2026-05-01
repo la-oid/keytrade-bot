@@ -1,0 +1,56 @@
+[
+  {
+    "id": "btc",
+    "name": "Bitcoin (BTC)",
+    "address": "YOUR_BTC_ADDRESS",
+    "hash_format": "SHA-256 → HEX",
+    "hash_length": 64,
+    "buyer_order": 3,
+    "seller_order": 2
+  },
+  {
+    "id": "eth",
+    "name": "Ethereum (ETH)",
+    "address": "YOUR_ETH_ADDRESS",
+    "hash_format": "Keccak-256 → HEX c 0x",
+    "hash_length": 66,
+    "buyer_order": 1,
+    "seller_order": 3
+  },
+  {
+    "id": "bsc",
+    "name": "BNB Smart Chain (BSC)",
+    "address": "YOUR_BSC_ADDRESS",
+    "hash_format": "Keccak-256 → HEX c 0x",
+    "hash_length": 66,
+    "buyer_order": 2,
+    "seller_order": 4
+  },
+  {
+    "id": "sol",
+    "name": "Solana (SOL)",
+    "address": "YOUR_SOL_ADDRESS",
+    "hash_format": "Base58-encoded SHA-256",
+    "hash_length": 88,
+    "buyer_order": 4,
+    "seller_order": 1
+  },
+  {
+    "id": "trx",
+    "name": "TRON (TRX)",
+    "address": "YOUR_TRX_ADDRESS",
+    "hash_format": "SHA-256 → HEX",
+    "hash_length": 64,
+    "buyer_order": 5,
+    "seller_order": 6
+  },
+  {
+    "id": "ton",
+    "name": "TON",
+    "address": "YOUR_TON_ADDRESS",
+    "hash_format": "Base64url",
+    "hash_length": 44,
+    "buyer_order": 6,
+    "seller_order": 5
+  }
+]
