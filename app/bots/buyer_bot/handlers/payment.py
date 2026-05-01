@@ -51,6 +51,11 @@ async def choose_bank_handler(call: CallbackQuery, state: FSMContext, user):
     amount = data.get("amount", 0)
     price = amount * KEY_PRICE
 
+    # Блокируем если amount не валидный или уже есть активный платёж
+    if not amount or await show_active_payment(call, user):
+        await call.answer()
+        return
+
     await db.payment.create_payment(
         user_id=user.telegram_id,
         amount=amount,
@@ -137,8 +142,12 @@ async def show_pending_payment(target: Message | CallbackQuery, amount: int, pri
             reply_markup=buttons.payment.cancel_only
         )
 
-async def show_active_payment(msg: Message, user) -> bool:
+async def show_active_payment(msg: Message | CallbackQuery, user) -> bool:
     """Если есть активный платёж — показывает экран и возвращает True. Иначе False."""
+
+    # Если передан CallbackQuery — сохраняем его и извлекаем Message
+    call = msg if isinstance(msg, CallbackQuery) else None
+    if call: msg = msg.message
 
     handlers = {
         PaymentStatus.PENDING_LINK: lambda p: show_pending_payment(msg, p.amount, p.price, p.bank),
