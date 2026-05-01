@@ -24,13 +24,14 @@ async def create_payment_and_notify(
     Создаёт платёж и уведомляет админов.
     bank — для СБП, network_id — для крипты.
     """
-    price = amount * KEY_PRICE
 
     # Блокируем если amount не валидный или уже есть активный платёж
     if not amount or await show_active_payment(target, user):
         await target.message.delete()
         await target.answer()
         return
+
+    price = amount * KEY_PRICE
 
     payment = await db.payment.create_payment(
         user_id=user.telegram_id,
