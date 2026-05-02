@@ -132,7 +132,6 @@ class CryptoTexts:
     WAITING_HASH = (
         "Скиньте хэш транзакции.\n\n"
         "Пример формата: <code>{hash_format}</code>\n"
-        "Максимум символов: <b>{hash_length}</b>\n\n"
         "Пробелы будут удалены автоматически."
     )
  
