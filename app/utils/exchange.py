@@ -1,13 +1,11 @@
-import ccxt.async_support as ccxt
-
-from app.shared.constants import CRYPTO_RATE_DISCOUNT
+import aiohttp
+from loguru import logger
 
 
 async def get_usdt_rub_rate() -> float:
-    """Получает актуальный курс USDT/RUB с Binance."""
-    exchange = ccxt.binance()
-    try:
-        ticker = await exchange.fetch_ticker("USDT/RUB")
-        return float(ticker["last"]) - CRYPTO_RATE_DISCOUNT
-    finally:
-        await exchange.close()
+    """Получает курс USD/RUB через ЦБ РФ (USDT ≈ 1 USD)."""
+    async with aiohttp.ClientSession() as session:
+        async with session.get("https://www.cbr-xml-daily.ru/daily_json.js") as resp:
+            data = await resp.json(content_type=None)
+            rate = float(data["Valute"]["USD"]["Value"])
+            return rate
