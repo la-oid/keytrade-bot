@@ -7,6 +7,7 @@ from aiogram.types import FSInputFile
 from app.shared import db, bots, settings
 from app.shared.paths import PDF_DIR
 from app.db.enums import PaymentStatus
+from ..utils import notify_admins
 from ..texts import Texts
 from ..keyboards import InlineKeyboards
 
@@ -79,10 +80,6 @@ async def receive_pdf_handler(msg: Message, user):
         amount=payment.amount,
         payment_id=payment.id,
     )
-    
-    for admin_id in settings.telegram.ADMIN_IDS:
-        await bots.admin.bot.send_document(
-            chat_id=admin_id,
-            document=pdf_file,
-            caption=caption,
-        )
+
+    # Уведомляем админов
+    await notify_admins(caption, document=pdf_file)
