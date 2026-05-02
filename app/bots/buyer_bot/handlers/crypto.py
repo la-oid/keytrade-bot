@@ -138,6 +138,7 @@ async def crypto_hash_handler(msg: Message, state: FSMContext, user):
         user_id=user.telegram_id,
         network=network.name,
         price=payment.price,
+        usdt_amount=payment.usdt_amount or "—",
         amount=payment.amount,
         tx_hash=tx_hash,
         payment_id=payment.id,
