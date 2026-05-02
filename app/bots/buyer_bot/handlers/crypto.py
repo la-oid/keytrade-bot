@@ -123,7 +123,11 @@ async def crypto_hash_handler(msg: Message, state: FSMContext, user):
 
     await state.clear()
 
-    await show_active_payment(msg, user)
+    # Возвращаем покупателя на экран "Мои заказы"
+    await msg.answer(
+        texts.profile.ORDERS_LIST,
+        reply_markup=await buttons.profile.orders_list(user.telegram_id),
+    )
 
     # Уведомляем админов
     await notify_admins(texts.crypto.ADMIN_NOTIFY.format(
