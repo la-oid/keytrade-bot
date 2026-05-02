@@ -6,6 +6,7 @@ from aiogram.types.input_file import BufferedInputFile
 from app.shared import db, bots
 from app.services import key_service
 from app.db.enums import PaymentStatus
+from app.utils import get_network_by_id
 from ..states import VerifyStates
 from ..texts import Texts, ButtonTexts
 from ..keyboards import InlineKeyboards
@@ -51,17 +52,30 @@ async def verify_order_handler(call: CallbackQuery):
     await call.answer()
     if not payment:
         return
+    
+    if payment.network_id:
+        network = get_network_by_id(payment.network_id)
 
-    await call.message.edit_text(
-        texts.verify.ORDER_DETAIL.format(
+        text = texts.verify.ORDER_DETAIL_CRYPTO.format(
             id=payment.id,
             user_id=payment.user_id,
-            bank=payment.bank,
+            network=network.name if network else payment.network_id,
+            price=payment.price,
+            usdt_amount=payment.usdt_amount or "—",
+            amount=payment.amount,
+            tx_hash=payment.tx_hash or "—",
+        )
+
+    else:
+        text = texts.verify.ORDER_DETAIL_SPB.format(
+            id=payment.id,
+            user_id=payment.user_id,
+            bank=payment.bank or "—",
             price=payment.price,
             amount=payment.amount,
-        ),
-        reply_markup=buttons.verify.confirm(payment.id),
-    )
+        )
+
+    await call.message.edit_text(text, reply_markup=buttons.verify.confirm(payment.id))
 
 
 @r.callback_query(F.data.startswith("verify_confirm_"))

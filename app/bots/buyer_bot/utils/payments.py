@@ -12,34 +12,25 @@ buttons = InlineKeyboards()
 
 # ─── Создание платежа ────────────────────────────────────────────────────────
 
-async def create_payment_and_notify(
-    target: Message | CallbackQuery,
-    user,
-    status: PaymentStatus,
-    amount: int,
-    bank: str = None,
-    network_id: str = None,
-):
+async def create_payment_and_notify(target: Message | CallbackQuery, user, amount: int, **kwargs):
     """
     Создаёт платёж и уведомляет админов.
-    bank — для СБП, network_id — для крипты.
+    kwargs передаются напрямую в upsert_payment (status, bank, network_id, usdt_amount и т.д.)
     """
-
+    
     # Блокируем если amount не валидный или уже есть активный платёж
     if not amount or await show_active_payment(target, user):
         await target.message.delete()
         await target.answer()
-        return
+        return None
 
     price = amount * KEY_PRICE
 
-    payment = await db.payment.create_payment(
+    payment = await db.payment.upsert_payment(
         user_id=user.telegram_id,
         amount=amount,
         price=price,
-        status=status,
-        bank=bank,
-        network_id=network_id,
+        **kwargs,
     )
 
     # Показываем экран в зависимости от статуса

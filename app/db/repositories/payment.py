@@ -26,30 +26,18 @@ class PaymentRepository:
     def __init__(self, db):
         self.db = db
 
-    async def create_payment(
-        self, 
-        user_id: int, 
-        status: PaymentStatus, 
-        amount: int, 
-        price: float, 
-        bank: str, 
-        payment_link: str | None = None,
-        network_id: str | None = None,
-    ) -> Payment:
-        """Создаёт платёж со статусом pending_link."""
-
+    async def upsert_payment(self, payment_id: int = None, **kwargs) -> Payment:
+        """Создаёт или обновляет платёж. Если payment_id не передан — создаёт новый."""
         async with self.db.async_session() as session, session.begin():
-            payment = Payment(
-                user_id=user_id, 
-                amount=amount, 
-                price=price, 
-                bank=bank, 
-                payment_link=payment_link,
-                network_id=network_id,
-                status=status,
-            )
+            payment = await self._get(session, payment_id) if payment_id else None
 
-            session.add(payment)
+            if payment:
+                for key, value in kwargs.items():
+                    setattr(payment, key, value)
+            else:
+                payment = Payment(**kwargs)
+                session.add(payment)
+
             await session.flush()
             await session.refresh(payment)
             return payment

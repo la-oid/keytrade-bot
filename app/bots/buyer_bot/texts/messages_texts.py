@@ -118,6 +118,7 @@ class CryptoTexts:
         "Выберите сеть для оплаты.\n\n"
         "Внимание, вывод производится исключительно через USDT.\n"
         "Текущий курс: <b>{rate} ₽</b> за 1 USDT."
+        "Сумма к оплате: <b>{usdt_amount} USDT</b>"
     )
  
     NETWORK_ADDRESS = (
@@ -145,7 +146,7 @@ class CryptoTexts:
         "💎 Новый крипто заказ\n\n"
         "Пользователь: <b>{name}</b> (ID: <code>{user_id}</code>)\n"
         "Сеть: <b>{network}</b>\n"
-        "Сумма: <b>{price} ₽</b>\n"
+        "Сумма: <b>{price:.2f} ₽</b> / <b>{usdt_amount} USDT</b>\n"
         "Количество: <b>{amount} шт.</b>\n"
         "ID платежа: <code>{payment_id}</code>\n"
         "Хэш: <code>{tx_hash}</code>"

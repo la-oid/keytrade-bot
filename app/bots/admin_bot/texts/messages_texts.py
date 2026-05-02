@@ -29,12 +29,21 @@ class VerifyTexts:
 
     ORDERS_LIST = "Заказы пользователя <code>{user_id}</code>:"
 
-    ORDER_DETAIL = (
+    ORDER_DETAIL_SPB = (
         "Заказ №{id}\n\n"
         "Пользователь: <code>{user_id}</code>\n"
         "Банк: <b>{bank}</b>\n"
-        "Сумма: <b>{price} ₽</b>\n"
+        "Сумма: <b>{price:.2f} ₽</b>\n"
         "Количество: <b>{amount} шт.</b>"
+    )
+
+    ORDER_DETAIL_CRYPTO = (
+        "Заказ №{id}\n\n"
+        "Пользователь: <code>{user_id}</code>\n"
+        "Сеть: <b>{network}</b>\n"
+        "Сумма: <b>{price:.2f} ₽</b> / <b>{usdt_amount} USDT</b>\n"
+        "Количество: <b>{amount} шт.</b>\n"
+        "Хэш: <code>{tx_hash}</code>"
     )
 
     PAYMENT_CONFIRMED = "Оплата подтверждена."

@@ -51,7 +51,12 @@ async def choose_bank_handler(call: CallbackQuery, state: FSMContext, user):
     data   = await state.get_data()
     amount = data.get("amount", 0)
 
-    payment = await create_payment_and_notify(call, user, PaymentStatus.PENDING_LINK, amount, bank=bank)
+    payment = await create_payment_and_notify(
+        call, user, amount,
+        status=PaymentStatus.PENDING_LINK,
+        bank=bank,
+    )
+    
     if not payment:
         return
 

@@ -22,16 +22,20 @@ buttons = InlineKeyboards()
 async def pay_crypto_handler(call: CallbackQuery, state: FSMContext):
     """Крипта → показываем список сетей с текущим курсом."""
     data = await state.get_data()
+    amount = data.get("amount", 0)
 
     try:
         rate = await get_usdt_rub_rate() + CRYPTO_RATE_MARKUP_BUYER
     except Exception:
         await call.answer(texts.crypto.RATE_ERROR, show_alert=True)
         return
+    
+    usdt_amount = round((KEY_PRICE * amount) / rate, 4)
+    await state.update_data(usdt_amount=usdt_amount)
 
     await call.answer()
     await call.message.edit_text(
-        texts.crypto.CHOOSE_NETWORK.format(rate=rate),
+        texts.crypto.CHOOSE_NETWORK.format(rate=rate, usdt_amount=usdt_amount),
         reply_markup=buttons.crypto.network_list(),
     )
 
@@ -48,16 +52,8 @@ async def crypto_network_handler(call: CallbackQuery, state: FSMContext, user):
         await call.answer()
         return
 
-    data   = await state.get_data()
-    amount = data.get("amount", 0)
-
-    try:
-        rate = await get_usdt_rub_rate() + CRYPTO_RATE_MARKUP_BUYER
-    except Exception:
-        await call.answer(texts.crypto.RATE_ERROR, show_alert=True)
-        return
-
-    usdt_amount = round((KEY_PRICE * amount) / rate, 4)
+    data        = await state.get_data()
+    usdt_amount = data.get("usdt_amount", 0)
 
     await call.answer()
     await call.message.edit_text(
@@ -84,8 +80,15 @@ async def crypto_paid_handler(call: CallbackQuery, state: FSMContext, user):
 
     data   = await state.get_data()
     amount = data.get("amount", 0)
+    usdt_amount = data.get("usdt_amount", 0)
 
-    payment = await create_payment_and_notify(call, user, status=PaymentStatus.PENDING_HASH, amount=amount, network_id=network_id)
+    payment = await create_payment_and_notify(
+        call, user, amount,
+        status=PaymentStatus.PENDING_HASH,
+        network_id=network_id,
+        usdt_amount=usdt_amount,
+    )
+
     if not payment:
         return
 

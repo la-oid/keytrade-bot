@@ -12,13 +12,14 @@ class Payment(Base):
     user_id = Column(BigInteger, ForeignKey("users.telegram_id"), nullable=False, index=True)       # Telegram ID пользователя
     
     amount = Column(Integer, nullable=False)                                                        # Количество ключей
-    price = Column(Numeric(15, 2), nullable=False)                                                  # Сумма к оплате
+    price = Column(Numeric(15, 2), nullable=True)                                                   # Сумма к оплате
     
-    bank = Column(String(50), nullable=True)                                                       # Банк (Сбербанк/Тинькофф)
+    bank = Column(String(50), nullable=True)                                                        # Банк (Сбербанк/Тинькофф)
     payment_link = Column(String(512), nullable=True)                                               # URL страницы оплаты
     pdf_path = Column(String(512), nullable=True)                                                   # Путь к сохранённому PDF
     
     network_id = Column(String(16), nullable=True)                                                  # ID крипто сети
+    usdt_amount = Column(Numeric(15, 4), nullable=True)                                             # Сумма в USDT
     tx_hash = Column(String(256), nullable=True)                                                    # Хэш транзакции
     
     status = Column(String(20), default=PaymentStatus.PENDING_LINK)                                 # Статус платежа
