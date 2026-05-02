@@ -10,7 +10,8 @@ class PaymentKeyboards(BaseInlineKeyboard):
     def choose_method(self) -> InlineKeyboardMarkup:
         return InlineKeyboardMarkup(
             inline_keyboard=[
-                [InlineKeyboardButton(text=self.texts.payment.SPB, callback_data="pay_spb")]
+                [InlineKeyboardButton(text=self.texts.payment.SPB, callback_data="pay_spb")],
+                [InlineKeyboardButton(text=self.texts.crypto.CRYPTO,  callback_data="pay_crypto")],
             ]
         )
 
