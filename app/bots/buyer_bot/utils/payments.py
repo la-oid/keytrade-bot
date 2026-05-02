@@ -76,7 +76,7 @@ async def _show_waiting_hash(msg: Message, payment):
     network = get_network_by_id(payment.network_id)
 
     await msg.answer(
-        texts.payment.WAITING_HASH.format(
+        texts.crypto.WAITING_HASH.format(
             hash_format=network.hash_format if network else "—",
         )
     )
