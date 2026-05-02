@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, BigInteger, Numeric, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, BigInteger, Numeric, ForeignKey, Float
 from datetime import datetime
 
 from ..core import Base
@@ -19,7 +19,7 @@ class Payment(Base):
     pdf_path = Column(String(512), nullable=True)                                                   # Путь к сохранённому PDF
     
     network_id = Column(String(16), nullable=True)                                                  # ID крипто сети
-    usdt_amount = Column(Numeric(15, 4), nullable=True)                                             # Сумма в USDT
+    usdt_amount = Column(Float, nullable=True)                                                      # Сумма в USDT
     tx_hash = Column(String(256), nullable=True)                                                    # Хэш транзакции
     
     status = Column(String(20), default=PaymentStatus.PENDING_LINK)                                 # Статус платежа
