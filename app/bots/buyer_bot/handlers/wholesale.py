@@ -3,7 +3,7 @@ from aiogram.types import CallbackQuery, Message
 from aiogram.fsm.context import FSMContext
 
 from app.shared.constants import KEY_PRICE, MEDIUM, LARGE
-from .payment import show_active_payment
+from ..utils import show_active_payment
 from ..states import OrderStates
 from ..texts import Texts, ButtonTexts
 from ..keyboards import InlineKeyboards
