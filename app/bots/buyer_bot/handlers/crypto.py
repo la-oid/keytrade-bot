@@ -31,10 +31,7 @@ async def pay_crypto_handler(call: CallbackQuery, state: FSMContext):
 
     await call.answer()
     await call.message.edit_text(
-        texts.crypto.CHOOSE_NETWORK.format(
-            payment_id=data.get("payment_id", "—"),
-            rate=rate,
-        ),
+        texts.crypto.CHOOSE_NETWORK.format(rate=rate),
         reply_markup=buttons.crypto.network_list(),
     )
 
