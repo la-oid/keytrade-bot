@@ -76,6 +76,14 @@ class CashoutTexts:
         "Заявка #{id} выполнена.\n"
         "Сумма <b>{amount:.2f} ₽</b> переведена."
     )
+    
+    ADMIN_NOTIFY_CARD = (
+        "💳 Заявка на вывод (карта)\n\n"
+        "Пользователь: <code>{user_id}</code>\n"
+        "Сумма: <code>{amount:.2f}</code> ₽\n"
+        "Карта: <code>{card}</code>\n"
+        "ID заявки: <code>{cashout_id}</code>"
+    )
 
     STATUS_PENDING   = "В очереди на вывод"
     STATUS_COMPLETED = "Выполнено"
