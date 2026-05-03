@@ -1,4 +1,4 @@
-from .inline import MenuKeyboards, MarketKeyboards, ProfileKeyboards, CashoutKeyboards
+from .inline import MenuKeyboards, MarketKeyboards, ProfileKeyboards, CashoutKeyboards, CryptoKeyboards
 from .reply import MenuReplyKeyboards
 
 
@@ -8,6 +8,7 @@ class InlineKeyboards:
         self.market = MarketKeyboards()
         self.profile = ProfileKeyboards()
         self.cashout = CashoutKeyboards()
+        self.crypto = CryptoKeyboards()
 
 
 class ReplyKeyboards:

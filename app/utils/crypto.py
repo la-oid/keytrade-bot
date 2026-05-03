@@ -16,6 +16,8 @@ class CryptoNetwork:
     seller_order: int
 
 
+# ─── Загрузка ────────────────────────────────────────────────────────────────
+
 @lru_cache(maxsize=1)
 def load_networks() -> list[CryptoNetwork]:
     """Загружает сети из JSON один раз и кэширует."""
@@ -24,15 +26,31 @@ def load_networks() -> list[CryptoNetwork]:
     return [CryptoNetwork(**item) for item in data]
 
 
+# ─── Фильтрация и сортировка ─────────────────────────────────────────────────
+
+def get_networks_for_bot(order_field: str) -> list[CryptoNetwork]:
+    """
+    Универсальная функция — возвращает сети для указанного бота.
+    order_field: 'buyer_order' или 'seller_order'
+    Сети с order == 0 или None — скрываются.
+    """
+    return sorted(
+        [n for n in load_networks() if getattr(n, order_field, 0)],
+        key=lambda n: getattr(n, order_field),
+    )
+
+
 def get_networks_for_buyer() -> list[CryptoNetwork]:
-    """Возвращает сети отсортированные для buyer_bot."""
-    return sorted(load_networks(), key=lambda n: n.buyer_order)
+    """Возвращает сети для buyer_bot."""
+    return get_networks_for_bot("buyer_order")
 
 
 def get_networks_for_seller() -> list[CryptoNetwork]:
-    """Возвращает сети отсортированные для seller_bot."""
-    return sorted(load_networks(), key=lambda n: n.seller_order)
+    """Возвращает сети для seller_bot."""
+    return get_networks_for_bot("seller_order")
 
+
+# ─── Поиск ───────────────────────────────────────────────────────────────────
 
 def get_network_by_id(network_id: str) -> CryptoNetwork | None:
     """Возвращает сеть по ID или None."""

@@ -5,10 +5,10 @@ from aiogram.fsm.context import FSMContext
 from app.shared import db, bots, settings
 from app.shared.constants import KEY_PRICE, CRYPTO_RATE_MARKUP_BUYER
 from app.db.enums import PaymentStatus
-from app.utils import get_network_by_id, get_usdt_rub_rate
+from app.utils import get_network_by_id, get_usdt_rub_rate, notify_admins
 from ..texts import Texts
 from ..keyboards import InlineKeyboards
-from ..utils import create_payment_and_notify, show_active_payment, notify_admins
+from ..utils import create_payment_and_notify, show_active_payment
 
 r = Router()
 

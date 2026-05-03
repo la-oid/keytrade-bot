@@ -121,6 +121,50 @@ class MarketTexts:
     ORDER_NOT_FOUND = "Этот пай больше недоступен."
 
 
+class CryptoTexts:
+    """Тексты вывода средств — крипта"""
+ 
+    CHOOSE_NETWORK = (
+        "Выберите сеть для вывода.\n\n"
+        "Внимание, вывод производится исключительно через USDT.\n"
+        "Текущий курс: <b>{rate:.2f} ₽</b> за 1 USDT.\n\n"
+        "Сумма к выводу: <b>{amount:.2f} ₽</b> / <b>{usdt_amount:.4f} USDT</b>"
+    )
+ 
+    ENTER_WALLET = (
+        "Сеть: <b>{network}</b>\n\n"
+        "Введите адрес вашего кошелька для получения USDT."
+    )
+ 
+    CREATED_CRYPTO = (
+        "Заявка #{cashout_id} создана.\n\n"
+        "Сумма: <b>{amount:.2f} ₽</b> / <b>{usdt_amount:.4f} USDT</b>\n"
+        "Сеть: <b>{network}</b>\n"
+        "Кошелёк: <code>{wallet}</code>\n\n"
+        "Средства списаны. Статус можно отследить в личном кабинете."
+    )
+ 
+    ADMIN_NOTIFY_CRYPTO = (
+        "💎 Заявка на вывод (крипта)\n\n"
+        "Пользователь: <code>{user_id}</code>\n"
+        "Сумма: <b>{amount:.2f} ₽</b> / <b>{usdt_amount:.4f} USDT</b>\n"
+        "Сеть: <b>{network}</b>\n"
+        "Кошелёк: <code>{wallet}</code>\n"
+        "ID заявки: <code>{cashout_id}</code>"
+    )
+ 
+    HISTORY_DETAIL_CRYPTO = (
+        "Заявка #{id}\n\n"
+        "Сумма: <b>{amount:.2f} ₽</b> / <b>{usdt_amount:.4f} USDT</b>\n"
+        "Сеть: <b>{network}</b>\n"
+        "Кошелёк: <code>{wallet}</code>\n"
+        "Статус: <b>{status}</b>"
+    )
+ 
+    INVALID_WALLET = "Адрес кошелька не может быть пустым."
+    RATE_ERROR     = "Не удалось получить курс. Попробуйте позже."
+
+
 class MiscTexts:
     """Общие тексты"""
     
@@ -133,4 +177,5 @@ class Texts:
     profile = ProfileTexts
     cashout = CashoutTexts
     market  = MarketTexts
+    crypto = CryptoTexts
     misc = MiscTexts

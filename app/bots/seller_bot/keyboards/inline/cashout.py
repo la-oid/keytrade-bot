@@ -35,6 +35,10 @@ class CashoutKeyboards(BaseInlineKeyboard):
                     callback_data="cashout_card",
                 )],
                 [InlineKeyboardButton(
+                    text=self.texts.cashout.CRYPTO,
+                    callback_data="cashout_crypto",
+                )],
+                [InlineKeyboardButton(
                     text=self.texts.misc.BACK,
                     callback_data="profile_withdraw",
                 )],

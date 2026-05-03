@@ -7,7 +7,7 @@ from aiogram.types import FSInputFile
 from app.shared import db, bots, settings
 from app.shared.paths import PDF_DIR
 from app.db.enums import PaymentStatus
-from ..utils import notify_admins
+from app.utils import notify_admins
 from ..texts import Texts
 from ..keyboards import InlineKeyboards
 

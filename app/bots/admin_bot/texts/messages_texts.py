@@ -87,11 +87,19 @@ class CashoutTexts:
  
     CURRENT_CASHOUTS = "Текущие заявки на выплату:"
  
-    CASHOUT_DETAIL = (
+    CASHOUT_DETAIL_SPB = (
         "Заявка #{id}\n\n"
         "Пользователь: <code>{user_id}</code>\n"
         "Сумма: <b>{amount:.2f} ₽</b>\n"
         "Карта: <code>{card}</code>"
+    )
+
+    CASHOUT_DETAIL_CRYPTO = (
+        "Заявка #{id}\n\n"
+        "Пользователь: <code>{user_id}</code>\n"
+        "Сеть: <b>{network}</b>\n"
+        "Сумма: <b>{amount:.2f} ₽</b> / <b>{usdt_amount} USDT</b>\n"
+        "Кошелёк: <code>{wallet}</code>"
     )
  
     CASHOUT_COMPLETED = "Заявка #{id} выполнена. Сумма: <b>{amount:.2f} ₽</b>"

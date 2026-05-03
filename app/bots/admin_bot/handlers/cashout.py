@@ -3,6 +3,7 @@ from aiogram.types import Message, CallbackQuery
 
 from app.shared import db, bots
 from app.db.enums import CashoutStatus
+from app.utils import get_network_by_id
 from ..texts import Texts, ButtonTexts
 from ..keyboards import InlineKeyboards
 
@@ -57,13 +58,28 @@ async def cashout_detail_handler(call: CallbackQuery):
         )
         return
 
-    await call.message.edit_text(
-        texts.cashout.CASHOUT_DETAIL.format(
+    if cashout.network_id:
+        network = get_network_by_id(cashout.network_id)
+
+        text = texts.cashout.CASHOUT_DETAIL_CRYPTO.format(
             id=cashout.id,
             user_id=cashout.user_id,
             amount=cashout.amount,
-            card=cashout.card_number,
-        ),
+            usdt_amount=cashout.usdt_amount or "—",
+            network=network.name if network else cashout.network_id,
+            wallet=cashout.wallet_address or "—",
+        )
+        
+    else:
+        text = texts.cashout.CASHOUT_DETAIL_SPB.format(
+            id=cashout.id,
+            user_id=cashout.user_id,
+            amount=cashout.amount,
+            card=cashout.card_number or "—",
+        )
+
+    await call.message.edit_text(
+        text,
         reply_markup=buttons.cashout.cashout_detail(cashout.id),
     )
 

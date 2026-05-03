@@ -6,6 +6,7 @@ from app.shared import db
 from app.shared.config import settings
 from app.shared.constants import CASHOUT_STEP
 from app.db.enums import CashoutStatus
+from app.utils import get_network_by_id
 from ..states import CashoutStates
 from ..texts import Texts, ButtonTexts
 from ..keyboards import InlineKeyboards
@@ -117,7 +118,7 @@ async def cashout_card_number_handler(msg: Message, state: FSMContext, user):
         # frozen_balance=float(user.frozen_balance or 0) + amount,
     )
 
-    cashout = await db.cashout.create(
+    cashout = await db.cashout.upsert_cashout(
         user_id=user.telegram_id,
         amount=amount,
         card_number=card,
@@ -207,12 +208,29 @@ async def cashout_history_detail_handler(call: CallbackQuery, user):
  
     status_text = STATUS_TEXTS.get(cashout.status, lambda t: "")(texts)
  
-    await call.message.edit_text(
-        texts.cashout.HISTORY_DETAIL.format(
+    # Показываем детали в зависимости от типа вывода
+    if cashout.network_id:
+        network = get_network_by_id(cashout.network_id)
+
+        text = texts.crypto.HISTORY_DETAIL_CRYPTO.format(
+            id=cashout.id,
+            amount=cashout.amount,
+            usdt_amount=cashout.usdt_amount or "—",
+            network=network.name if network else cashout.network_id,
+            wallet=cashout.wallet_address or "—",
+            status=status_text,
+        )
+
+    else:
+        text = texts.cashout.HISTORY_DETAIL.format(
             id=cashout.id,
             amount=cashout.amount,
             card=f"**** **** **** {cashout.card_number[-4:]}",
             status=status_text,
-        ),
+        )
+ 
+    await call.message.edit_text(
+        text,
         reply_markup=buttons.cashout.history_detail_back(),
     )
+ 

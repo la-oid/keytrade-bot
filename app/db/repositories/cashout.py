@@ -11,15 +11,18 @@ class CashoutRepository:
 
     # ─── CREATE ──────────────────────────────────────────────────────────────
 
-    async def create(self, user_id: int, amount: float, card_number: str) -> Cashout:
-        """Создаёт заявку на вывод."""
+    async def upsert_cashout(self, cashout_id: int = None, **kwargs) -> Cashout:
+        """Создаёт или обновляет заявку. Если cashout_id не передан — создаёт новую."""
         async with self.db.async_session() as session, session.begin():
-            cashout = Cashout(
-                user_id=user_id,
-                amount=amount,
-                card_number=card_number,
-            )
-            session.add(cashout)
+            cashout = await self._get(session, cashout_id) if cashout_id else None
+
+            if cashout:
+                for key, value in kwargs.items():
+                    setattr(cashout, key, value)
+            else:
+                cashout = Cashout(**kwargs)
+                session.add(cashout)
+
             await session.flush()
             await session.refresh(cashout)
             return cashout

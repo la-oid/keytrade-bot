@@ -7,7 +7,8 @@ from app.shared.constants import KEY_PRICE, BANKS
 from app.shared.config import settings
 from app.shared import db, bots
 from app.db.enums import PaymentStatus
-from ..utils import create_payment_and_notify, show_pending_payment, notify_admins
+from app.utils import notify_admins
+from ..utils import create_payment_and_notify, show_pending_payment
 from ..texts import Texts
 from ..keyboards import InlineKeyboards
 

@@ -21,6 +21,7 @@ class CashoutButtonTexts:
     ALL_AMOUNT    = "Вся сумма"
     CUSTOM_AMOUNT = "Другая сумма"
     CARD          = "На карту"
+    CRYPTO        = "Крипта"
     SUPPORT       = "Поддержка"
     HISTORY_ROW   = "#{id} — {amount:.2f} ₽"
 
