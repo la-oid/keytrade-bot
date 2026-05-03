@@ -68,10 +68,10 @@ async def offer_accept_handler(call: CallbackQuery, state: FSMContext, user):
         return
 
     # Деактивируем оффер — он использован
-    await db.special_offer.deactivate(user.telegram_id)
+    # await db.special_offer.deactivate(user.telegram_id)
 
-    # Кладём кол-во ключей в state как обычный заказ
-    await state.update_data(amount=offer.keys_count)
+    # Кладём кол-во ключей в state как обычный заказ и добавляем id оффера
+    await state.update_data(amount=offer.keys_count, special_offer_id=offer.id)
 
     # Редиректим на выбор метода оплаты
     await confirm_order_handler(call)

@@ -22,6 +22,7 @@ class Payment(Base):
     usdt_amount = Column(Float, nullable=True)                                                      # Сумма в USDT
     tx_hash = Column(String(256), nullable=True)                                                    # Хэш транзакции
     
+    special_offer_id = Column(Integer, ForeignKey("special_offers.id"), nullable=True)              # ID специального предложения
     status = Column(String(20), default=PaymentStatus.PENDING_LINK)                                 # Статус платежа
     deadline = Column(DateTime, nullable=True)                                                      # Время истечения текущего статуса
     

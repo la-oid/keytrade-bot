@@ -81,12 +81,14 @@ async def crypto_paid_handler(call: CallbackQuery, state: FSMContext, user):
     data   = await state.get_data()
     amount = data.get("amount", 0)
     usdt_amount = data.get("usdt_amount", 0)
+    special_offer_id = data.get("special_offer_id")
 
     payment = await create_payment_and_notify(
         call, user, amount,
         status=PaymentStatus.PENDING_HASH,
         network_id=network_id,
         usdt_amount=usdt_amount,
+        special_offer_id=special_offer_id,
     )
 
     if not payment:

@@ -91,6 +91,10 @@ async def verify_confirm_handler(call: CallbackQuery):
     # Переводим в COMPLETED
     await db.payment.set_status(payment.id, PaymentStatus.COMPLETED)
 
+    # Деактивируем спецпредложение если заказ был по офферу
+    if payment.special_offer_id:
+        await db.special_offer.deactivate(payment.user_id)
+
     # Сразу убираем кнопку с сообщения
     await call.message.edit_text(texts.verify.PAYMENT_CONFIRMED)
     

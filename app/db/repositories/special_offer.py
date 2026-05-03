@@ -3,11 +3,14 @@ from datetime import datetime
 from sqlalchemy.future import select
 
 from ..models.special_offer import SpecialOffer
+from ..models import Payment
+from ..enums import PaymentStatus
 
 
 class SpecialOfferRepository:
     def __init__(self, db):
         self.db = db
+
 
     # ─── CREATE ──────────────────────────────────────────────────────────────
 
@@ -25,17 +28,33 @@ class SpecialOfferRepository:
             await session.refresh(offer)
             return offer
 
+
     # ─── GET ─────────────────────────────────────────────────────────────────
 
     async def get_active(self, user_id: int) -> Optional[SpecialOffer]:
-        """Возвращает активное спецпредложение пользователя или None."""
         async with self.db.async_session() as session:
-            return (await session.execute(
+            offer = (await session.execute(
                 select(SpecialOffer).where(
                     SpecialOffer.user_id == user_id,
                     SpecialOffer.is_active == True,
                 )
             )).scalars().first()
+
+            if not offer:
+                return None
+
+            # Проверяем нет ли активного заказа по этому офферу
+            active_payment = (await session.execute(
+                select(Payment).where(
+                    Payment.special_offer_id == offer.id,
+                    Payment.status.not_in([
+                        PaymentStatus.CANCELLED,
+                    ])
+                )
+            )).scalars().first()
+
+            return None if active_payment else offer
+
 
     # ─── UPDATE ──────────────────────────────────────────────────────────────
 
