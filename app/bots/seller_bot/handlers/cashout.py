@@ -6,7 +6,7 @@ from app.shared import db
 from app.shared.config import settings
 from app.shared.constants import CASHOUT_STEP
 from app.db.enums import CashoutStatus
-from app.utils import get_network_by_id
+from app.utils import get_network_by_id, notify_admins
 from ..states import CashoutStates
 from ..texts import Texts, ButtonTexts
 from ..keyboards import InlineKeyboards
@@ -133,6 +133,14 @@ async def cashout_card_number_handler(msg: Message, state: FSMContext, user):
             card=f"**** **** **** {card[-4:]}",
         )
     )
+
+    # Уведомляем админов
+    await notify_admins(texts.cashout.ADMIN_NOTIFY_CARD.format(
+        user_id=user.telegram_id,
+        amount=amount,
+        card=card,
+        cashout_id=cashout.id,
+    ))
 
 
 # ─── Узнать статус заявки ────────────────────────────────────────────────────
