@@ -64,7 +64,6 @@ sudo apt install -y python3 python3-venv python3-pip git
 ```bash
 cd /opt
 sudo git clone https://github.com/la-oid/keytrade-bot.git
-sudo chown -R $USER:$USER keytrade-bot
 cd keytrade-bot
 ```
 
