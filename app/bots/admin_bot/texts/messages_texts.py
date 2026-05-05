@@ -14,7 +14,6 @@ class VerifyTexts:
     ORDER_DETAIL_SPB = (
         "Заказ №{id}\n\n"
         "Пользователь: <code>{user_id}</code>\n"
-        "Банк: <b>{bank}</b>\n"
         "Сумма: <b>{price:.2f} ₽</b>\n"
         "Количество: <b>{amount} шт.</b>"
     )
