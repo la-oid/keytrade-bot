@@ -1,7 +1,6 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 from .base import BaseInlineKeyboard
-from app.shared.constants import BANKS
 
 
 class PaymentKeyboards(BaseInlineKeyboard):
