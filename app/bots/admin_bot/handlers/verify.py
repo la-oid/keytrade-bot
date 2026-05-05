@@ -70,7 +70,6 @@ async def verify_order_handler(call: CallbackQuery):
         text = texts.verify.ORDER_DETAIL_SPB.format(
             id=payment.id,
             user_id=payment.user_id,
-            bank=payment.bank or "—",
             price=payment.price,
             amount=payment.amount,
         )
