@@ -124,7 +124,7 @@ async def crypto_hash_handler(msg: Message, state: FSMContext, user):
         return
 
     # Сохраняем хэш и переводим в PENDING_REVIEW
-    await db.payment.set_tx_hash(payment.id, tx_hash)
+    await db.payment.upsert_payment(payment.id, tx_hash=tx_hash)
 
     await state.clear()
 

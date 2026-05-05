@@ -32,7 +32,7 @@ async def payment_sent_handler(call: CallbackQuery, user):
         return
 
     # Переводим платёж на этап ожидания PDF
-    await db.payment.set_status(payment.id, PaymentStatus.PENDING_PDF)
+    await db.payment.upsert_payment(payment.id, status=PaymentStatus.PENDING_PDF)
 
     # Показываем пользователю экран ожидания квитанции
     await call.answer()
@@ -62,7 +62,7 @@ async def receive_pdf_handler(msg: Message, user):
     await bots.buyer.bot.download(msg.document, destination=path)
 
     # Сохраняем путь в БД и переводим в PENDING_REVIEW
-    await db.payment.set_pdf_path(payment.id, str(path))
+    await db.payment.upsert_payment(payment.id, pdf_path=str(path))
 
     # Возвращаем покупателя на экран "Мои заказы"
     await msg.answer(

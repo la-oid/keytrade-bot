@@ -89,7 +89,7 @@ async def verify_confirm_handler(call: CallbackQuery):
         return
 
     # Переводим в COMPLETED
-    await db.payment.set_status(payment.id, PaymentStatus.COMPLETED)
+    await db.payment.upsert_payment(payment.id, status=PaymentStatus.COMPLETED)
 
     # Деактивируем спецпредложение если заказ был по офферу
     if payment.special_offer_id:

@@ -19,7 +19,7 @@ async def check_expired_payments():
     for from_status, to_status in EXPIRY_TRANSITIONS.items():
         expired = await db.payment.get_expired(from_status)
         for payment in expired:
-            await db.payment.set_status(payment.id, to_status)
+            await db.payment.upsert_payment(payment.id, status=to_status)
             logger.info(f"Payment {payment.id}: {from_status.value} → {to_status.value}")
 
 

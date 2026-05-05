@@ -6,18 +6,26 @@ from ..models import Payment
 from ..enums import PaymentStatus
 
 
+# Дедлайны по статусам (минуты, None — без таймера)
 DEADLINES: dict[PaymentStatus, int | None] = {
-    PaymentStatus.PENDING_LINK:   None,   # Заказ создан, ждём ссылку от админа — без таймера
-    PaymentStatus.PENDING_PAY:    15,     # Ссылка отправлена, у пользователя A мин чтобы нажать "Перевёл"
-    PaymentStatus.PENDING_HASH:   10,     # крипта: нажал "Я оплатил", 10 мин чтобы прислать хэш
-    PaymentStatus.PENDING_PDF:    10,     # Нажал "Перевёл", у него B мин чтобы прислать PDF
-    PaymentStatus.PENDING_REVIEW: 240,    # PDF получен, ждём проверки админа — у него C мин чтобы проверить
-    PaymentStatus.COMPLETED:      None,   # Финальный успех — без таймера
-    PaymentStatus.CANCELLED:      None,   # Финальная отмена — без таймера
+    PaymentStatus.PENDING_PAY:    15,
+    PaymentStatus.PENDING_HASH:   10,
+    PaymentStatus.PENDING_PDF:    10,
+    PaymentStatus.PENDING_REVIEW: 240,
+    PaymentStatus.COMPLETED:      None,
+    PaymentStatus.CANCELLED:      None,
+}
+
+# При смене этих полей — автоматически меняется статус
+STATUS_TRIGGERS: dict[str, PaymentStatus] = {
+    "invoice_id": PaymentStatus.PENDING_PAY,
+    "pdf_path":   PaymentStatus.PENDING_REVIEW,
+    "tx_hash":    PaymentStatus.PENDING_REVIEW,
 }
 
 
 def _deadline_for(status: PaymentStatus) -> datetime | None:
+    """Возвращает время истечения для статуса или None."""
     minutes = DEADLINES.get(status)
     return datetime.utcnow() + timedelta(minutes=minutes) if minutes else None
 
@@ -26,10 +34,26 @@ class PaymentRepository:
     def __init__(self, db):
         self.db = db
 
+    # ─── UPSERT ──────────────────────────────────────────────────────────────
+
     async def upsert_payment(self, payment_id: int = None, **kwargs) -> Payment:
-        """Создаёт или обновляет платёж. Если payment_id не передан — создаёт новый."""
+        """
+        Создаёт или обновляет платёж.
+        При смене статуса — автоматически проставляет дедлайн.
+        При установке invoice_id, pdf_path или tx_hash — автоматически меняет статус.
+        """
         async with self.db.async_session() as session, session.begin():
             payment = await self._get(session, payment_id) if payment_id else None
+
+            # Проверяем триггеры автосмены статуса
+            for field, auto_status in STATUS_TRIGGERS.items():
+                if field in kwargs and kwargs[field] is not None:
+                    if "status" not in kwargs:
+                        kwargs["status"] = auto_status
+
+            # Автоматически проставляем дедлайн при смене статуса
+            if "status" in kwargs:
+                kwargs["deadline"] = _deadline_for(kwargs["status"])
 
             if payment:
                 for key, value in kwargs.items():
@@ -42,6 +66,8 @@ class PaymentRepository:
             await session.refresh(payment)
             return payment
 
+    # ─── GET ─────────────────────────────────────────────────────────────────
+
     async def get_by_id(self, payment_id: int) -> Optional[Payment]:
         """Возвращает платёж по ID."""
         async with self.db.async_session() as session:
@@ -52,7 +78,10 @@ class PaymentRepository:
         statuses = status if isinstance(status, list) else [status]
         async with self.db.async_session() as session:
             result = (await session.execute(
-                select(Payment).where(Payment.user_id == user_id, Payment.status.in_(statuses))
+                select(Payment).where(
+                    Payment.user_id == user_id,
+                    Payment.status.in_(statuses),
+                )
             )).scalars()
             return result.all() if many else result.first()
 
@@ -67,46 +96,9 @@ class PaymentRepository:
                 )
             )).scalars().all()
 
-    async def set_status(self, payment_id: int, status: PaymentStatus) -> bool:
-        """Меняет статус и автоматически проставляет/обнуляет дедлайн."""
-        async with self.db.async_session() as session, session.begin():
-            payment = await self._get(session, payment_id)
-            if not payment:
-                return False
-            payment.status = status
-            payment.deadline = _deadline_for(status)
-            return True
-
-    async def set_payment_link(self, payment_id: int, link: str) -> bool:
-        """Привязывает ссылку и переводит в статус pending_pay."""
-        async with self.db.async_session() as session, session.begin():
-            payment = await self._get(session, payment_id)
-            if not payment:
-                return False
-            payment.payment_link = link
-            payment.status = PaymentStatus.PENDING_PAY
-            payment.deadline = _deadline_for(PaymentStatus.PENDING_PAY)
-            return True
-        
-    async def set_pdf_path(self, payment_id: int, path: str) -> bool:
-        """Привязывает PDF и переводит в статус pending_review."""
-        async with self.db.async_session() as session, session.begin():
-            payment = await self._get(session, payment_id)
-            if not payment:
-                return False
-            payment.pdf_path = path
-            payment.status = PaymentStatus.PENDING_REVIEW
-            return True
-        
-    async def set_tx_hash(self, payment_id: int, tx_hash: str) -> bool:
-        """Сохраняет хэш транзакции и переводит в PENDING_REVIEW."""
-        async with self.db.async_session() as session, session.begin():
-            payment = await self._get(session, payment_id)
-            if not payment:
-                return False
-            payment.tx_hash = tx_hash
-            payment.status  = PaymentStatus.PENDING_REVIEW
-            return True
+    # ─── PRIVATE ─────────────────────────────────────────────────────────────
 
     async def _get(self, session, payment_id: int) -> Optional[Payment]:
-        return (await session.execute(select(Payment).where(Payment.id == payment_id))).scalars().first()
+        return (await session.execute(
+            select(Payment).where(Payment.id == payment_id)
+        )).scalars().first()
