@@ -32,8 +32,7 @@ class PaymentKeyboards(BaseInlineKeyboard):
             ]
         )
     
-    def payment_page(self, invoice_id: str) -> InlineKeyboardMarkup:
-        url = f"{CARDLINK_BASE_URL}{invoice_id}"
+    def payment_page(self, url: str) -> InlineKeyboardMarkup:
         return InlineKeyboardMarkup(
             inline_keyboard=[
                 [InlineKeyboardButton(text=self.texts.payment.OPEN_LINK, url=url)],

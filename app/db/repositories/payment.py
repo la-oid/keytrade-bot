@@ -18,9 +18,9 @@ DEADLINES: dict[PaymentStatus, int | None] = {
 
 # При смене этих полей — автоматически меняется статус
 STATUS_TRIGGERS: dict[str, PaymentStatus] = {
-    "invoice_id": PaymentStatus.PENDING_PAY,
-    "pdf_path":   PaymentStatus.PENDING_REVIEW,
-    "tx_hash":    PaymentStatus.PENDING_REVIEW,
+    "payment_link": PaymentStatus.PENDING_PAY,
+    "pdf_path":     PaymentStatus.PENDING_REVIEW,
+    "tx_hash":      PaymentStatus.PENDING_REVIEW,
 }
 
 

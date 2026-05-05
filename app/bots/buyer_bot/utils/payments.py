@@ -79,7 +79,7 @@ async def _show_payment_page(target: Message | CallbackQuery, payment) -> None:
     """Показывает страницу оплаты с ссылкой."""
 
     text = texts.payment.PAYMENT_PAGE.format(payment_id=payment.id)
-    kb   = buttons.payment.payment_page(invoice_id=payment.invoice_id)
+    kb   = buttons.payment.payment_page(url=payment.payment_link)
 
     if isinstance(target, CallbackQuery):
         await target.message.edit_text(text, reply_markup=kb)

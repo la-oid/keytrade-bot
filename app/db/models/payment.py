@@ -13,7 +13,7 @@ class Payment(Base):
     amount           = Column(Integer, nullable=False)                                                  # Количество ключей
     price            = Column(Numeric(15, 2), nullable=True)                                            # Сумма к оплате в рублях
 
-    invoice_id       = Column(String(64), nullable=True)                                                # ID заказа в cardlink
+    payment_link     = Column(String(512), nullable=True)                                               # Ссылка на оплату (cardlink)
     pdf_path         = Column(String(512), nullable=True)                                               # Путь к сохранённому PDF
 
     network_id       = Column(String(16), nullable=True)                                                # ID крипто сети

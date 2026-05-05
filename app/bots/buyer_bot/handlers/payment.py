@@ -39,11 +39,11 @@ async def pay_spb_handler(call: CallbackQuery, state: FSMContext, user):
     special_offer_id = data.get("special_offer_id")
     price            = amount * KEY_PRICE
 
-    invoice_id = await payment_service.create_invoice(price)
+    url = await payment_service.create_payment_url(price)
 
     payment = await create_payment_and_notify(
         call, user, amount,
-        invoice_id=invoice_id,
+        payment_link=url,
         special_offer_id=special_offer_id,
     )
 

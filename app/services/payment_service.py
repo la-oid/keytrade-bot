@@ -4,7 +4,6 @@ from curl_cffi.requests import AsyncSession
 from loguru import logger
 
 from app.shared.paths import COOKIES_FILE
-from app.shared.constants import CARDLINK_BASE_URL, MARKET_BILLER
 
 
 GRAPHQL_URL = "https://market.csgo.com/api/graphql?lang=en"
@@ -53,18 +52,17 @@ def _load_session() -> tuple[dict, str]:
 class PaymentService:
     """Создание платёжных ссылок через market.csgo.com."""
 
-    async def create_invoice(self, amount: float) -> str:
+    async def create_payment_url(self, amount: float) -> str:
         """
-        Создаёт invoice на указанную сумму и возвращает invoice_id.
+        Создаёт invoice и возвращает готовую ссылку на оплату.
 
         Raises:
             PaymentSessionDead: cookie.json протухли, нужно обновить
             PaymentAPIError: market отказал (лимит, недоступен биллер и т.д.)
         """
-        invoice_id = await self._create_invoice(amount)
-        invoice_id = str(invoice_id)
-        logger.info(f"Payment: created invoice {invoice_id} for {amount}₽")
-        return invoice_id
+        url = await self._create_invoice(amount)
+        logger.info(f"Payment: created payment url for {amount}₽ → {url}")
+        return url
 
     async def _create_invoice(self, amount: float) -> int:
         """Делает GraphQL-запрос и возвращает invoice_id."""
@@ -74,7 +72,7 @@ class PaymentService:
             "operationName": "createCheckinRequest",
             "variables": {
                 "amount": float(amount),
-                "biller": MARKET_BILLER,
+                "biller": "cardlink_sbp",
                 "extra_data": "{}",
                 "wallet": None,
                 "payout_currency": None,
@@ -135,7 +133,7 @@ class PaymentService:
                 f"Отказ: code={res.get('code')} message={res.get('message')}"
             )
 
-        return res["invoice_id"]
+        return res["redirect"]
 
 
 payment_service = PaymentService()
