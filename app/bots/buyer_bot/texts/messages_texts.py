@@ -47,7 +47,6 @@ class PaymentTexts:
     ADMIN_CANCELLED = (
         "❌ ЗАКАЗ ОТМЕНЁН\n\n"
         "Пользователь: <b>{name}</b> (ID: <code>{user_id}</code>)\n"
-        "Банк: <b>{bank}</b>\n"
         "Сумма: <b>{price} ₽</b>\n"
         "Количество: <b>{amount} шт.</b>"
     )
@@ -68,7 +67,6 @@ class PaymentTexts:
     ADMIN_PDF_RECEIVED = (
         "💳 Заказ оплачен\n\n"
         "Пользователь: <b>{name}</b> (ID: <code>{user_id}</code>)\n"
-        "Банк: <b>{bank}</b>\n"
         "Сумма: <b>{price} ₽</b>\n"
         "Количество: <b>{amount} шт.</b>\n"
         "ID платежа: <code>{payment_id}</code>"
