@@ -1,6 +1,7 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 from .base import BaseInlineKeyboard
+from app.shared.constants import CARDLINK_BASE_URL
 
 
 class PaymentKeyboards(BaseInlineKeyboard):
@@ -31,7 +32,8 @@ class PaymentKeyboards(BaseInlineKeyboard):
             ]
         )
     
-    def payment_page(self, url: str) -> InlineKeyboardMarkup:
+    def payment_page(self, invoice_id: str) -> InlineKeyboardMarkup:
+        url = f"{CARDLINK_BASE_URL}{invoice_id}"
         return InlineKeyboardMarkup(
             inline_keyboard=[
                 [InlineKeyboardButton(text=self.texts.payment.OPEN_LINK, url=url)],
