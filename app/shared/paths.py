@@ -6,6 +6,7 @@ ROOT = Path(__file__).parent.parent.parent  # keytrade-bot/
 # ── Data (корень проекта) ─────────────────────────────────────────────────────
 DATA_DIR             = ROOT / "data"
 CRYPTO_NETWORKS_FILE = DATA_DIR / "crypto_networks.json"
+COOKIES_FILE         = DATA_DIR / "cookie.json"
 IMAGES_DIR           = DATA_DIR / "images"
 
 # ── Storage ───────────────────────────────────────────────────────────────────
