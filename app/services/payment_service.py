@@ -40,7 +40,7 @@ def _load_session() -> tuple[dict, str]:
             f"Создай его по образцу из README."
         )
 
-    with open(MARKET_COOKIES_FILE, "r", encoding="utf-8") as f:
+    with open(COOKIES_FILE, "r", encoding="utf-8") as f:
         raw = json.load(f)
 
     user_agent = raw.get("user_agent", "")
