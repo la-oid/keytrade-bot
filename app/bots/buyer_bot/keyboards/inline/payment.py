@@ -1,7 +1,6 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 from .base import BaseInlineKeyboard
-from app.shared.constants import CARDLINK_BASE_URL
 
 
 class PaymentKeyboards(BaseInlineKeyboard):
