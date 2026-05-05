@@ -53,7 +53,7 @@ def _load_session() -> tuple[dict, str]:
 class PaymentService:
     """Создание платёжных ссылок через market.csgo.com."""
 
-    async def create_payment_link(self, amount: float) -> str:
+    async def create_invoice(self, amount: float) -> str:
         """
         Создаёт invoice на указанную сумму и возвращает готовую ссылку для оплаты.
 
