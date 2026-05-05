@@ -75,7 +75,6 @@ async def receive_pdf_handler(msg: Message, user):
     caption = texts.payment.ADMIN_PDF_RECEIVED.format(
         name=user.first_name or user.username,
         user_id=user.telegram_id,
-        bank=payment.bank,
         price=payment.price,
         amount=payment.amount,
         payment_id=payment.id,
