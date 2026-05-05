@@ -55,16 +55,16 @@ class PaymentService:
 
     async def create_invoice(self, amount: float) -> str:
         """
-        Создаёт invoice на указанную сумму и возвращает готовую ссылку для оплаты.
+        Создаёт invoice на указанную сумму и возвращает invoice_id.
 
         Raises:
             PaymentSessionDead: cookie.json протухли, нужно обновить
             PaymentAPIError: market отказал (лимит, недоступен биллер и т.д.)
         """
         invoice_id = await self._create_invoice(amount)
-        url = f"{CARDLINK_BASE_URL}{invoice_id}"
+        invoice_id = str(invoice_id)
         logger.info(f"Payment: created invoice {invoice_id} for {amount}₽")
-        return url
+        return invoice_id
 
     async def _create_invoice(self, amount: float) -> int:
         """Делает GraphQL-запрос и возвращает invoice_id."""
