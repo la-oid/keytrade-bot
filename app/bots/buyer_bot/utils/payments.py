@@ -1,7 +1,7 @@
 from aiogram.types import Message, CallbackQuery
  
 from app.shared import db, bots, settings
-from app.shared.constants import KEY_PRICE, CARDLINK_BASE_URL
+from app.shared.constants import KEY_PRICE
 from app.db.enums import PaymentStatus
 from ..texts import Texts
 from ..keyboards import InlineKeyboards
@@ -78,10 +78,8 @@ async def _show_waiting_hash(msg: Message, payment):
 async def _show_payment_page(target: Message | CallbackQuery, payment) -> None:
     """Показывает страницу оплаты с ссылкой."""
 
-    url  = f"{CARDLINK_BASE_URL}{payment.invoice_id}"
-
     text = texts.payment.PAYMENT_PAGE.format(payment_id=payment.id)
-    kb   = buttons.payment.payment_page(url=url)
+    kb   = buttons.payment.payment_page(invoice_id=payment.invoice_id)
 
     if isinstance(target, CallbackQuery):
         await target.message.edit_text(text, reply_markup=kb)
