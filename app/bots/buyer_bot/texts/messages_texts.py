@@ -41,24 +41,8 @@ class PaymentTexts:
 
     CHOOSE_METHOD = "Выберите способ оплаты:"
 
-    CHOOSE_BANK = "Выберите банк:"
-
-    PENDING_TEXT = (
-        "Количество: <b>{amount} шт.</b>\n"
-        "Сумма: <b>{price} ₽</b>\n"
-        "Банк: <b>{bank}</b>\n\n"
-        "⏳ Ожидайте реквизиты для оплаты."
-    )
-
     CONFIRM_CANCEL_TEXT = "Вы уверены, что хотите отменить оплату?"
-
-    ADMIN_NOTIFY = (
-        "💰 Новый заказ на оплату\n\n"
-        "Пользователь: <b>{name}</b> (ID: <code>{user_id}</code>)\n"
-        "Банк: <b>{bank}</b>\n"
-        "Сумма: <b>{price} ₽</b>\n"
-        "Количество: <b>{amount} шт.</b>"
-    )
+    CANCELLED_TEXT = "Заказ отменён."
 
     ADMIN_CANCELLED = (
         "❌ ЗАКАЗ ОТМЕНЁН\n\n"
@@ -68,12 +52,10 @@ class PaymentTexts:
         "Количество: <b>{amount} шт.</b>"
     )
 
-    CANCELLED_TEXT = "Заказ отменён."
-
     PAYMENT_PAGE = (
         "Заказ номер: <code>{payment_id}</code>\n\n"
-        "Внимание, переводите только с указанного вами ранее банка! "
-        "В ином случае заказ обработан не будет."
+        "Нажмите кнопку ниже чтобы перейти к оплате.\n"
+        "После оплаты нажмите «Перевел»."
     )
 
     WAITING_PDF = (
@@ -91,6 +73,9 @@ class PaymentTexts:
         "Количество: <b>{amount} шт.</b>\n"
         "ID платежа: <code>{payment_id}</code>"
     )
+
+    SESSION_DEAD  = "Сервис оплаты временно недоступен. Попробуйте позже."
+    PAYMENT_ERROR = "Ошибка создания платежа. Попробуйте позже."
 
 
 class SpecialOfferTexts:

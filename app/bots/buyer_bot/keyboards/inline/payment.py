@@ -14,18 +14,6 @@ class PaymentKeyboards(BaseInlineKeyboard):
                 [InlineKeyboardButton(text=self.texts.crypto.CRYPTO,  callback_data="pay_crypto")],
             ]
         )
-
-    @property
-    def choose_bank(self) -> InlineKeyboardMarkup:
-        return InlineKeyboardMarkup(
-            inline_keyboard=[
-                [
-                    InlineKeyboardButton(text=bank, callback_data=f"bank_{bank.lower()}")
-                    for bank in BANKS
-                ],
-                [InlineKeyboardButton(text=self.texts.misc.BACK, callback_data="confirm_order")],
-            ]
-        )
     
     @property
     def cancel_only(self) -> InlineKeyboardMarkup:

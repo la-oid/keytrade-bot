@@ -3,10 +3,11 @@ from aiogram.types import CallbackQuery, Message
 from aiogram.fsm.context import FSMContext
 from aiogram.exceptions import TelegramBadRequest
 
-from app.shared.constants import KEY_PRICE, BANKS
+from app.shared.constants import KEY_PRICE
 from app.shared.config import settings
 from app.shared import db, bots
 from app.db.enums import PaymentStatus
+from app.services import payment_service
 from app.utils import notify_admins
 from ..utils import create_payment_and_notify, show_pending_payment
 from ..texts import Texts
@@ -16,8 +17,6 @@ r = Router()
 
 texts = Texts()
 buttons = InlineKeyboards()
-
-BANK_NAMES = {f"bank_{bank.lower()}": bank for bank in BANKS}
 
 
 # ─── Выбор метода оплаты ───────────────────────────────────────────────────────
@@ -33,47 +32,26 @@ async def confirm_order_handler(call: CallbackQuery):
 
 
 @r.callback_query(F.data == "pay_spb")
-async def pay_spb_handler(call: CallbackQuery):
-    """СБП → выбор банка."""
-    await call.answer()
-    try:
-        await call.message.edit_text(
-            texts.payment.CHOOSE_BANK,
-            reply_markup=buttons.payment.choose_bank
-        )
-    except TelegramBadRequest:
-        pass
-
-
-@r.callback_query(F.data.in_(set(BANK_NAMES.keys())))
-async def choose_bank_handler(call: CallbackQuery, state: FSMContext, user):
-    """Банк выбран → создаём платёж и показываем ожидание."""
-    bank   = BANK_NAMES[call.data]
-    data   = await state.get_data()
-    amount = data.get("amount", 0)
+async def pay_spb_handler(call: CallbackQuery, state: FSMContext, user):
+    """СБП → создаём invoice через cardlink и сразу показываем ссылку."""
+    data             = await state.get_data()
+    amount           = data.get("amount", 0)
     special_offer_id = data.get("special_offer_id")
+    price            = amount * KEY_PRICE
+
+    invoice_id = await payment_service.create_invoice(price)
 
     payment = await create_payment_and_notify(
         call, user, amount,
-        status=PaymentStatus.PENDING_LINK,
-        bank=bank,
+        invoice_id=invoice_id,
         special_offer_id=special_offer_id,
     )
-    
+
     if not payment:
         return
-
+    
     await state.clear()
     await call.answer()
-
-    # Уведомляем админов
-    await notify_admins(texts.payment.ADMIN_NOTIFY.format(
-        name=user.first_name or user.username,
-        user_id=user.telegram_id,
-        bank=bank,
-        price=payment.price,
-        amount=payment.amount,
-    ))
 
 
 # ─── Отмена оплаты ─────────────────────────────────────────────────────────────

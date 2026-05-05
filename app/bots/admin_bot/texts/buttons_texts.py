@@ -1,5 +1,4 @@
 class MenuButtonTexts:
-    GET_LINK = "Получение ссылки"
     CHECK_PAYMENT = "Проверка оплаты"
     USER_ACCOUNT = "Управление счетом"
     SPECIAL_OFFERS = "Спецпредложения"
