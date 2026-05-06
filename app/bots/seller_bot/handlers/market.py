@@ -62,7 +62,7 @@ async def market_accept_handler(call: CallbackQuery, state: FSMContext):
 
 # ─── Utils ───────────────────────────────────────────────────────────────────
 
-async def _process_keys(msg: Message, order, user, content: str) -> str:
+async def _process_keys(state: FSMContext, order, user, content: str) -> str:
     """
     Валидирует и продаёт ключи из файла.
     Возвращает текст результата — успех или ошибку.
@@ -76,13 +76,18 @@ async def _process_keys(msg: Message, order, user, content: str) -> str:
     if not sold:
         return texts.market.INVALID_FORMAT
 
-    await db.order.set_active(order.id, False)
+    # Начисляем баланс продавцу
     payout = order.total_keys * KEY_PRICE
     await db.user.upsert_user(
         user.telegram_id,
         balance=(user.balance or 0) + payout,
         completed_orders_count=(user.completed_orders_count or 0) + 1,
     )
+
+    # Деактивируем пай после успешной продажи
+    await db.order.set_active(order.id, False)
+
+    await state.clear()
     return texts.market.SUCCESS.format(payout=payout)
 
 
@@ -109,14 +114,13 @@ async def market_keys_received(msg: Message, state: FSMContext, user):
     started    = time.monotonic()
 
     content = await download_text_file(msg)
-    result  = await _process_keys(msg, order, user, content)
+    result  = await _process_keys(state, order, user, content)
 
     # Добиваем до KEY_CHECK_DURATION секунд если проверка была быстрее
     elapsed = time.monotonic() - started
     if elapsed < KEY_CHECK_DURATION:
         await asyncio.sleep(KEY_CHECK_DURATION - elapsed)
 
-    await state.clear()
     await status_msg.edit_text(result)
 
 
