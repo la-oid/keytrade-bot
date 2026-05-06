@@ -1,13 +1,12 @@
-from app.shared import bots, settings
 from app.db.enums import PaymentStatus
-
-from app.bots.buyer_bot.texts import Texts as BuyerTexts
 
 
 # ─── Уведомление админов ─────────────────────────────────────────────────────
 
 async def notify_admins(text: str, document=None) -> None:
     """Универсальная рассылка уведомления всем админам."""
+
+    from app.shared import bots, settings
 
     for admin_id in settings.telegram.ADMIN_IDS:
         if document:
@@ -25,12 +24,13 @@ async def notify_admins(text: str, document=None) -> None:
 async def notify_payment_expired(payment, from_status: PaymentStatus) -> None:
     """Уведомляет пользователя об истечении срока оплаты."""
 
+    from app.shared import bots, settings
     from app.bots.buyer_bot.texts import Texts
 
     texts_map = {
-        PaymentStatus.PENDING_PAY:  BuyerTexts.payment.PAYMENT_EXPIRED,
-        PaymentStatus.PENDING_HASH: BuyerTexts.payment.PAYMENT_EXPIRED,
-        PaymentStatus.PENDING_PDF:  BuyerTexts.payment.PAYMENT_EXPIRED,
+        PaymentStatus.PENDING_PAY:  Texts.payment.PAYMENT_EXPIRED,
+        PaymentStatus.PENDING_HASH: Texts.payment.PAYMENT_EXPIRED,
+        PaymentStatus.PENDING_PDF:  Texts.payment.PAYMENT_EXPIRED,
     }
 
     text_template = texts_map.get(from_status)
