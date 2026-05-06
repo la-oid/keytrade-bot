@@ -74,7 +74,13 @@ async def verify_order_handler(call: CallbackQuery):
             amount=payment.amount,
         )
 
-    await call.message.edit_text(text, reply_markup=buttons.verify.confirm(payment.id))
+    if call.message.document or call.message.photo:
+        await call.message.delete()
+        send = call.message.answer
+    else:
+        send = call.message.edit_text
+
+    await send(text, reply_markup=buttons.verify.confirm(payment.id))
 
 
 @r.callback_query(F.data.startswith("verify_confirm_"))
