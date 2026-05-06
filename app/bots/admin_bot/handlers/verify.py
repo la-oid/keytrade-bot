@@ -46,7 +46,7 @@ async def enter_user_id_handler(msg: Message, state: FSMContext):
 @r.callback_query(F.data.startswith("verify_order_"))
 async def verify_order_handler(call: CallbackQuery):
     """Детали заказа + кнопка подтверждения."""
-    payment_id = int(call.data.split("_")[2])
+    payment_id = call.data.split("_")[2]
     payment = await db.payment.get_by_id(payment_id)
 
     await call.answer()
@@ -80,7 +80,7 @@ async def verify_order_handler(call: CallbackQuery):
 @r.callback_query(F.data.startswith("verify_confirm_"))
 async def verify_confirm_handler(call: CallbackQuery):
     """Подтверждение оплаты → COMPLETED + уведомление пользователю с ключами."""
-    payment_id = int(call.data.split("_")[2])
+    payment_id = call.data.split("_")[2]
     payment = await db.payment.get_by_id(payment_id)
 
     await call.answer()
