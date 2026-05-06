@@ -5,6 +5,11 @@ from sqlalchemy import func
 
 from ..models.order import Order
 
+from app.utils import (
+    generate_unique_code, 
+    generate_numeric_code
+)
+
 
 class OrderRepository:
     def __init__(self, db):
@@ -15,11 +20,16 @@ class OrderRepository:
     async def create(self, total_keys: int, expires_at: datetime, is_fake: bool = False) -> Order:
         """Создаёт новый пай."""
         async with self.db.async_session() as session, session.begin():
+
+            code = await generate_unique_code(session, Order, lambda: generate_numeric_code(6))
+
             order = Order(
+                id=code,
                 total_keys=total_keys,
                 expires_at=expires_at,
                 is_fake=is_fake,
             )
+
             session.add(order)
             await session.flush()
             await session.refresh(order)

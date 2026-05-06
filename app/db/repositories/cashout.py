@@ -4,6 +4,11 @@ from sqlalchemy.future import select
 from ..models import Cashout
 from ..enums import CashoutStatus
 
+from app.utils import (
+    generate_unique_code, 
+    generate_numeric_code
+)
+
 
 class CashoutRepository:
     def __init__(self, db):
@@ -20,7 +25,8 @@ class CashoutRepository:
                 for key, value in kwargs.items():
                     setattr(cashout, key, value)
             else:
-                cashout = Cashout(**kwargs)
+                code = await generate_unique_code(session, Cashout, lambda: generate_numeric_code(6))
+                cashout = Cashout(id=code, **kwargs)
                 session.add(cashout)
 
             await session.flush()

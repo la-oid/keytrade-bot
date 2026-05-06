@@ -7,7 +7,7 @@ from ..core import Base
 class Payment(Base):
     __tablename__ = "payments"
 
-    id               = Column(Integer, primary_key=True, index=True)
+    id               = Column(String(7), primary_key=True, index=True)                                  # Буквенно-цифровой код: N394E36
     user_id          = Column(BigInteger, ForeignKey("users.telegram_id"), nullable=False, index=True)  # Telegram ID пользователя
 
     amount           = Column(Integer, nullable=False)                                                  # Количество ключей

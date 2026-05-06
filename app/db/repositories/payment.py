@@ -5,6 +5,11 @@ from sqlalchemy.future import select
 from ..models import Payment
 from ..enums import PaymentStatus
 
+from app.utils import (
+    generate_unique_code, 
+    generate_payment_code
+)
+
 from app.shared.constants import (
     PAYMENT_DEADLINE_PAY, PAYMENT_DEADLINE_HASH,
     PAYMENT_DEADLINE_PDF, PAYMENT_DEADLINE_REVIEW,
@@ -64,7 +69,8 @@ class PaymentRepository:
                 for key, value in kwargs.items():
                     setattr(payment, key, value)
             else:
-                payment = Payment(**kwargs)
+                code = await generate_unique_code(session, Payment, generate_payment_code)
+                payment = Payment(id=code, **kwargs)
                 session.add(payment)
 
             await session.flush()
