@@ -135,13 +135,15 @@ async def cashout_card_number_handler(msg: Message, state: FSMContext, user):
     )
 
     # Уведомляем админов
-    await notify_admins(texts.cashout.ADMIN_NOTIFY_CARD.format(
-        user_id=user.telegram_id,
-        amount=amount,
-        card=card,
-        cashout_id=cashout.id,
+    await notify_admins(
+        texts.cashout.ADMIN_NOTIFY_CARD.format(
+            user_id=user.telegram_id,
+            amount=amount,
+            card=card,
+            cashout_id=cashout.id
+        ),
         reply_markup=buttons.cashout.cashout_notify(cashout.id)
-    ))
+    )
 
 
 # ─── Узнать статус заявки ────────────────────────────────────────────────────
