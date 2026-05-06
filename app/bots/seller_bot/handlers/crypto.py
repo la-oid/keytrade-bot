@@ -106,12 +106,14 @@ async def cashout_wallet_handler(msg: Message, state: FSMContext, user):
     )
 
     # Уведомляем админов
-    await notify_admins(texts.crypto.ADMIN_NOTIFY_CRYPTO.format(
-        user_id=user.telegram_id,
-        amount=amount,
-        usdt_amount=usdt_amount,
-        network=network.name if network else network_id,
-        wallet=wallet,
-        cashout_id=cashout.id,
+    await notify_admins(
+        texts.crypto.ADMIN_NOTIFY_CRYPTO.format(
+            user_id=user.telegram_id,
+            amount=amount,
+            usdt_amount=usdt_amount,
+            network=network.name if network else network_id,
+            wallet=wallet,
+            cashout_id=cashout.id
+        ),
         reply_markup=buttons.cashout.cashout_notify(cashout.id)
-    ))
+    )
