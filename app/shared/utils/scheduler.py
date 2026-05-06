@@ -3,6 +3,7 @@ from loguru import logger
 
 from .helper import db
 from app.db.enums import PaymentStatus
+from app.utils import notify_payment_expired
 
 
 # Куда переходят просроченные статусы
@@ -16,11 +17,17 @@ EXPIRY_TRANSITIONS: dict[PaymentStatus, PaymentStatus] = {
 
 async def check_expired_payments():
     """Каждые 30 секунд переводит просроченные платежи в следующий статус."""
+
     for from_status, to_status in EXPIRY_TRANSITIONS.items():
         expired = await db.payment.get_expired(from_status)
         for payment in expired:
+
+            # Переводим в следующий статус
             await db.payment.upsert_payment(payment.id, status=to_status)
             logger.info(f"Payment {payment.id}: {from_status.value} → {to_status.value}")
+
+            # Уведомляем пользователя если срок оплаты истёк
+            await notify_payment_expired(payment, from_status)
 
 
 async def maintain_fakes_job():

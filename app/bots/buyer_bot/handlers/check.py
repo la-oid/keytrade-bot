@@ -28,6 +28,7 @@ async def payment_sent_handler(call: CallbackQuery, user):
     # Проверяем что пользователь на этапе ожидания оплаты
     payment = await db.payment.get_by_status(user.telegram_id, PaymentStatus.PENDING_PAY)
     if not payment:
+        await call.message.delete()
         await call.answer()
         return
 
