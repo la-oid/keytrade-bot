@@ -11,7 +11,7 @@ from app.services import key_service
 from ..states import MarketStates
 from ..texts import Texts
 from ..keyboards import InlineKeyboards
-from ..utils import parse_keys_file
+from ..utils import parse_keys_file, is_text_file, download_text_file
 
 r = Router()
 
@@ -91,26 +91,25 @@ async def _process_keys(msg: Message, order, user, content: str) -> str:
 @r.message(MarketStates.waiting_keys_file, F.document)
 async def market_keys_received(msg: Message, state: FSMContext, user):
     """Получили файл → показываем статус, проверяем, показываем результат."""
-    data = await state.get_data()
+    data  = await state.get_data()
     order = await db.order.get_by_id(data["order_id"])
 
+    # Пай мог истечь пока пользователь готовил файл
     if not order or not order.is_active:
         await state.clear()
         await msg.answer(texts.market.ORDER_NOT_FOUND)
         return
 
-    if not msg.document.file_name.lower().endswith(".txt"):
+    # Принимаем только .txt файлы
+    if not is_text_file(msg.document):
         await msg.answer(texts.market.INVALID_FORMAT)
         return
 
     status_msg = await msg.answer(texts.market.CHECKING)
-    started = time.monotonic()
+    started    = time.monotonic()
 
-    file = await msg.bot.get_file(msg.document.file_id)
-    buffer = await msg.bot.download_file(file.file_path)
-    content = buffer.read().decode("utf-8", errors="ignore")
-
-    result = await _process_keys(msg, order, user, content)
+    content = await download_text_file(msg)
+    result  = await _process_keys(msg, order, user, content)
 
     # Добиваем до KEY_CHECK_DURATION секунд если проверка была быстрее
     elapsed = time.monotonic() - started
