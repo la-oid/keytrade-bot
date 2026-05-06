@@ -135,14 +135,16 @@ async def crypto_hash_handler(msg: Message, state: FSMContext, user):
     )
 
     # Уведомляем админов
-    await notify_admins(texts.crypto.ADMIN_NOTIFY.format(
-        name=user.first_name or user.username,
-        user_id=user.telegram_id,
-        network=network.name,
-        price=payment.price,
-        usdt_amount=payment.usdt_amount or "—",
-        amount=payment.amount,
-        tx_hash=tx_hash,
-        payment_id=payment.id,
+    await notify_admins(
+        texts.crypto.ADMIN_NOTIFY.format(
+            name=user.first_name or user.username,
+            user_id=user.telegram_id,
+            network=network.name,
+            price=payment.price,
+            usdt_amount=payment.usdt_amount or "—",
+            amount=payment.amount,
+            tx_hash=tx_hash,
+            payment_id=payment.id
+        ),
         reply_markup=buttons.payment.payment_notify(payment.id)
-    ))
+    )
