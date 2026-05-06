@@ -5,13 +5,18 @@ from sqlalchemy.future import select
 from ..models import Payment
 from ..enums import PaymentStatus
 
+from app.shared.constants import (
+    PAYMENT_DEADLINE_PAY, PAYMENT_DEADLINE_HASH,
+    PAYMENT_DEADLINE_PDF, PAYMENT_DEADLINE_REVIEW,
+)
+
 
 # Дедлайны по статусам (минуты, None — без таймера)
 DEADLINES: dict[PaymentStatus, int | None] = {
-    PaymentStatus.PENDING_PAY:    15,
-    PaymentStatus.PENDING_HASH:   10,
-    PaymentStatus.PENDING_PDF:    10,
-    PaymentStatus.PENDING_REVIEW: 240,
+    PaymentStatus.PENDING_PAY:    PAYMENT_DEADLINE_PAY,
+    PaymentStatus.PENDING_HASH:   PAYMENT_DEADLINE_HASH,
+    PaymentStatus.PENDING_PDF:    PAYMENT_DEADLINE_PDF,
+    PaymentStatus.PENDING_REVIEW: PAYMENT_DEADLINE_REVIEW,
     PaymentStatus.COMPLETED:      None,
     PaymentStatus.CANCELLED:      None,
 }

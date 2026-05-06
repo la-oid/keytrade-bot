@@ -1,8 +1,10 @@
 from aiogram.types import Message, CallbackQuery
  
-from app.shared import db, bots, settings
+from app.shared import db
 from app.shared.constants import KEY_PRICE
 from app.db.enums import PaymentStatus
+from datetime import timedelta
+from app.shared.constants import PAYMENT_DEADLINE_PAY
 from ..texts import Texts
 from ..keyboards import InlineKeyboards
  
@@ -78,7 +80,14 @@ async def _show_waiting_hash(msg: Message, payment):
 async def _show_payment_page(target: Message | CallbackQuery, payment) -> None:
     """Показывает страницу оплаты с ссылкой."""
 
-    text = texts.payment.PAYMENT_PAGE.format(payment_id=payment.id)
+    msk_deadline = (payment.deadline + timedelta(hours=3)).strftime("%d.%m.%Y %H:%M")
+
+    text = texts.payment.PAYMENT_PAGE.format(
+        payment_id=payment.id,
+        price=payment.price,
+        minutes=PAYMENT_DEADLINE_PAY,
+        deadline=msk_deadline,
+    )
     kb   = buttons.payment.payment_page(url=payment.payment_link)
 
     if isinstance(target, CallbackQuery):

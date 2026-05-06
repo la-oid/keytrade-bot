@@ -1,6 +1,7 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 from app.shared import db, settings
+from app.shared.constants import TELEGRAM_URL
 from app.db.enums import PaymentStatus
 from .base import BaseInlineKeyboard
 
@@ -28,7 +29,7 @@ class ProfileKeyboards(BaseInlineKeyboard):
     def order_pending(self) -> InlineKeyboardMarkup:
         return InlineKeyboardMarkup(
             inline_keyboard=[
-                [InlineKeyboardButton(text=self.texts.profile.SUPPORT, url=settings.app.SUPPORT_URL)],
+                [InlineKeyboardButton(text=self.texts.profile.SUPPORT, url = TELEGRAM_URL + settings.app.SUPPORT_USERNAME )],
                 [InlineKeyboardButton(text=self.texts.misc.BACK, callback_data="my_orders")],
             ]
         )

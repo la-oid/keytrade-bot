@@ -72,4 +72,4 @@ async def about_handler(msg: Message):
 @r.message(F.text == ButtonTexts.menu.SUPPORT)
 async def support_handler(msg: Message):
     await msg.delete()
-    await msg.answer(texts.menu.SUPPORT_TEXT.format(url=settings.app.SUPPORT_URL))
+    await msg.answer(texts.menu.SUPPORT_TEXT.format(username=settings.app.SUPPORT_USERNAME))

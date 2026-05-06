@@ -2,6 +2,7 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 from .base import BaseInlineKeyboard
 from app.shared import settings
+from app.shared.constants import TELEGRAM_URL
 
 
 class CashoutKeyboards(BaseInlineKeyboard):
@@ -51,7 +52,7 @@ class CashoutKeyboards(BaseInlineKeyboard):
             inline_keyboard=[
                 [InlineKeyboardButton(
                     text=self.texts.cashout.SUPPORT,
-                    url=settings.app.SUPPORT_URL,
+                    url = TELEGRAM_URL + settings.app.SUPPORT_USERNAME
                 )],
                 [InlineKeyboardButton(
                     text=self.texts.misc.BACK,
