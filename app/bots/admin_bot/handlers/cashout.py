@@ -46,7 +46,7 @@ async def cashout_back_handler(call: CallbackQuery):
 @r.callback_query(F.data.startswith("cashout_detail_"))
 async def cashout_detail_handler(call: CallbackQuery):
     """Нажали на заявку → показываем детали + кнопки."""
-    cashout_id = int(call.data.split("_")[2])
+    cashout_id = call.data.split("_")[2]
     cashout = await db.cashout.get_by_id(cashout_id)
 
     await call.answer()
@@ -89,7 +89,7 @@ async def cashout_detail_handler(call: CallbackQuery):
 @r.callback_query(F.data.startswith("cashout_complete_"))
 async def cashout_complete_handler(call: CallbackQuery):
     """Отмечаем заявку выполненной и размораживаем баланс юзера."""
-    cashout_id = int(call.data.split("_")[2])
+    cashout_id = call.data.split("_")[2]
     cashout = await db.cashout.get_by_id(cashout_id)
 
     await call.answer()
