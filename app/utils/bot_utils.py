@@ -3,7 +3,7 @@ from app.db.enums import PaymentStatus
 
 # ─── Уведомление админов ─────────────────────────────────────────────────────
 
-async def notify_admins(text: str, document=None) -> None:
+async def notify_admins(text: str, document=None, reply_markup=None) -> None:
     """Универсальная рассылка уведомления всем админам."""
 
     from app.shared import bots, settings
@@ -14,9 +14,10 @@ async def notify_admins(text: str, document=None) -> None:
                 chat_id=admin_id,
                 document=document,
                 caption=text,
+                reply_markup=reply_markup,
             )
         else:
-            await bots.admin.bot.send_message(chat_id=admin_id, text=text)
+            await bots.admin.bot.send_message(chat_id=admin_id, text=text, reply_markup=reply_markup)
 
 
 # ─── Уведомление пользователей ───────────────────────────────────────────────

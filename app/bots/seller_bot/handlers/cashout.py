@@ -140,6 +140,7 @@ async def cashout_card_number_handler(msg: Message, state: FSMContext, user):
         amount=amount,
         card=card,
         cashout_id=cashout.id,
+        reply_markup=buttons.cashout.cashout_notify(cashout.id)
     ))
 
 

@@ -89,3 +89,12 @@ class CashoutKeyboards(BaseInlineKeyboard):
                 )
             ]]
         )
+
+    def cashout_notify(self, cashout_id: str) -> InlineKeyboardMarkup:
+        """Кнопка под уведомлением о новой заявке на вывод."""
+        return InlineKeyboardMarkup(inline_keyboard=[[
+            InlineKeyboardButton(
+                text="Открыть заявку",
+                callback_data=f"cashout_detail_{cashout_id}",
+            )
+        ]])

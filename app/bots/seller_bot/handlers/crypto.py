@@ -113,4 +113,5 @@ async def cashout_wallet_handler(msg: Message, state: FSMContext, user):
         network=network.name if network else network_id,
         wallet=wallet,
         cashout_id=cashout.id,
+        reply_markup=buttons.cashout.cashout_notify(cashout.id)
     ))

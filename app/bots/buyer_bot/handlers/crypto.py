@@ -144,4 +144,5 @@ async def crypto_hash_handler(msg: Message, state: FSMContext, user):
         amount=payment.amount,
         tx_hash=tx_hash,
         payment_id=payment.id,
+        reply_markup=buttons.payment.payment_notify(payment.id)
     ))

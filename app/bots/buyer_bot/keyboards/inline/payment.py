@@ -38,3 +38,12 @@ class PaymentKeyboards(BaseInlineKeyboard):
                 [InlineKeyboardButton(text=self.texts.payment.SENT, callback_data="payment_sent")],
             ]
         )
+    
+    def payment_notify(self, payment_id: str) -> InlineKeyboardMarkup:
+        """Кнопка под уведомлением о новом платеже."""
+        return InlineKeyboardMarkup(inline_keyboard=[[
+            InlineKeyboardButton(
+                text="Открыть заказ",
+                callback_data=f"verify_order_{payment_id}",
+            )
+        ]])

@@ -82,4 +82,4 @@ async def receive_pdf_handler(msg: Message, user):
     )
 
     # Уведомляем админов
-    await notify_admins(caption, document=pdf_file)
+    await notify_admins(caption, document=pdf_file, reply_markup=buttons.payment.payment_notify(payment.id))
