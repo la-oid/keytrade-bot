@@ -24,7 +24,7 @@ buttons = InlineKeyboards()
 @r.callback_query(F.data.startswith("market_take_"))
 async def market_take_handler(call: CallbackQuery):
     """Нажали на пай → редактируем сообщение, спрашиваем подтверждение."""
-    order_id = int(call.data.split("_")[2])
+    order_id = call.data.split("_")[2]
     order = await db.order.get_by_id(order_id)
 
     await call.answer()
@@ -44,7 +44,7 @@ async def market_take_handler(call: CallbackQuery):
 @r.callback_query(F.data.startswith("market_accept_"))
 async def market_accept_handler(call: CallbackQuery, state: FSMContext):
     """Нажали Принять → переходим в ожидание файла."""
-    order_id = int(call.data.split("_")[2])
+    order_id = call.data.split("_")[2]
     order = await db.order.get_by_id(order_id)
 
     await call.answer()
