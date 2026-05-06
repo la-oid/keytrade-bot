@@ -34,7 +34,7 @@ async def my_orders_handler(call: CallbackQuery, user):
 
 @r.callback_query(F.data.startswith("order_"))
 async def order_detail_handler(call: CallbackQuery):
-    payment_id = int(call.data.split("_")[1])
+    payment_id = call.data.split("_")[1]
     payment = await db.payment.get_by_id(payment_id)
 
     await call.answer()
