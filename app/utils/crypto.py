@@ -11,7 +11,7 @@ class CryptoNetwork:
     name:         str
     address:      str
     hash_format:  str
-    hash_length:  int
+    hash_length:  int | str   # число или диапазон "87-88"
     buyer_order:  int
     seller_order: int
 
@@ -55,3 +55,30 @@ def get_networks_for_seller() -> list[CryptoNetwork]:
 def get_network_by_id(network_id: str) -> CryptoNetwork | None:
     """Возвращает сеть по ID или None."""
     return next((n for n in load_networks() if n.id == network_id), None)
+
+
+# ─── Валидация ───────────────────────────────────────────────────────────────
+
+def _parse_length(hash_length: int | str) -> tuple[int, int]:
+    """Парсит hash_length: число или строку 'min-max'. Возвращает (min, max)."""
+    if isinstance(hash_length, int):
+        return hash_length, hash_length
+    parts = str(hash_length).split("-")
+    if len(parts) == 2:
+        return int(parts[0]), int(parts[1])
+    n = int(parts[0])
+    return n, n
+
+
+def validate_tx_hash(raw: str, network_id: str) -> tuple[bool, str]:
+    """
+    Очищает хэш от пробелов и проверяет длину для указанной сети.
+    Возвращает (валидный, очищенный хэш).
+    """
+    network = get_network_by_id(network_id)
+    if not network:
+        return False, raw
+
+    tx_hash = raw.strip().replace(" ", "")
+    min_len, max_len = _parse_length(network.hash_length)
+    return min_len <= len(tx_hash) <= max_len, tx_hash

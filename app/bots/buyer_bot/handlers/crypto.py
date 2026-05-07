@@ -5,7 +5,7 @@ from aiogram.fsm.context import FSMContext
 from app.shared import db, bots, settings
 from app.shared.constants import KEY_PRICE, CRYPTO_RATE_MARKUP_BUYER
 from app.db.enums import PaymentStatus
-from app.utils import get_network_by_id, get_usdt_rub_rate, notify_admins
+from app.utils import get_network_by_id, get_usdt_rub_rate, notify_admins, validate_tx_hash
 from ..texts import Texts
 from ..keyboards import InlineKeyboards
 from ..utils import create_payment_and_notify, show_active_payment
@@ -103,6 +103,7 @@ async def crypto_paid_handler(call: CallbackQuery, state: FSMContext, user):
 @r.message(F.text)
 async def crypto_hash_handler(msg: Message, state: FSMContext, user):
     """Получили текст → проверяем хэш если юзер в статусе PENDING_HASH."""
+
     payment = await db.payment.get_by_status(user.telegram_id, PaymentStatus.PENDING_HASH)
     if not payment:
         return
@@ -114,10 +115,10 @@ async def crypto_hash_handler(msg: Message, state: FSMContext, user):
     if not network:
         return
 
-    tx_hash = msg.text.strip().replace(" ", "")
+    valid, tx_hash = validate_tx_hash(msg.text, network_id)
 
     # Проверяем длину хэша
-    if len(tx_hash) > network.hash_length:
+    if not valid:
         await msg.answer(texts.crypto.INVALID_HASH.format(
             hash_format=network.hash_format
         ))
