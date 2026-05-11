@@ -7,7 +7,7 @@ from aiogram.fsm.context import FSMContext
 
 from app.shared import db
 from app.shared.constants import KEY_PRICE_SELLER, KEY_CHECK_DURATION
-from app.services import key_service
+from app.services import key_service, tender_service
 from ..states import MarketStates
 from ..texts import Texts
 from ..keyboards import InlineKeyboards
@@ -97,6 +97,9 @@ async def _process_keys(state: FSMContext, order, user, content: str) -> str:
 
     # Деактивируем пай после успешной продажи
     await db.order.set_active(order.id, False)
+
+    # Учитываем в тендере (паи > TENDER_MAX_PIE_KEYS игнорируются внутри сервиса)
+    await tender_service.add_keys_from_order(order.total_keys)
 
     await state.clear()
     return texts.market.SUCCESS.format(payout=payout)

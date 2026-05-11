@@ -4,7 +4,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types.input_file import BufferedInputFile
 
 from app.shared import db, bots
-from app.services import key_service, tender_service
+from app.services import key_service
 from app.db.enums import PaymentStatus
 from app.utils import get_network_by_id
 from ..states import VerifyStates
@@ -121,5 +121,3 @@ async def verify_confirm_handler(call: CallbackQuery):
         caption=texts.verify.PAYMENT_COMPLETED,
     )
 
-    # Учитываем в тендере (паи > 500 шт игнорируются внутри сервиса)
-    await tender_service.add_keys_from_order(payment.amount)
