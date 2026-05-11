@@ -2,7 +2,7 @@ from aiogram import Router, F
 from aiogram.types import CallbackQuery, Message
 from aiogram.fsm.context import FSMContext
 
-from app.shared.constants import KEY_PRICE, MEDIUM, LARGE
+from app.shared.constants import KEY_PRICE_BUYER, MEDIUM, LARGE
 from ..utils import show_active_payment
 from ..states import OrderStates
 from ..texts import Texts, ButtonTexts
@@ -24,9 +24,15 @@ async def medium_wholesale_handler(msg: Message, state: FSMContext, user):
     
     await state.set_state(OrderStates.medium_wholesale)
     await state.update_data(amount=MEDIUM["min"])
-    await msg.answer(
-        texts.wholesale.WHOLESALE_TEXT.format(amount=MEDIUM["min"], price=MEDIUM["min"] * KEY_PRICE),
-        reply_markup=buttons.wholesale.wholesale(MEDIUM["min"], MEDIUM["step"])
+    
+    await msg.answer( 
+        texts.wholesale.MEDIUM_TEXT.format(
+            min=MEDIUM["min"],
+            max=MEDIUM["max"],
+            amount=MEDIUM["min"],
+            price=MEDIUM["min"] * KEY_PRICE_BUYER,
+        ),
+        reply_markup=buttons.wholesale.wholesale(LARGE["min"], LARGE["step"])
     )
 
 
@@ -40,8 +46,14 @@ async def large_wholesale_handler(msg: Message, state: FSMContext, user):
     
     await state.set_state(OrderStates.large_wholesale)
     await state.update_data(amount=LARGE["min"])
-    await msg.answer(
-        texts.wholesale.WHOLESALE_TEXT.format(amount=LARGE["min"], price=LARGE["min"] * KEY_PRICE),
+
+    await msg.answer( 
+        texts.wholesale.LARGE_TEXT.format(
+            min=MEDIUM["min"],
+            max=MEDIUM["max"],
+            amount=MEDIUM["min"],
+            price=MEDIUM["min"] * KEY_PRICE_BUYER,
+        ),
         reply_markup=buttons.wholesale.wholesale(LARGE["min"], LARGE["step"])
     )
 
@@ -68,6 +80,6 @@ async def change_amount_handler(call: CallbackQuery, state: FSMContext):
 
     await state.update_data(amount=new_amount)
     await call.message.edit_text(
-        texts.wholesale.WHOLESALE_TEXT.format(amount=new_amount, price=new_amount * KEY_PRICE),
+        texts.wholesale.WHOLESALE_TEXT.format(amount=new_amount, price=new_amount * KEY_PRICE_BUYER),
         reply_markup=buttons.wholesale.wholesale(new_amount, step)
     )

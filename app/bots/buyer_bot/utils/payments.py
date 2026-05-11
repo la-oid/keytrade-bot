@@ -1,7 +1,7 @@
 from aiogram.types import Message, CallbackQuery
  
 from app.shared import db
-from app.shared.constants import KEY_PRICE
+from app.shared.constants import KEY_PRICE_BUYER
 from app.db.enums import PaymentStatus
 from datetime import timedelta
 from app.shared.constants import PAYMENT_DEADLINE_PAY
@@ -26,7 +26,7 @@ async def create_payment_and_notify(target: Message | CallbackQuery, user, amoun
         await target.answer()
         return None
 
-    price = amount * KEY_PRICE
+    price = amount * KEY_PRICE_BUYER
 
     payment = await db.payment.upsert_payment(
         user_id=user.telegram_id,

@@ -1,7 +1,9 @@
+from datetime import timedelta
+
 from aiogram.types import Message, CallbackQuery
 
 from app.shared import bots
-from app.shared.constants import KEY_PRICE
+from app.shared.constants import KEY_PRICE_BUYER
 from ..texts import Texts
 from ..keyboards import InlineKeyboards
 
@@ -17,8 +19,8 @@ async def send_offer(target: int | Message | CallbackQuery, keys_count: int, exp
 
     text = custom_text or texts.special_offer.OFFER_TEXT.format(
         keys_count=keys_count,
-        total_price=keys_count * KEY_PRICE,
-        expires_at=expires_at.strftime("%d.%m.%Y %H:%M"),
+        total_price=keys_count * KEY_PRICE_BUYER,
+        expires_at=(expires_at + timedelta(hours=3)).strftime("%d.%m.%Y %H:%M"),
     )
     keyboard = buttons.special_offer.offer_actions()
 

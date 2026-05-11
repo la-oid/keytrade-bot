@@ -3,7 +3,7 @@ from aiogram.types import CallbackQuery, Message
 from aiogram.fsm.context import FSMContext
 from aiogram.exceptions import TelegramBadRequest
 
-from app.shared.constants import KEY_PRICE
+from app.shared.constants import KEY_PRICE_BUYER
 from app.shared.config import settings
 from app.shared import db, bots
 from app.db.enums import PaymentStatus
@@ -37,7 +37,7 @@ async def pay_spb_handler(call: CallbackQuery, state: FSMContext, user):
     data             = await state.get_data()
     amount           = data.get("amount", 0)
     special_offer_id = data.get("special_offer_id")
-    price            = amount * KEY_PRICE
+    price            = amount * KEY_PRICE_BUYER
 
     url = await payment_service.create_payment_url(price)
 

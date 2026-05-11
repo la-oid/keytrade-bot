@@ -4,7 +4,7 @@ from aiogram.fsm.context import FSMContext
 
 from app.shared import db
 from app.shared.config import settings
-from app.shared.constants import CASHOUT_STEP
+from app.shared.constants import CASHOUT_STEP, CASHOUT_MIN
 from app.db.enums import CashoutStatus
 from app.utils import get_network_by_id, notify_admins
 from ..states import CashoutStates
@@ -30,8 +30,15 @@ STATUS_TEXTS = {
 async def cashout_start(call: CallbackQuery, user):
     """Кнопка 'Вывод средств' → экран выбора суммы."""
     await call.answer()
+
+    text = texts.cashout.CHOOSE_AMOUNT.format(
+        balance=user.balance or 0,
+        min=CASHOUT_MIN,
+        step=CASHOUT_STEP,
+    )
+
     await call.message.edit_text(
-        texts.cashout.CHOOSE_AMOUNT.format(balance=user.balance or 0),
+        text=text,
         reply_markup=buttons.cashout.amount_choice(),
     )
 
@@ -43,9 +50,9 @@ async def cashout_all_handler(call: CallbackQuery, state: FSMContext, user):
     await call.answer()
     balance = float(user.balance or 0)
 
-    if balance <= 0:
+    if balance < CASHOUT_MIN:
         await call.message.edit_text(
-            texts.cashout.NOT_ENOUGH,
+            texts.cashout.INVALID_AMOUNT.format(step=CASHOUT_STEP, min=CASHOUT_MIN),
             reply_markup=buttons.cashout.amount_choice(),
         )
         return
@@ -63,7 +70,7 @@ async def cashout_all_handler(call: CallbackQuery, state: FSMContext, user):
 async def cashout_custom_handler(call: CallbackQuery, state: FSMContext):
     await call.answer()
     await state.set_state(CashoutStates.waiting_amount)
-    await call.message.edit_text(texts.cashout.ENTER_AMOUNT.format(step=CASHOUT_STEP))
+    await call.message.edit_text(texts.cashout.ENTER_AMOUNT.format(step=CASHOUT_STEP, min=CASHOUT_MIN))
 
 
 @r.message(CashoutStates.waiting_amount)
@@ -73,13 +80,13 @@ async def cashout_amount_handler(msg: Message, state: FSMContext, user):
     try:
         amount = float(raw)
     except ValueError:
-        await msg.answer(texts.cashout.INVALID_AMOUNT.format(step=CASHOUT_STEP))
+        await msg.answer(texts.cashout.INVALID_AMOUNT.format(step=CASHOUT_STEP, min=CASHOUT_MIN))
         return
 
     balance = float(user.balance or 0)
 
-    if amount <= 0 or amount > balance or amount % CASHOUT_STEP != 0:
-        await msg.answer(texts.cashout.INVALID_AMOUNT.format(step=CASHOUT_STEP))
+    if amount < CASHOUT_MIN or amount > balance or amount % CASHOUT_STEP != 0:
+        await msg.answer(texts.cashout.INVALID_AMOUNT.format(step=CASHOUT_STEP, min=CASHOUT_MIN))
         return
 
     await msg.delete()

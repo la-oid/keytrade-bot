@@ -1,13 +1,12 @@
+import random
+
 from loguru import logger
 
 from app.shared import db
 from app.db import Database
 from app.db.models.order import Order
-from app.utils import random_keys_low, random_keys_high, random_lifetime, lifetime_from_hours
-from app.shared.constants import (
-    PIE_FAKE_LOW_COUNT, PIE_FAKE_HIGH_COUNT,
-    PIE_KEYS_MIN, PIE_KEYS_MID, PIE_KEYS_MAX,
-)
+from app.utils import random_lifetime, lifetime_from_hours
+from app.shared.constants import PIE_RANGES, PIE_KEYS_STEP
 
 
 class OrderService:
@@ -27,39 +26,44 @@ class OrderService:
     async def maintain_fakes(self) -> None:
         """
         Деактивирует истёкшие паи и досоздаёт фейки до нужного количества.
-        Всегда поддерживает ровно PIE_FAKE_LOW_COUNT паёв в нижнем диапазоне
-        и PIE_FAKE_HIGH_COUNT в верхнем.
+        Поддерживает нужное кол-во паёв в каждом диапазоне из PIE_RANGES.
         Вызывается из scheduler каждые 5 минут.
         """
         deactivated = await self.db.order.deactivate_expired()
         if deactivated:
             logger.info(f"Orders: deactivated {deactivated} expired")
 
-        # Считаем отдельно для каждого диапазона
-        current_low  = await self.db.order.count_active_fakes_by_range(PIE_KEYS_MIN, PIE_KEYS_MID)
-        current_high = await self.db.order.count_active_fakes_by_range(PIE_KEYS_MID, PIE_KEYS_MAX)
+        total_added = 0
 
-        need_low  = max(0, PIE_FAKE_LOW_COUNT  - current_low)
-        need_high = max(0, PIE_FAKE_HIGH_COUNT - current_high)
+        for pie_range in PIE_RANGES:
+            min_keys = pie_range["min"]
+            max_keys = pie_range["max"]
+            target   = pie_range["count"]
 
-        for _ in range(need_low):
-            await self.db.order.create(
-                total_keys=random_keys_low(),
-                expires_at=random_lifetime(),
-                is_fake=True,
-            )
-        for _ in range(need_high):
-            await self.db.order.create(
-                total_keys=random_keys_high(),
-                expires_at=random_lifetime(),
-                is_fake=True,
-            )
+            current = await self.db.order.count_active_fakes_by_range(min_keys, max_keys)
+            need    = max(0, target - current)
 
-        if need_low or need_high:
-            logger.info(
-                f"Orders: +{need_low} low fakes, +{need_high} high fakes "
-                f"(low now={current_low + need_low}, high now={current_high + need_high})"
-            )
+            for _ in range(need):
+                # Генерируем случайное кол-во ключей кратное PIE_KEYS_STEP
+                low  = min_keys // PIE_KEYS_STEP
+                high = max_keys // PIE_KEYS_STEP
+                total_keys = random.randint(low, high) * PIE_KEYS_STEP
+
+                await self.db.order.create(
+                    total_keys=total_keys,
+                    expires_at=random_lifetime(),
+                    is_fake=True,
+                )
+
+            if need:
+                logger.info(
+                    f"Orders: +{need} fakes [{min_keys}-{max_keys}] "
+                    f"(now={current + need}/{target})"
+                )
+                total_added += need
+
+        if not total_added:
+            logger.debug("Orders: all fake ranges are full")
 
 
 order_service = OrderService(db)

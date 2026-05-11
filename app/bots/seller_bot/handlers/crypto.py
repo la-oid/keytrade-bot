@@ -71,7 +71,7 @@ async def cashout_wallet_handler(msg: Message, state: FSMContext, user):
     """Адрес введён → создаём заявку и уведомляем админа."""
     wallet = msg.text.strip()
 
-    if not wallet:
+    if not wallet or len(wallet) < 20:
         await msg.answer(texts.crypto.INVALID_WALLET)
         return
 

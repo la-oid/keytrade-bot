@@ -6,7 +6,7 @@ from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext
 
 from app.shared import db
-from app.shared.constants import KEY_PRICE, KEY_CHECK_DURATION
+from app.shared.constants import KEY_PRICE_SELLER, KEY_CHECK_DURATION
 from app.services import key_service
 from ..states import MarketStates
 from ..texts import Texts
@@ -77,7 +77,7 @@ async def _process_keys(state: FSMContext, order, user, content: str) -> str:
         return texts.market.INVALID_FORMAT
 
     # Начисляем баланс продавцу
-    payout = order.total_keys * KEY_PRICE
+    payout = order.total_keys * KEY_PRICE_SELLER
     await db.user.upsert_user(
         user.telegram_id,
         balance=(user.balance or 0) + payout,

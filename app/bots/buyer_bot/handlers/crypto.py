@@ -3,7 +3,7 @@ from aiogram.types import CallbackQuery, Message
 from aiogram.fsm.context import FSMContext
 
 from app.shared import db, bots, settings
-from app.shared.constants import KEY_PRICE, CRYPTO_RATE_MARKUP_BUYER
+from app.shared.constants import KEY_PRICE_BUYER, CRYPTO_RATE_MARKUP_BUYER
 from app.db.enums import PaymentStatus
 from app.utils import get_network_by_id, get_usdt_rub_rate, notify_admins, validate_tx_hash
 from ..texts import Texts
@@ -30,7 +30,7 @@ async def pay_crypto_handler(call: CallbackQuery, state: FSMContext):
         await call.answer(texts.crypto.RATE_ERROR, show_alert=True)
         return
     
-    usdt_amount = round((KEY_PRICE * amount) / rate, 4)
+    usdt_amount = round((KEY_PRICE_BUYER * amount) / rate, 4)
     await state.update_data(usdt_amount=usdt_amount)
 
     await call.answer()
