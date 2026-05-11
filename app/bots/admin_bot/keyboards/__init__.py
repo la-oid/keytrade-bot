@@ -7,6 +7,7 @@ from .inline import (
     AccountKeyboards,
     SpecialOfferKeyboards,
     BroadcastKeyboards,
+    TenderKeyboards,
 )
 from .reply import MenuReplyKeyboards
 
@@ -21,6 +22,7 @@ class InlineKeyboards:
         self.account = AccountKeyboards()
         self.special_offer = SpecialOfferKeyboards()
         self.broadcast = BroadcastKeyboards()
+        self.tender = TenderKeyboards()
 
 
 class ReplyKeyboards:

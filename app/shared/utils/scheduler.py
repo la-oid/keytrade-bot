@@ -4,6 +4,7 @@ from loguru import logger
 from .helper import db
 from app.db.enums import PaymentStatus
 from app.utils import notify_payment_expired
+from app.shared.constants import TENDER_STATUS_INTERVAL_HOURS
 
 
 # Куда переходят просроченные статусы
@@ -45,8 +46,14 @@ async def deactivate_expired_offers_job():
     await special_offer_service.deactivate_expired()
 
 
+async def tender_status_job():
+    from app.services import tender_service
+    await tender_service.notify_admins()
+
+
 scheduler = AsyncIOScheduler()
 scheduler.add_job(check_expired_payments,        "interval", seconds=30, id="check_expired_payments")
 scheduler.add_job(maintain_fakes_job,            "interval", minutes=5,  id="maintain_fake_orders")
 scheduler.add_job(send_first_offers_job,         "interval", minutes=5,  id="send_first_offers")
 scheduler.add_job(deactivate_expired_offers_job, "interval", minutes=5,  id="deactivate_expired_offers")
+scheduler.add_job(tender_status_job,             "interval", hours=TENDER_STATUS_INTERVAL_HOURS, id="tender_status")

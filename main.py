@@ -4,6 +4,7 @@ from loguru import logger
 
 from app.shared import db, scheduler
 from app.bots import start_buyer_bot, start_seller_bot, start_admin_bot
+from app.services import tender_service
 
 
 # Настройка логирования
@@ -23,6 +24,9 @@ async def main():
     # Инициализация БД (создаёт таблицы, если их нет)
     await db.init()
     logger.info("База данных инициализирована")
+
+    # Гарантируем наличие активного тендера
+    await tender_service.ensure_active()
 
     # Запускаем scheduler
     scheduler.start()

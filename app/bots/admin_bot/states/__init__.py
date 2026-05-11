@@ -5,6 +5,7 @@ from .block import BlockStates
 from .account import AccountStates
 from .special_offer import SpecialOfferStates
 from .broadcast import BroadcastStates
+from .tender import TenderStates
 
 __all__ = [
     "VerifyStates",
@@ -13,4 +14,5 @@ __all__ = [
     "AccountStates",
     "SpecialOfferStates",
     "BroadcastStates",
+    "TenderStates",
 ]

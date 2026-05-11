@@ -6,6 +6,7 @@ from .block import BlockKeyboards
 from .account import AccountKeyboards
 from .special_offer import SpecialOfferKeyboards
 from .broadcast import BroadcastKeyboards
+from .tender import TenderKeyboards
 
 __all__ = [
     "MenuKeyboards",
@@ -16,4 +17,5 @@ __all__ = [
     "AccountKeyboards",
     "SpecialOfferKeyboards",
     "BroadcastKeyboards",
+    "TenderKeyboards",
 ]

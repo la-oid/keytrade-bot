@@ -6,6 +6,7 @@ class MenuButtonTexts:
     PAYOUTS = "Заявки на выплату"
     BLOCK_USER = "Блокировка"
     BROADCAST = "Рассылка"
+    TENDER = "Тендер"
 
 
 class VerifyButtonTexts:
@@ -48,6 +49,12 @@ class BroadcastButtonTexts:
     RETRY   = "✏️ Ввести заново"
 
 
+class TenderButtonTexts:
+    ADD    = "➕ Добавить"
+    QUEUE  = "📋 В очередь"
+    LAUNCH = "▶️ Запустить сейчас"
+
+
 class MiscButtonTexts:
     BACK = "← Назад"
 
@@ -61,4 +68,5 @@ class ButtonTexts:
     account = AccountButtonTexts
     special_offer = SpecialOfferButtonTexts
     broadcast = BroadcastButtonTexts
+    tender = TenderButtonTexts
     misc = MiscButtonTexts

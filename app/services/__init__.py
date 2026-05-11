@@ -2,5 +2,6 @@ from .key_service import key_service
 from .order_service import order_service
 from .special_offer_service import special_offer_service
 from .payment_service import payment_service
+from .tender_service import tender_service
 
-__all__ = ['key_service', 'order_service', 'special_offer_service', 'payment_service']
+__all__ = ['key_service', 'order_service', 'special_offer_service', 'payment_service', 'tender_service']

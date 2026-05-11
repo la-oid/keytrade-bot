@@ -157,6 +157,24 @@ class SpecialOfferTexts:
     SEND_FAILED = "Не удалось отправить пользователю <code>{user_id}</code>. Возможно, он не запускал бот."
 
 
+class TenderTexts:
+    """Тексты раздела тендеров"""
+
+    STATUS      = "Тендер: <b>{current}/{total} шт</b>"
+    NO_ACTIVE   = "Нет активного тендера."
+
+    ENTER_ADD   = "Сколько добавить?"
+    ENTER_COUNT = "Позиций в тендере?"
+
+    INVALID_COUNT = "Введите целое число больше 0."
+
+    ADDED   = "Добавлено <b>{amount}</b>. Тендер: <b>{current}/{total} шт</b>"
+    QUEUED  = "Тендер поставлен в очередь. Позиций: <b>{total}</b>"
+    LAUNCHED = "Тендер запущен. Позиций: <b>{total}</b>"
+
+    NOTIFY  = "Тендер: <b>{current}/{total} шт</b>"
+
+
 class BroadcastTexts:
     """Тексты раздела рассылки"""
 
@@ -193,5 +211,6 @@ class Texts:
     block = BlockTexts
     account = AccountTexts
     special_offer = SpecialOfferTexts
+    tender = TenderTexts
     broadcast = BroadcastTexts
     misc = MiscTexts

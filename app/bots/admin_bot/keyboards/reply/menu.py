@@ -24,6 +24,7 @@ class MenuReplyKeyboards(BaseReplyKeyboard):
                 ],
                 [
                     KeyboardButton(text=self.texts.menu.BROADCAST),
+                    KeyboardButton(text=self.texts.menu.TENDER),
                 ],
             ],
             resize_keyboard=True,
