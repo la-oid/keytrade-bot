@@ -128,8 +128,6 @@ class SpecialOfferTexts:
         "⚠️ Предложение ограничено - специальные условия для новых клиентов доступны не всегда.\n\n"
     )
 
-    OFFER_TEXT = "{custom_text}\n\n"
-
     OFFER_FOOTER = (
         "Количество ключей: <b>{keys_count}</b>\n"
         "Итого к оплате: <b>{total_price} ₽</b>\n"
