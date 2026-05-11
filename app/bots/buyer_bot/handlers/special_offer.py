@@ -33,7 +33,7 @@ async def offer_view_handler(call: CallbackQuery, user):
         )
         return
     
-    await send_offer(call, offer.keys_count, offer.expires_at)
+    await send_offer(call, offer.keys_count, offer.expires_at, offer.custom_text)
 
 
 # ─── Подумаю ─────────────────────────────────────────────────────────────────
