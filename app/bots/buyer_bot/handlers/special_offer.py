@@ -6,6 +6,7 @@ from aiogram.fsm.context import FSMContext
 
 from app.shared import db
 from app.shared.constants import KEY_PRICE_BUYER
+from app.utils import to_msk
 from .payment import confirm_order_handler
 from ..utils import send_offer
 from ..texts import Texts
@@ -47,7 +48,7 @@ async def offer_decline_handler(call: CallbackQuery, user):
 
     await call.message.edit_text(
         texts.special_offer.OFFER_DECLINED.format(
-            expires_at=(offer.expires_at + timedelta(hours=3)).strftime("%d.%m.%Y %H:%M") if offer else "—",
+            expires_at=to_msk(offer.expires_at).strftime("%d.%m.%Y %H:%M") if offer else "—",
         ),
         reply_markup=buttons.special_offer.back_to_profile(),
     )

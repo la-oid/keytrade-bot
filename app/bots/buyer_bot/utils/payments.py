@@ -5,6 +5,7 @@ from app.shared.constants import KEY_PRICE_BUYER
 from app.db.enums import PaymentStatus
 from datetime import timedelta
 from app.shared.constants import PAYMENT_DEADLINE_PAY
+from app.utils import to_msk
 from ..texts import Texts
 from ..keyboards import InlineKeyboards
  
@@ -80,7 +81,7 @@ async def _show_waiting_hash(msg: Message, payment):
 async def _show_payment_page(target: Message | CallbackQuery, payment) -> None:
     """Показывает страницу оплаты с ссылкой."""
 
-    msk_deadline = (payment.deadline + timedelta(hours=3)).strftime("%d.%m.%Y %H:%M")
+    msk_deadline = to_msk(payment.deadline).strftime("%d.%m.%Y %H:%M")
 
     text = texts.payment.PAYMENT_PAGE.format(
         payment_id=payment.id,

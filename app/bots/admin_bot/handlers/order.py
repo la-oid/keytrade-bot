@@ -4,6 +4,7 @@ from aiogram.fsm.context import FSMContext
 
 from app.shared import db
 from app.services import order_service
+from app.utils import to_msk
 from ..states import OrderStates
 from ..texts import Texts, ButtonTexts
 from ..keyboards import InlineKeyboards
@@ -76,7 +77,7 @@ async def order_create_handler(msg: Message, state: FSMContext):
         texts.order.ORDER_CREATED.format(
             order_id=order.id,
             total_keys=order.total_keys,
-            expires_at=order.expires_at.strftime("%d.%m.%Y %H:%M"),
+            expires_at=to_msk(order.expires_at).strftime("%d.%m.%Y %H:%M"),
         ),
         reply_markup=buttons.order.back_to_menu(),
     )

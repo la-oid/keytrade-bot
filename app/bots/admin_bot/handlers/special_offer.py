@@ -6,6 +6,7 @@ from aiogram.fsm.context import FSMContext
 
 from app.shared import db
 from app.bots.buyer_bot import send_offer
+from app.utils import to_msk
 from ..states import SpecialOfferStates
 from ..texts import Texts, ButtonTexts
 from ..keyboards import InlineKeyboards
@@ -81,7 +82,7 @@ async def special_offer_text(msg: Message, state: FSMContext):
             user_id=data["user_id"],
             keys_count=data["keys_count"],
             lifetime_hours=data["lifetime_hours"],
-            expires_at=expires_at.strftime("%d.%m.%Y %H:%M"),
+            expires_at=to_msk(expires_at).strftime("%d.%m.%Y %H:%M"),
             custom_text=data["custom_text"],
         ),
         reply_markup=buttons.special_offer.confirm(),
