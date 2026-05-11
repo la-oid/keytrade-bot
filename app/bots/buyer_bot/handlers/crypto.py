@@ -30,7 +30,7 @@ async def pay_crypto_handler(call: CallbackQuery, state: FSMContext):
         await call.answer(texts.crypto.RATE_ERROR, show_alert=True)
         return
     
-    usdt_amount = round((KEY_PRICE_BUYER * amount) / rate, 4)
+    usdt_amount = round((KEY_PRICE * amount) / rate, 4)
     await state.update_data(usdt_amount=usdt_amount)
 
     await call.answer()
@@ -138,7 +138,7 @@ async def crypto_hash_handler(msg: Message, state: FSMContext, user):
     # Уведомляем админов
     await notify_admins(
         texts.crypto.ADMIN_NOTIFY.format(
-            name=user.first_name or user.username,
+            name=f"@{user.username}" if user.username else user.first_name,
             user_id=user.telegram_id,
             network=network.name,
             price=payment.price,

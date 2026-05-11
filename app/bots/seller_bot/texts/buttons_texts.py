@@ -27,7 +27,7 @@ class CashoutButtonTexts:
 
 
 class MiscButtonTexts:
-    BACK = "← Назад"
+    BACK = "Назад"
 
 
 class ButtonTexts:

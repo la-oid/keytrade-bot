@@ -74,7 +74,7 @@ async def receive_pdf_handler(msg: Message, user):
     # Уведомляем админов: текст + сам PDF-файл
     pdf_file = FSInputFile(path)
     caption = texts.payment.ADMIN_PDF_RECEIVED.format(
-        name=user.first_name or user.username,
+        name=f"@{user.username}" if user.username else user.first_name,
         user_id=user.telegram_id,
         price=payment.price,
         amount=payment.amount,

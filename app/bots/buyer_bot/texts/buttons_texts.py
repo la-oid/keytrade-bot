@@ -8,7 +8,7 @@ class MenuButtonTexts:
 
 class ProfileButtonTexts:
     ORDERS = "Мои заказы"
-    ORDER = "#{id} — {amount} шт., {price} ₽"
+    ORDER = "#{id} — {amount} шт; {price} ₽"
     SUPPORT = "Написать в поддержку"
     SPECIAL_OFFER = "🎁 Спец предложение"
 

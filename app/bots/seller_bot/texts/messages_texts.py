@@ -159,7 +159,7 @@ class CryptoTexts:
  
     ADMIN_NOTIFY_CRYPTO = (
         "💎 Заявка на вывод (крипта)\n\n"
-        "Пользователь: <code>{user_id}</code>\n"
+        "Пользователь: <b>{name}</b> (ID: <code>{user_id}</code>)\n"
         "Сумма: <b>{amount:.2f} ₽</b> / <b>{usdt_amount:.4f} USDT</b>\n"
         "Сеть: <b>{network}</b>\n"
         "Кошелёк: <code>{wallet}</code>\n"

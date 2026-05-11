@@ -75,14 +75,25 @@ async def _process_keys(state: FSMContext, order, user, content: str) -> str:
     sold = await key_service.sell(keys, owner_id=user.telegram_id, order_id=order.id)
     if not sold:
         return texts.market.INVALID_FORMAT
-
-    # Начисляем баланс продавцу
+    
+    
+    # Начисляем баланс продавцу — при 2-й продаже замораживаем
     payout = order.total_keys * KEY_PRICE_SELLER
-    await db.user.upsert_user(
-        user.telegram_id,
-        balance=(user.balance or 0) + payout,
-        completed_orders_count=(user.completed_orders_count or 0) + 1,
-    )
+    is_second_sale = (user.completed_orders_count or 0) == 1
+
+    if is_second_sale:
+        await db.user.upsert_user(
+            user.telegram_id,
+            frozen_balance=(user.frozen_balance or 0) + payout,
+            completed_orders_count=(user.completed_orders_count or 0) + 1,
+        )
+    else:
+        await db.user.upsert_user(
+            user.telegram_id,
+            balance=(user.balance or 0) + payout,
+            completed_orders_count=(user.completed_orders_count or 0) + 1,
+        )
+
 
     # Деактивируем пай после успешной продажи
     await db.order.set_active(order.id, False)

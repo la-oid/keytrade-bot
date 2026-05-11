@@ -84,7 +84,7 @@ async def cancel_active_handler(call: CallbackQuery, state: FSMContext, user):
         
         # Уведомляем админов об отмене
         await notify_admins(texts.payment.ADMIN_CANCELLED.format(
-            name=user.first_name or user.username,
+            name=f"@{user.username}" if user.username else user.first_name,
             user_id=user.telegram_id,
             bank=pending.bank,
             price=pending.price,

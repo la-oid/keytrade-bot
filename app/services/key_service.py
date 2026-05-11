@@ -20,7 +20,7 @@ class KeyService:
         """Возвращает содержимое txt-файла с ключами и имя файла."""
         keys = await self.db.key.get_by_payment(payment_id)
         content = "\n".join(k.key_value for k in keys).encode("utf-8")
-        filename = f"keys_order_{payment_id}.txt"
+        filename = f"PVV_order_{payment_id}.txt"
         return content, filename
 
     async def validate(self, keys: list[str], owner_id: int) -> bool:
