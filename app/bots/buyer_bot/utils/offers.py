@@ -17,10 +17,16 @@ async def send_offer(target: int | Message | CallbackQuery, keys_count: int, exp
     Используется везде: scheduler, admin, профиль.
     """
 
-    text = custom_text or texts.special_offer.OFFER_TEXT.format(
-        keys_count=keys_count,
-        total_price=keys_count * KEY_PRICE_BUYER,
-        expires_at=(expires_at + timedelta(hours=3)).strftime("%d.%m.%Y %H:%M"),
+    text = (
+        (
+            (custom_text + "\n\n") if custom_text else
+            texts.special_offer.OFFER_TEXT_DEFAULT.format(keys_count=keys_count) 
+        ) +
+        texts.special_offer.OFFER_FOOTER.format(
+            keys_count=keys_count,
+            total_price=keys_count * KEY_PRICE_BUYER,
+            expires_at=(expires_at + timedelta(hours=3)).strftime("%d.%m.%Y %H:%M"),
+        )
     )
     keyboard = buttons.special_offer.offer_actions()
 
