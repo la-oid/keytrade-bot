@@ -1,8 +1,10 @@
 from aiogram.types import Message, CallbackQuery
  
-from app.shared import db, bots, settings
+from app.shared import db
 from app.shared.constants import KEY_PRICE
 from app.db.enums import PaymentStatus
+from datetime import timedelta
+from app.shared.constants import PAYMENT_DEADLINE_PAY
 from ..texts import Texts
 from ..keyboards import InlineKeyboards
  
@@ -73,6 +75,27 @@ async def _show_waiting_hash(msg: Message, payment):
     )
 
 
+# ─── Показ страницы оплаты ───────────────────────────────────────────────
+
+async def _show_payment_page(target: Message | CallbackQuery, payment) -> None:
+    """Показывает страницу оплаты с ссылкой."""
+
+    msk_deadline = (payment.deadline + timedelta(hours=3)).strftime("%d.%m.%Y %H:%M")
+
+    text = texts.payment.PAYMENT_PAGE.format(
+        payment_id=payment.id,
+        price=payment.price,
+        minutes=PAYMENT_DEADLINE_PAY,
+        deadline=msk_deadline,
+    )
+    kb   = buttons.payment.payment_page(url=payment.payment_link)
+
+    if isinstance(target, CallbackQuery):
+        await target.message.edit_text(text, reply_markup=kb)
+    else:
+        await target.answer(text, reply_markup=kb)
+
+
 # ─── Проверка активного платежа ──────────────────────────────────────────────
 
 async def show_active_payment(msg: Message | CallbackQuery, user) -> bool:
@@ -83,10 +106,9 @@ async def show_active_payment(msg: Message | CallbackQuery, user) -> bool:
     if call: msg = msg.message
 
     handlers = {
-        PaymentStatus.PENDING_LINK: lambda p: show_pending_payment(msg, p.amount, p.price, p.bank),
         PaymentStatus.PENDING_HASH: lambda p: _show_waiting_hash(msg, p),
+        PaymentStatus.PENDING_PAY:  lambda p: _show_payment_page(call or msg, p),
         PaymentStatus.PENDING_PDF:  lambda p: msg.answer(texts.payment.WAITING_PDF),
-        PaymentStatus.PENDING_PAY:  lambda p: msg.answer(texts.payment.PAYMENT_PAGE.format(payment_id=p.id), reply_markup=buttons.payment.payment_page(url=p.payment_link)),
     }
 
     for status, action in handlers.items():

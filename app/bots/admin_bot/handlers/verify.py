@@ -46,7 +46,7 @@ async def enter_user_id_handler(msg: Message, state: FSMContext):
 @r.callback_query(F.data.startswith("verify_order_"))
 async def verify_order_handler(call: CallbackQuery):
     """Детали заказа + кнопка подтверждения."""
-    payment_id = int(call.data.split("_")[2])
+    payment_id = call.data.split("_")[2]
     payment = await db.payment.get_by_id(payment_id)
 
     await call.answer()
@@ -70,18 +70,23 @@ async def verify_order_handler(call: CallbackQuery):
         text = texts.verify.ORDER_DETAIL_SPB.format(
             id=payment.id,
             user_id=payment.user_id,
-            bank=payment.bank or "—",
             price=payment.price,
             amount=payment.amount,
         )
 
-    await call.message.edit_text(text, reply_markup=buttons.verify.confirm(payment.id))
+    if call.message.document or call.message.photo:
+        await call.message.delete()
+        send = call.message.answer
+    else:
+        send = call.message.edit_text
+
+    await send(text, reply_markup=buttons.verify.confirm(payment.id))
 
 
 @r.callback_query(F.data.startswith("verify_confirm_"))
 async def verify_confirm_handler(call: CallbackQuery):
     """Подтверждение оплаты → COMPLETED + уведомление пользователю с ключами."""
-    payment_id = int(call.data.split("_")[2])
+    payment_id = call.data.split("_")[2]
     payment = await db.payment.get_by_id(payment_id)
 
     await call.answer()
@@ -89,7 +94,7 @@ async def verify_confirm_handler(call: CallbackQuery):
         return
 
     # Переводим в COMPLETED
-    await db.payment.set_status(payment.id, PaymentStatus.COMPLETED)
+    await db.payment.upsert_payment(payment.id, status=PaymentStatus.COMPLETED)
 
     # Деактивируем спецпредложение если заказ был по офферу
     if payment.special_offer_id:

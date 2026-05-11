@@ -135,12 +135,15 @@ async def cashout_card_number_handler(msg: Message, state: FSMContext, user):
     )
 
     # Уведомляем админов
-    await notify_admins(texts.cashout.ADMIN_NOTIFY_CARD.format(
-        user_id=user.telegram_id,
-        amount=amount,
-        card=card,
-        cashout_id=cashout.id,
-    ))
+    await notify_admins(
+        texts.cashout.ADMIN_NOTIFY_CARD.format(
+            user_id=user.telegram_id,
+            amount=amount,
+            card=card,
+            cashout_id=cashout.id
+        ),
+        reply_markup=buttons.cashout.cashout_notify(cashout.id)
+    )
 
 
 # ─── Узнать статус заявки ────────────────────────────────────────────────────
@@ -205,7 +208,7 @@ async def cashout_history_handler(call: CallbackQuery, user):
 @r.callback_query(F.data.startswith("cashout_history_"))
 async def cashout_history_detail_handler(call: CallbackQuery, user):
     """Нажали на транзакцию → показываем детали."""
-    cashout_id = int(call.data.split("_")[2])
+    cashout_id = call.data.split("_")[2]
     cashout = await db.cashout.get_by_id(cashout_id)
  
     await call.answer()

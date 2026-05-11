@@ -98,7 +98,7 @@ async def order_delete_menu_handler(call: CallbackQuery):
 @r.callback_query(F.data.startswith("order_delete_"))
 async def order_delete_handler(call: CallbackQuery):
     """Нажатие на пай → удаляем, показываем подтверждение + кнопку Назад."""
-    order_id = int(call.data.split("_")[2])
+    order_id = call.data.split("_")[2]
     order = await db.order.get_by_id(order_id)
 
     await call.answer()

@@ -4,24 +4,6 @@ class MenuTexts:
     START_TEXT = "Добро пожаловать в админ-панель."
 
 
-class LinkTexts:
-    """Тексты для создания ссылки"""
-
-    ENTER_DATA = (
-        "Введите данные через запятую:\n\n"
-        "<b>Банк, Сумма, Телефон/Карта</b>\n\n"
-        "Пример: <code>Сбербанк, 5000, 79001234567</code>"
-    )
-
-    INVALID_DATA = "Неверный формат. Введите 3 параметра через запятую."
-
-    PAYMENT_LINK = "Ваши реквизиты для оплаты:\n\n{url}"
-
-    LINK_SENT = "Ссылка успешно отправлена пользователю {user_id}."
-
-    NO_PENDING_PAYMENT = "У пользователя нет активного заказа."
-
-
 class VerifyTexts:
     """Тексты раздела проверки оплаты"""
 
@@ -32,7 +14,6 @@ class VerifyTexts:
     ORDER_DETAIL_SPB = (
         "Заказ №{id}\n\n"
         "Пользователь: <code>{user_id}</code>\n"
-        "Банк: <b>{bank}</b>\n"
         "Сумма: <b>{price:.2f} ₽</b>\n"
         "Количество: <b>{amount} шт.</b>"
     )
@@ -187,7 +168,6 @@ class MiscTexts:
 class Texts:
     """Все тексты"""
     menu = MenuTexts
-    link = LinkTexts
     verify = VerifyTexts
     order = OrderTexts
     cashout = CashoutTexts

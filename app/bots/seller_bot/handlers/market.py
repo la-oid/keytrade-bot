@@ -11,7 +11,7 @@ from app.services import key_service
 from ..states import MarketStates
 from ..texts import Texts
 from ..keyboards import InlineKeyboards
-from ..utils import parse_keys_file
+from ..utils import parse_keys_file, is_text_file, download_text_file
 
 r = Router()
 
@@ -24,7 +24,7 @@ buttons = InlineKeyboards()
 @r.callback_query(F.data.startswith("market_take_"))
 async def market_take_handler(call: CallbackQuery):
     """Нажали на пай → редактируем сообщение, спрашиваем подтверждение."""
-    order_id = int(call.data.split("_")[2])
+    order_id = call.data.split("_")[2]
     order = await db.order.get_by_id(order_id)
 
     await call.answer()
@@ -44,7 +44,7 @@ async def market_take_handler(call: CallbackQuery):
 @r.callback_query(F.data.startswith("market_accept_"))
 async def market_accept_handler(call: CallbackQuery, state: FSMContext):
     """Нажали Принять → переходим в ожидание файла."""
-    order_id = int(call.data.split("_")[2])
+    order_id = call.data.split("_")[2]
     order = await db.order.get_by_id(order_id)
 
     await call.answer()
@@ -62,7 +62,7 @@ async def market_accept_handler(call: CallbackQuery, state: FSMContext):
 
 # ─── Utils ───────────────────────────────────────────────────────────────────
 
-async def _process_keys(msg: Message, order, user, content: str) -> str:
+async def _process_keys(state: FSMContext, order, user, content: str) -> str:
     """
     Валидирует и продаёт ключи из файла.
     Возвращает текст результата — успех или ошибку.
@@ -76,13 +76,18 @@ async def _process_keys(msg: Message, order, user, content: str) -> str:
     if not sold:
         return texts.market.INVALID_FORMAT
 
-    await db.order.set_active(order.id, False)
+    # Начисляем баланс продавцу
     payout = order.total_keys * KEY_PRICE
     await db.user.upsert_user(
         user.telegram_id,
         balance=(user.balance or 0) + payout,
         completed_orders_count=(user.completed_orders_count or 0) + 1,
     )
+
+    # Деактивируем пай после успешной продажи
+    await db.order.set_active(order.id, False)
+
+    await state.clear()
     return texts.market.SUCCESS.format(payout=payout)
 
 
@@ -91,33 +96,31 @@ async def _process_keys(msg: Message, order, user, content: str) -> str:
 @r.message(MarketStates.waiting_keys_file, F.document)
 async def market_keys_received(msg: Message, state: FSMContext, user):
     """Получили файл → показываем статус, проверяем, показываем результат."""
-    data = await state.get_data()
+    data  = await state.get_data()
     order = await db.order.get_by_id(data["order_id"])
 
+    # Пай мог истечь пока пользователь готовил файл
     if not order or not order.is_active:
         await state.clear()
         await msg.answer(texts.market.ORDER_NOT_FOUND)
         return
 
-    if not msg.document.file_name.lower().endswith(".txt"):
+    # Принимаем только .txt файлы
+    if not is_text_file(msg.document):
         await msg.answer(texts.market.INVALID_FORMAT)
         return
 
     status_msg = await msg.answer(texts.market.CHECKING)
-    started = time.monotonic()
+    started    = time.monotonic()
 
-    file = await msg.bot.get_file(msg.document.file_id)
-    buffer = await msg.bot.download_file(file.file_path)
-    content = buffer.read().decode("utf-8", errors="ignore")
-
-    result = await _process_keys(msg, order, user, content)
+    content = await download_text_file(msg)
+    result  = await _process_keys(state, order, user, content)
 
     # Добиваем до KEY_CHECK_DURATION секунд если проверка была быстрее
     elapsed = time.monotonic() - started
     if elapsed < KEY_CHECK_DURATION:
         await asyncio.sleep(KEY_CHECK_DURATION - elapsed)
 
-    await state.clear()
     await status_msg.edit_text(result)
 
 

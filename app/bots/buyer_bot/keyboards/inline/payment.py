@@ -1,7 +1,6 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 from .base import BaseInlineKeyboard
-from app.shared.constants import BANKS
 
 
 class PaymentKeyboards(BaseInlineKeyboard):
@@ -12,18 +11,6 @@ class PaymentKeyboards(BaseInlineKeyboard):
             inline_keyboard=[
                 [InlineKeyboardButton(text=self.texts.payment.SPB, callback_data="pay_spb")],
                 [InlineKeyboardButton(text=self.texts.crypto.CRYPTO,  callback_data="pay_crypto")],
-            ]
-        )
-
-    @property
-    def choose_bank(self) -> InlineKeyboardMarkup:
-        return InlineKeyboardMarkup(
-            inline_keyboard=[
-                [
-                    InlineKeyboardButton(text=bank, callback_data=f"bank_{bank.lower()}")
-                    for bank in BANKS
-                ],
-                [InlineKeyboardButton(text=self.texts.misc.BACK, callback_data="confirm_order")],
             ]
         )
     
@@ -51,3 +38,12 @@ class PaymentKeyboards(BaseInlineKeyboard):
                 [InlineKeyboardButton(text=self.texts.payment.SENT, callback_data="payment_sent")],
             ]
         )
+    
+    def payment_notify(self, payment_id: str) -> InlineKeyboardMarkup:
+        """Кнопка под уведомлением о новом платеже."""
+        return InlineKeyboardMarkup(inline_keyboard=[[
+            InlineKeyboardButton(
+                text="Открыть заказ",
+                callback_data=f"verify_order_{payment_id}",
+            )
+        ]])
