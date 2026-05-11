@@ -22,6 +22,9 @@ class MenuReplyKeyboards(BaseReplyKeyboard):
                     KeyboardButton(text=self.texts.menu.USER_ACCOUNT),
                     KeyboardButton(text=self.texts.menu.BLOCK_USER),
                 ],
+                [
+                    KeyboardButton(text=self.texts.menu.BROADCAST),
+                ],
             ],
             resize_keyboard=True,
         )

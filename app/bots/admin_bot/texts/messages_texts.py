@@ -157,11 +157,30 @@ class SpecialOfferTexts:
     SEND_FAILED = "Не удалось отправить пользователю <code>{user_id}</code>. Возможно, он не запускал бот."
 
 
+class BroadcastTexts:
+    """Тексты раздела рассылки"""
+
+    ENTER_TEXT = "Введите текст уведомления:"
+
+    CONFIRM_PREVIEW = (
+        "Проверьте текст рассылки:\n\n"
+        "{text}"
+    )
+
+    SENDING = "Рассылка выполняется..."
+
+    DONE = (
+        "Рассылка завершена.\n\n"
+        "Отправлено: <b>{sent}</b>\n"
+        "Не доставлено: <b>{failed}</b>"
+    )
+
+
 class MiscTexts:
     """Общие тексты"""
 
     ENTER_USER_ID = "Введите Telegram ID пользователя:"
-    
+
     INVALID_USER_ID = "ID должен быть числом."
 
 
@@ -174,4 +193,5 @@ class Texts:
     block = BlockTexts
     account = AccountTexts
     special_offer = SpecialOfferTexts
+    broadcast = BroadcastTexts
     misc = MiscTexts

@@ -5,6 +5,7 @@ class MenuButtonTexts:
     CREATE_PIE = "Паи"
     PAYOUTS = "Заявки на выплату"
     BLOCK_USER = "Блокировка"
+    BROADCAST = "Рассылка"
 
 
 class VerifyButtonTexts:
@@ -42,6 +43,11 @@ class SpecialOfferButtonTexts:
     RETRY   = "✏️ Ввести заново"
 
 
+class BroadcastButtonTexts:
+    CONFIRM = "✅ Да, разослать"
+    RETRY   = "✏️ Ввести заново"
+
+
 class MiscButtonTexts:
     BACK = "← Назад"
 
@@ -54,4 +60,5 @@ class ButtonTexts:
     block = BlockButtonTexts
     account = AccountButtonTexts
     special_offer = SpecialOfferButtonTexts
+    broadcast = BroadcastButtonTexts
     misc = MiscButtonTexts

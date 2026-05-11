@@ -5,6 +5,7 @@ from .cashout import r as cashout_router
 from .block import r as block_router
 from .account import r as account_router
 from .special_offer import r as special_offer_router
+from .broadcast import r as broadcast_router
 
 def include_routers(dp):
     dp.include_router(start_router)
@@ -14,3 +15,4 @@ def include_routers(dp):
     dp.include_router(block_router)
     dp.include_router(account_router)
     dp.include_router(special_offer_router)
+    dp.include_router(broadcast_router)

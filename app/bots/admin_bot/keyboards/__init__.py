@@ -1,11 +1,12 @@
 from .inline import (
-    MenuKeyboards, 
-    VerifyKeyboards, 
-    OrderKeyboards, 
-    CashoutKeyboards, 
-    BlockKeyboards, 
+    MenuKeyboards,
+    VerifyKeyboards,
+    OrderKeyboards,
+    CashoutKeyboards,
+    BlockKeyboards,
     AccountKeyboards,
-    SpecialOfferKeyboards
+    SpecialOfferKeyboards,
+    BroadcastKeyboards,
 )
 from .reply import MenuReplyKeyboards
 
@@ -19,6 +20,7 @@ class InlineKeyboards:
         self.block = BlockKeyboards()
         self.account = AccountKeyboards()
         self.special_offer = SpecialOfferKeyboards()
+        self.broadcast = BroadcastKeyboards()
 
 
 class ReplyKeyboards:

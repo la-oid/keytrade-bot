@@ -36,6 +36,13 @@ class UserRepository:
         async with self.db.async_session() as session:
             return await self._get_user(session, telegram_id)
 
+    async def get_all_users(self) -> list[User]:
+        """Возвращает всех не заблокированных пользователей."""
+        async with self.db.async_session() as session:
+            return (await session.execute(
+                select(User).where(User.is_blocked == False)
+            )).scalars().all()
+
     async def get_users_for_first_offer(self, registered_before: datetime) -> list[User]:
         """
         Возвращает пользователей которым нужно отправить первое спецпредложение:

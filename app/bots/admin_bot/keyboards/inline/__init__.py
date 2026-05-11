@@ -5,13 +5,15 @@ from .cashout import CashoutKeyboards
 from .block import BlockKeyboards
 from .account import AccountKeyboards
 from .special_offer import SpecialOfferKeyboards
+from .broadcast import BroadcastKeyboards
 
 __all__ = [
-    "MenuKeyboards", 
-    "VerifyKeyboards", 
-    "OrderKeyboards", 
-    "CashoutKeyboards", 
-    "BlockKeyboards", 
+    "MenuKeyboards",
+    "VerifyKeyboards",
+    "OrderKeyboards",
+    "CashoutKeyboards",
+    "BlockKeyboards",
     "AccountKeyboards",
-    "SpecialOfferKeyboards"
+    "SpecialOfferKeyboards",
+    "BroadcastKeyboards",
 ]
