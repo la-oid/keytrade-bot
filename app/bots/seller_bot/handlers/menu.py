@@ -72,10 +72,7 @@ async def market_handler(event: Message | CallbackQuery, state: FSMContext):
 @r.message(F.text == ButtonTexts.menu.ABOUT)
 async def about_handler(msg: Message):
     await msg.delete()
-    await msg.answer_photo(
-        photo=FSInputFile(SellerImages.ABOUT),
-        caption=texts.menu.ABOUT_TEXT,
-    )
+    await msg.answer(texts.menu.ABOUT_TEXT)
 
 
 # ─── Поддержка ───────────────────────────────────────────────────────────────

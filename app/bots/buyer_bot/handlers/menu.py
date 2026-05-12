@@ -30,10 +30,7 @@ async def profile_handler(event: Message | CallbackQuery, user):
 @r.message(F.text == ButtonTexts.menu.ABOUT)
 async def about_reply_handler(msg: Message):
     await msg.delete()
-    await msg.answer_photo(
-        photo=FSInputFile(BuyerImages.ABOUT),
-        caption=texts.menu.ABOUT_TEXT,
-    )
+    await msg.answer(texts.menu.ABOUT_TEXT)
 
 
 @r.message(F.text == ButtonTexts.menu.SUPPORT)

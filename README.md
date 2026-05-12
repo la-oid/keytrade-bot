@@ -226,7 +226,6 @@ sudo systemctl restart keytrade-bot
 data/images/
 ├── buyer/
 │   ├── start.png            ← приветственный экран
-│   ├── about.png            ← экран «О компании»
 │   ├── profile.png          ← личный кабинет
 │   ├── medium_wholesale.png ← экран среднего опта
 │   ├── large_wholesale.png  ← экран крупного опта
@@ -234,7 +233,6 @@ data/images/
 │   └── order_completed.png  ← заказ выполнен
 └── seller/
     ├── start.png            ← приветственный экран
-    ├── about.png            ← экран «О компании»
     ├── profile.png          ← личный кабинет
     ├── orders.png           ← список доступных заказов
     ├── keys_accepted.png    ← коды успешно приняты
