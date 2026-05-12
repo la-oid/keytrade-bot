@@ -1,13 +1,14 @@
 class MenuButtonTexts:
-    PROFILE = "Профиль"
+    PROFILE = "👤 Профиль"
     MEDIUM_WHOLESALE = "Средний опт"
-    LARGE_WHOLESALE = "Крупный опт"
-    ABOUT = "О магазине"
-    SUPPORT = "Поддержка"
+    LARGE_WHOLESALE = "📦 Крупный опт"
+    ABOUT = "🏢 О магазине"
+    SUPPORT = "🛠 Поддержка"
+    CONTACT_SUPPORT = "Обратиться к специалисту"
 
 
 class ProfileButtonTexts:
-    ORDERS = "Мои заказы"
+    ORDERS = "📦 Мои заказы"
     ORDER = "#{id} — {amount} шт; {price} ₽"
     SUPPORT = "Написать в поддержку"
     SPECIAL_OFFER = "🎁 Спец предложение"
@@ -38,7 +39,7 @@ class SpecialOfferButtonTexts:
 
 
 class CryptoButtonTexts:
-    CRYPTO = "Крипта"
+    CRYPTO = "Криптовалюта"
     PAID   = "Я оплатил"
 
 

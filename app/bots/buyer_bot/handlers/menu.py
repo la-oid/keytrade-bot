@@ -34,4 +34,4 @@ async def about_reply_handler(msg: Message):
 @r.message(F.text == ButtonTexts.menu.SUPPORT)
 async def support_reply_handler(msg: Message):
     await msg.delete()
-    await msg.answer(texts.menu.SUPPORT_TEXT)
+    await msg.answer(texts.menu.SUPPORT_TEXT, reply_markup=buttons.menu.support)
