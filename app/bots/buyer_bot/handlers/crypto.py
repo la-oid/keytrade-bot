@@ -30,7 +30,7 @@ async def pay_crypto_handler(call: CallbackQuery, state: FSMContext):
         await call.answer(texts.crypto.RATE_ERROR, show_alert=True)
         return
     
-    usdt_amount = round((KEY_PRICE * amount) / rate, 4)
+    usdt_amount = round((KEY_PRICE_BUYER * amount) / rate, 4)
     await state.update_data(usdt_amount=usdt_amount)
 
     await call.answer()
