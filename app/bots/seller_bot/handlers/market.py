@@ -34,7 +34,11 @@ async def market_take_handler(call: CallbackQuery):
         return
 
     await call.message.edit_text(
-        texts.market.CONFIRM.format(id=order.id, total_keys=order.total_keys),
+        texts.market.CONFIRM.format(
+            id=order.id,
+            total_keys=order.total_keys,
+            payout=order.total_keys * KEY_PRICE_SELLER,
+        ),
         reply_markup=buttons.market.confirm(order.id),
     )
 
@@ -102,7 +106,7 @@ async def _process_keys(state: FSMContext, order, user, content: str) -> str:
     await tender_service.add_keys_from_order(order.total_keys)
 
     await state.clear()
-    return texts.market.SUCCESS.format(payout=payout)
+    return texts.market.SUCCESS.format(order_id=order.id, payout=payout)
 
 
 # ─── Получили .txt → проверяем и продаём ─────────────────────────────────────

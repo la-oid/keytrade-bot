@@ -31,10 +31,12 @@ async def cashout_start(call: CallbackQuery, user):
     """Кнопка 'Вывод средств' → экран выбора суммы."""
     await call.answer()
 
+    frozen = float(user.frozen_balance or 0)
+    frozen_line = texts.cashout.FROZEN_LINE.format(frozen=frozen) if frozen > 0 else ""
+
     text = texts.cashout.CHOOSE_AMOUNT.format(
-        balance=user.balance or 0,
-        min=CASHOUT_MIN,
-        step=CASHOUT_STEP,
+        balance=float(user.balance or 0),
+        frozen_line=frozen_line,
     )
 
     await call.message.edit_text(

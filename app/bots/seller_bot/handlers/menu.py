@@ -3,7 +3,7 @@ from aiogram.types import CallbackQuery, Message
 from aiogram.fsm.context import FSMContext
 
 from app.shared import db
-from app.shared.config import settings
+from app.shared.constants import KEY_PRICE_SELLER
 from ..texts import Texts, ButtonTexts
 from ..keyboards import InlineKeyboards
 
@@ -20,13 +20,10 @@ buttons = InlineKeyboards()
 async def profile_handler(event: Message | CallbackQuery, user):
     """Профиль — ID, баланс, кол-во выполненных заказов + кнопки."""
 
-    frozen = float(user.frozen_balance or 0)
-    frozen_line = texts.profile.FROZEN_LINE.format(frozen=frozen) if frozen > 0 else ""
-
     text = texts.profile.PROFILE_TEXT.format(
+        nickname=f"@{user.username}" if user.username else str(user.telegram_id),
         user_id=user.telegram_id,
-        balance=user.balance or 0,
-        frozen_line=frozen_line,
+        balance=float(user.balance or 0),
         completed=user.completed_orders_count or 0,
     )
     keyboard = buttons.profile.profile()
@@ -49,7 +46,15 @@ async def market_handler(event: Message | CallbackQuery, state: FSMContext):
 
     orders = await db.order.get_all_active()
     keyboard = buttons.market.order_list(orders)
-    text = texts.market.MARKET_INTRO
+
+    tender   = await db.tender.get_active()
+    filled   = tender.current_keys if tender else 0
+    capacity = tender.total_keys   if tender else 0
+    progress = round(filled / capacity * 100, 1) if capacity else 0.0
+
+    text = texts.market.MARKET_INTRO.format(
+        rate=KEY_PRICE_SELLER,
+    )
 
     if isinstance(event, CallbackQuery):
         await event.answer()
@@ -72,4 +77,4 @@ async def about_handler(msg: Message):
 @r.message(F.text == ButtonTexts.menu.SUPPORT)
 async def support_handler(msg: Message):
     await msg.delete()
-    await msg.answer(texts.menu.SUPPORT_TEXT.format(username=settings.app.SUPPORT_USERNAME))
+    await msg.answer(texts.menu.SUPPORT_TEXT, reply_markup=buttons.menu.support)
