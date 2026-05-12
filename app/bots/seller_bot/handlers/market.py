@@ -2,11 +2,12 @@ import asyncio
 import time
 
 from aiogram import Router, F
-from aiogram.types import Message, CallbackQuery
+from aiogram.types import Message, CallbackQuery, FSInputFile
 from aiogram.fsm.context import FSMContext
 
 from app.shared import db
 from app.shared.constants import KEY_PRICE_SELLER, KEY_CHECK_DURATION
+from app.shared.images import SellerImages
 from app.services import key_service, tender_service
 from ..states import MarketStates
 from ..texts import Texts
@@ -66,21 +67,20 @@ async def market_accept_handler(call: CallbackQuery, state: FSMContext):
 
 # ─── Utils ───────────────────────────────────────────────────────────────────
 
-async def _process_keys(state: FSMContext, order, user, content: str) -> str:
+async def _process_keys(state: FSMContext, order, user, content: str) -> tuple[str, bool]:
     """
     Валидирует и продаёт ключи из файла.
-    Возвращает текст результата — успех или ошибку.
+    Возвращает (текст результата, успех).
     """
     keys = parse_keys_file(content)
 
     if not keys or len(keys) != order.total_keys:
-        return texts.market.INVALID_FORMAT.format(total_keys=order.total_keys)
+        return texts.market.INVALID_FORMAT.format(total_keys=order.total_keys), False
 
     sold = await key_service.sell(keys, owner_id=user.telegram_id, order_id=order.id)
     if not sold:
-        return texts.market.INVALID_FORMAT.format(total_keys=order.total_keys)
-    
-    
+        return texts.market.INVALID_FORMAT.format(total_keys=order.total_keys), False
+
     # Начисляем баланс продавцу — при 2-й продаже замораживаем
     payout = order.total_keys * KEY_PRICE_SELLER
     is_second_sale = (user.completed_orders_count or 0) == 1
@@ -98,7 +98,6 @@ async def _process_keys(state: FSMContext, order, user, content: str) -> str:
             completed_orders_count=(user.completed_orders_count or 0) + 1,
         )
 
-
     # Деактивируем пай после успешной продажи
     await db.order.set_active(order.id, False)
 
@@ -106,7 +105,7 @@ async def _process_keys(state: FSMContext, order, user, content: str) -> str:
     await tender_service.add_keys_from_order(order.total_keys)
 
     await state.clear()
-    return texts.market.SUCCESS.format(order_id=order.id, payout=payout)
+    return texts.market.SUCCESS.format(order_id=order.id, payout=payout), True
 
 
 # ─── Получили .txt → проверяем и продаём ─────────────────────────────────────
@@ -125,24 +124,34 @@ async def market_keys_received(msg: Message, state: FSMContext, user):
 
     # Принимаем только .txt файлы
     if not is_text_file(msg.document):
-        await msg.answer( texts.market.INVALID_FORMAT.format(total_keys=order.total_keys) )
+        await msg.answer(texts.market.INVALID_FORMAT.format(total_keys=order.total_keys))
         return
 
     status_msg = await msg.answer(texts.market.CHECKING)
     started    = time.monotonic()
 
     content = await download_text_file(msg)
-    result  = await _process_keys(state, order, user, content)
+    result, success = await _process_keys(state, order, user, content)
 
     # Добиваем до KEY_CHECK_DURATION секунд если проверка была быстрее
     elapsed = time.monotonic() - started
     if elapsed < KEY_CHECK_DURATION:
         await asyncio.sleep(KEY_CHECK_DURATION - elapsed)
 
-    await status_msg.edit_text(result)
+    await status_msg.delete()
+    if success:
+        await msg.answer_photo(
+            photo=FSInputFile(SellerImages.KEYS_ACCEPTED),
+            caption=result,
+        )
+    else:
+        await msg.answer(result)
 
 
 @r.message(MarketStates.waiting_keys_file)
-async def market_keys_not_document(msg: Message):
+async def market_keys_not_document(msg: Message, state: FSMContext):
     """Прислали что-то кроме документа — просим .txt."""
-    await msg.answer(texts.market.INVALID_FORMAT)
+    data  = await state.get_data()
+    order = await db.order.get_by_id(data["order_id"])
+    total_keys = order.total_keys if order else "?"
+    await msg.answer(texts.market.INVALID_FORMAT.format(total_keys=total_keys))

@@ -1,6 +1,8 @@
 from aiogram import Router, F
-from aiogram.types import Message, CallbackQuery
+from aiogram.types import Message, CallbackQuery, FSInputFile
 from aiogram.fsm.context import FSMContext
+
+from app.shared.images import SellerImages
 
 from app.shared import db
 from app.shared.config import settings
@@ -135,12 +137,13 @@ async def cashout_card_number_handler(msg: Message, state: FSMContext, user):
 
     await state.clear()
     await msg.delete()
-    await msg.answer(
-        texts.cashout.CREATED.format(
+    await msg.answer_photo(
+        photo=FSInputFile(SellerImages.PAYMENT_CREATED),
+        caption=texts.cashout.CREATED.format(
             cashout_id=cashout.id,
             amount=amount,
             card=f"**** **** **** {card[-4:]}",
-        )
+        ),
     )
 
     # Уведомляем админов

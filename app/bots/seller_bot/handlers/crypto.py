@@ -1,8 +1,9 @@
 from aiogram import Router, F
-from aiogram.types import Message, CallbackQuery
+from aiogram.types import Message, CallbackQuery, FSInputFile
 from aiogram.fsm.context import FSMContext
 
 from app.shared import db, bots, settings
+from app.shared.images import SellerImages
 from app.shared.constants import CRYPTO_RATE_MARKUP_SELLER
 from app.utils import get_usdt_rub_rate, get_network_by_id, notify_admins
 from ..states import CryptoStates
@@ -95,14 +96,15 @@ async def cashout_wallet_handler(msg: Message, state: FSMContext, user):
 
     await state.clear()
     await msg.delete()
-    await msg.answer(
-        texts.crypto.CREATED_CRYPTO.format(
+    await msg.answer_photo(
+        photo=FSInputFile(SellerImages.PAYMENT_CREATED),
+        caption=texts.crypto.CREATED_CRYPTO.format(
             cashout_id=cashout.id,
             amount=amount,
             usdt_amount=usdt_amount,
             network=network.name if network else network_id,
             wallet=wallet,
-        )
+        ),
     )
 
     # Уведомляем админов

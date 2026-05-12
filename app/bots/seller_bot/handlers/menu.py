@@ -1,9 +1,10 @@
 from aiogram import Router, F
-from aiogram.types import CallbackQuery, Message
+from aiogram.types import CallbackQuery, Message, FSInputFile
 from aiogram.fsm.context import FSMContext
 
 from app.shared import db
 from app.shared.constants import KEY_PRICE_SELLER
+from app.shared.images import SellerImages
 from ..texts import Texts, ButtonTexts
 from ..keyboards import InlineKeyboards
 
@@ -27,13 +28,15 @@ async def profile_handler(event: Message | CallbackQuery, user):
         completed=user.completed_orders_count or 0,
     )
     keyboard = buttons.profile.profile()
+    photo = FSInputFile(SellerImages.PROFILE)
 
     if isinstance(event, CallbackQuery):
         await event.answer()
-        await event.message.edit_text(text, reply_markup=keyboard)
+        await event.message.delete()
+        await event.message.answer_photo(photo=photo, caption=text, reply_markup=keyboard)
     else:
         await event.delete()
-        await event.answer(text, reply_markup=keyboard)
+        await event.answer_photo(photo=photo, caption=text, reply_markup=keyboard)
 
 
 # ─── Площадка заказов ────────────────────────────────────────────────────────
@@ -52,16 +55,16 @@ async def market_handler(event: Message | CallbackQuery, state: FSMContext):
     capacity = tender.total_keys   if tender else 0
     progress = round(filled / capacity * 100, 1) if capacity else 0.0
 
-    text = texts.market.MARKET_INTRO.format(
-        rate=KEY_PRICE_SELLER,
-    )
+    text = texts.market.MARKET_INTRO.format(rate=KEY_PRICE_SELLER)
+    photo = FSInputFile(SellerImages.ORDERS)
 
     if isinstance(event, CallbackQuery):
         await event.answer()
-        await event.message.edit_text(text, reply_markup=keyboard)
+        await event.message.delete()
+        await event.message.answer_photo(photo=photo, caption=text, reply_markup=keyboard)
     else:
         await event.delete()
-        await event.answer(text, reply_markup=keyboard)
+        await event.answer_photo(photo=photo, caption=text, reply_markup=keyboard)
 
 
 # ─── О компании ──────────────────────────────────────────────────────────────
@@ -69,7 +72,10 @@ async def market_handler(event: Message | CallbackQuery, state: FSMContext):
 @r.message(F.text == ButtonTexts.menu.ABOUT)
 async def about_handler(msg: Message):
     await msg.delete()
-    await msg.answer(texts.menu.ABOUT_TEXT)
+    await msg.answer_photo(
+        photo=FSInputFile(SellerImages.ABOUT),
+        caption=texts.menu.ABOUT_TEXT,
+    )
 
 
 # ─── Поддержка ───────────────────────────────────────────────────────────────

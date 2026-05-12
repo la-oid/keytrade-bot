@@ -1,8 +1,8 @@
 from aiogram import Router, F
-from aiogram.types import CallbackQuery
-from aiogram.types import BufferedInputFile
+from aiogram.types import CallbackQuery, BufferedInputFile, FSInputFile
 
 from app.shared import db
+from app.shared.images import BuyerImages
 from app.services import key_service
 from app.db.enums import PaymentStatus
 from ..texts import Texts
@@ -21,11 +21,11 @@ async def my_orders_handler(call: CallbackQuery, user):
     has_orders = len(keyboard.inline_keyboard) > 1
 
     await call.answer()
-    
+
     text = texts.profile.ORDERS_LIST if has_orders else texts.profile.NO_ORDERS
 
-    # Если сообщение с документом — удаляем и шлём новое
-    if call.message.document:
+    # Если сообщение с документом или фото — удаляем и шлём новое
+    if call.message.document or call.message.photo:
         await call.message.delete()
         await call.message.answer(text, reply_markup=keyboard)
     else:
@@ -42,20 +42,20 @@ async def order_detail_handler(call: CallbackQuery):
         return
 
     if payment.status == PaymentStatus.PENDING_REVIEW:
-        await call.message.edit_text(
-            texts.profile.ORDER_PENDING,
+        await call.message.delete()
+        await call.message.answer_photo(
+            photo=FSInputFile(BuyerImages.ORDER_PENDING),
+            caption=texts.profile.ORDER_PENDING,
             reply_markup=buttons.profile.order_pending,
         )
     elif payment.status == PaymentStatus.COMPLETED:
-        # Удаляем старое сообщение и шлём документ с подписью + кнопкой
         await call.message.delete()
-
-        # Берём ключи привязанные к платежу из БД
-        content, filename = await key_service.get_keys_file(payment.id)
-        file = BufferedInputFile(content, filename=filename)
-
-        await call.message.answer_document(
-            document=file,
+        await call.message.answer_photo(
+            photo=FSInputFile(BuyerImages.ORDER_COMPLETED),
             caption=texts.profile.ORDER_COMPLETED.format(amount=payment.amount),
+        )
+        content, filename = await key_service.get_keys_file(payment.id)
+        await call.message.answer_document(
+            document=BufferedInputFile(content, filename=filename),
             reply_markup=buttons.profile.back_to_orders,
         )

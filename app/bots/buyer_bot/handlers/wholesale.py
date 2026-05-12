@@ -1,8 +1,9 @@
 from aiogram import Router, F
-from aiogram.types import CallbackQuery, Message
+from aiogram.types import CallbackQuery, Message, FSInputFile, InputMediaPhoto
 from aiogram.fsm.context import FSMContext
 
 from app.shared.constants import KEY_PRICE_BUYER, MEDIUM, LARGE
+from app.shared.images import BuyerImages
 from ..utils import show_active_payment
 from ..states import OrderStates
 from ..texts import Texts, ButtonTexts
@@ -83,7 +84,13 @@ async def _show_wholesale(target: Message | CallbackQuery, state: FSMContext, cf
     )
     kb = buttons.wholesale.wholesale(amount, cfg["step"])
 
+    current_state = await state.get_state()
+    image = BuyerImages.MEDIUM_WHOLESALE if current_state == OrderStates.medium_wholesale else BuyerImages.LARGE_WHOLESALE
+
     if isinstance(target, CallbackQuery):
-        await target.message.edit_text(text, reply_markup=kb)
+        await target.message.edit_media(
+            media=InputMediaPhoto(media=FSInputFile(image), caption=text),
+            reply_markup=kb,
+        )
     else:
-        await target.answer(text, reply_markup=kb)
+        await target.answer_photo(photo=FSInputFile(image), caption=text, reply_markup=kb)
