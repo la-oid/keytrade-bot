@@ -6,12 +6,12 @@ from app.db.enums import PaymentStatus
 # ─── Безопасное редактирование ───────────────────────────────────────────────
 
 async def safe_edit(message: Message, text: str, reply_markup=None):
-    """edit_text, но если сообщение с фото — удаляет и отправляет новое."""
-    if message.photo:
+    """edit_text, но если сообщение нельзя редактировать — удаляет и отправляет новое."""
+    try:
+        await message.edit_text(text, reply_markup=reply_markup)
+    except TelegramBadRequest:
         await message.delete()
         await message.answer(text, reply_markup=reply_markup)
-    else:
-        await message.edit_text(text, reply_markup=reply_markup)
 
 
 # ─── Уведомление админов ─────────────────────────────────────────────────────
