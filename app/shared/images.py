@@ -8,7 +8,6 @@ class BuyerImages:
     MEDIUM_WHOLESALE = IMAGES_DIR / "buyer" / "medium_wholesale.png"
     LARGE_WHOLESALE  = IMAGES_DIR / "buyer" / "large_wholesale.png"
     ORDER_PENDING    = IMAGES_DIR / "buyer" / "order_pending.png"
-    ORDER_COMPLETED  = IMAGES_DIR / "buyer" / "order_completed.png"
 
 
 class SellerImages:

@@ -229,8 +229,7 @@ data/images/
 │   ├── profile.png          ← личный кабинет
 │   ├── medium_wholesale.png ← экран среднего опта
 │   ├── large_wholesale.png  ← экран крупного опта
-│   ├── order_pending.png    ← заказ в обработке
-│   └── order_completed.png  ← заказ выполнен
+│   └── order_pending.png    ← заказ в обработке
 └── seller/
     ├── start.png            ← приветственный экран
     ├── profile.png          ← личный кабинет
