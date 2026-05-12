@@ -1,4 +1,5 @@
 from aiogram.types import Message
+from aiogram.exceptions import TelegramBadRequest
 
 from app.db.enums import PaymentStatus
 
