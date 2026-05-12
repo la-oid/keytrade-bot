@@ -7,6 +7,7 @@ from aiogram.fsm.context import FSMContext
 
 from app.shared import db
 from app.shared.constants import KEY_PRICE_SELLER, KEY_CHECK_DURATION
+from app.utils import safe_edit
 from app.shared.images import SellerImages
 from app.services import key_service, tender_service
 from ..states import MarketStates
@@ -31,10 +32,11 @@ async def market_take_handler(call: CallbackQuery):
     await call.answer()
 
     if not order or not order.is_active:
-        await call.message.edit_text(texts.market.ORDER_NOT_FOUND)
+        await safe_edit(call.message, texts.market.ORDER_NOT_FOUND)
         return
 
-    await call.message.edit_text(
+    await safe_edit(
+        call.message,
         texts.market.CONFIRM.format(
             id=order.id,
             total_keys=order.total_keys,
@@ -55,14 +57,12 @@ async def market_accept_handler(call: CallbackQuery, state: FSMContext):
     await call.answer()
 
     if not order or not order.is_active:
-        await call.message.edit_text(texts.market.ORDER_NOT_FOUND)
+        await safe_edit(call.message, texts.market.ORDER_NOT_FOUND)
         return
 
     await state.set_state(MarketStates.waiting_keys_file)
     await state.update_data(order_id=order.id)
-    await call.message.edit_text(
-        texts.market.SEND_KEYS.format(total_keys=order.total_keys)
-    )
+    await safe_edit(call.message, texts.market.SEND_KEYS.format(total_keys=order.total_keys))
 
 
 # ─── Utils ───────────────────────────────────────────────────────────────────

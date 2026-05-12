@@ -3,6 +3,7 @@ from datetime import timedelta
 from aiogram.types import Message, CallbackQuery
 
 from app.shared import bots
+from app.utils import safe_edit
 from app.shared.constants import KEY_PRICE_BUYER
 from app.utils import to_msk
 from ..texts import Texts
@@ -42,10 +43,7 @@ async def send_offer(target: int | Message | CallbackQuery, keys_count: int, exp
 
         # target: CallbackQuery — редактирует сообщение
         elif isinstance(target, CallbackQuery):
-            await target.message.edit_text(
-                text,
-                reply_markup=keyboard,
-            )
+            await safe_edit(target.message, text, reply_markup=keyboard)
 
         # target: Message — отвечает на сообщение
         else:

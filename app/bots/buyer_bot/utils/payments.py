@@ -1,6 +1,7 @@
 from aiogram.types import Message, CallbackQuery
- 
+
 from app.shared import db
+from app.utils import safe_edit
 from app.shared.constants import KEY_PRICE_BUYER
 from app.db.enums import PaymentStatus
 from datetime import timedelta
@@ -49,16 +50,10 @@ async def show_pending_payment(target: Message | CallbackQuery, amount: int, pri
 
     text = texts.payment.PENDING_TEXT.format(amount=amount, price=price, bank=bank)
 
-    if isinstance(target, CallbackQuery): 
-        await target.message.edit_text(
-            text, 
-            reply_markup=buttons.payment.cancel_only
-        )
-    else: 
-        await target.answer(
-            text, 
-            reply_markup=buttons.payment.cancel_only
-        )
+    if isinstance(target, CallbackQuery):
+        await safe_edit(target.message, text, reply_markup=buttons.payment.cancel_only)
+    else:
+        await target.answer(text, reply_markup=buttons.payment.cancel_only)
 
 
 # ─── Показ ожидания хэша ───────────────────────────────────────────────
@@ -92,7 +87,7 @@ async def _show_payment_page(target: Message | CallbackQuery, payment) -> None:
     kb   = buttons.payment.payment_page(url=payment.payment_link)
 
     if isinstance(target, CallbackQuery):
-        await target.message.edit_text(text, reply_markup=kb)
+        await safe_edit(target.message, text, reply_markup=kb)
     else:
         await target.answer(text, reply_markup=kb)
 

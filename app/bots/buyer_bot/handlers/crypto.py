@@ -8,7 +8,7 @@ from app.db.enums import PaymentStatus
 from app.utils import get_network_by_id, get_usdt_rub_rate, notify_admins, validate_tx_hash
 from ..texts import Texts
 from ..keyboards import InlineKeyboards
-from ..utils import create_payment_and_notify, show_active_payment
+from ..utils import create_payment_and_notify, show_active_payment, safe_edit
 
 r = Router()
 
@@ -34,7 +34,8 @@ async def pay_crypto_handler(call: CallbackQuery, state: FSMContext):
     await state.update_data(usdt_amount=usdt_amount)
 
     await call.answer()
-    await call.message.edit_text(
+    await safe_edit(
+        call.message,
         texts.crypto.CHOOSE_NETWORK.format(rate=rate, usdt_amount=usdt_amount),
         reply_markup=buttons.crypto.network_list(),
     )
@@ -56,7 +57,8 @@ async def crypto_network_handler(call: CallbackQuery, state: FSMContext, user):
     usdt_amount = data.get("usdt_amount", 0)
 
     await call.answer()
-    await call.message.edit_text(
+    await safe_edit(
+        call.message,
         texts.crypto.NETWORK_ADDRESS.format(
             network=network.name,
             address=network.address,

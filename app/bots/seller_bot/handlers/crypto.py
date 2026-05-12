@@ -5,7 +5,7 @@ from aiogram.fsm.context import FSMContext
 from app.shared import db, bots, settings
 from app.shared.images import SellerImages
 from app.shared.constants import CRYPTO_RATE_MARKUP_SELLER
-from app.utils import get_usdt_rub_rate, get_network_by_id, notify_admins
+from app.utils import get_usdt_rub_rate, get_network_by_id, notify_admins, safe_edit
 from ..states import CryptoStates
 from ..texts import Texts
 from ..keyboards import InlineKeyboards
@@ -34,7 +34,8 @@ async def cashout_crypto_handler(call: CallbackQuery, state: FSMContext):
     await state.update_data(usdt_amount=usdt_amount)
 
     await call.answer()
-    await call.message.edit_text(
+    await safe_edit(
+        call.message,
         texts.crypto.CHOOSE_NETWORK.format(
             rate=rate,
             amount=amount,
@@ -60,9 +61,7 @@ async def cashout_network_handler(call: CallbackQuery, state: FSMContext):
     await state.set_state(CryptoStates.waiting_wallet_address)
 
     await call.answer()
-    await call.message.edit_text(
-        texts.crypto.ENTER_WALLET.format(network=network.name)
-    )
+    await safe_edit(call.message, texts.crypto.ENTER_WALLET.format(network=network.name))
 
 
 # ─── Ввод адреса кошелька ────────────────────────────────────────────────────

@@ -10,6 +10,7 @@ from app.db.enums import PaymentStatus
 from app.utils import notify_admins
 from ..texts import Texts
 from ..keyboards import InlineKeyboards
+from ..utils import safe_edit
 
 r = Router()
 
@@ -37,7 +38,7 @@ async def payment_sent_handler(call: CallbackQuery, user):
 
     # Показываем пользователю экран ожидания квитанции
     await call.answer()
-    await call.message.edit_text(texts.payment.WAITING_PDF)
+    await safe_edit(call.message, texts.payment.WAITING_PDF)
 
 
 @r.message(F.document)

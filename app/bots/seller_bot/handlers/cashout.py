@@ -8,7 +8,7 @@ from app.shared import db
 from app.shared.config import settings
 from app.shared.constants import CASHOUT_STEP, CASHOUT_MIN
 from app.db.enums import CashoutStatus
-from app.utils import get_network_by_id, notify_admins
+from app.utils import get_network_by_id, notify_admins, safe_edit
 from ..states import CashoutStates
 from ..texts import Texts, ButtonTexts
 from ..keyboards import InlineKeyboards
@@ -41,10 +41,7 @@ async def cashout_start(call: CallbackQuery, user):
         frozen_line=frozen_line,
     )
 
-    await call.message.edit_text(
-        text=text,
-        reply_markup=buttons.cashout.amount_choice(),
-    )
+    await safe_edit(call.message, text, reply_markup=buttons.cashout.amount_choice())
 
 
 # ─── Вся сумма ───────────────────────────────────────────────────────────────
@@ -55,17 +52,15 @@ async def cashout_all_handler(call: CallbackQuery, state: FSMContext, user):
     balance = float(user.balance or 0)
 
     if balance < CASHOUT_MIN:
-        await call.message.edit_text(
+        await safe_edit(
+            call.message,
             texts.cashout.INVALID_AMOUNT.format(step=CASHOUT_STEP, min=CASHOUT_MIN),
             reply_markup=buttons.cashout.amount_choice(),
         )
         return
 
     await state.update_data(amount=balance)
-    await call.message.edit_text(
-        texts.cashout.CHOOSE_METHOD,
-        reply_markup=buttons.cashout.method_choice(),
-    )
+    await safe_edit(call.message, texts.cashout.CHOOSE_METHOD, reply_markup=buttons.cashout.method_choice())
 
 
 # ─── Другая сумма ────────────────────────────────────────────────────────────
@@ -74,7 +69,7 @@ async def cashout_all_handler(call: CallbackQuery, state: FSMContext, user):
 async def cashout_custom_handler(call: CallbackQuery, state: FSMContext):
     await call.answer()
     await state.set_state(CashoutStates.waiting_amount)
-    await call.message.edit_text(texts.cashout.ENTER_AMOUNT.format(step=CASHOUT_STEP, min=CASHOUT_MIN))
+    await safe_edit(call.message, texts.cashout.ENTER_AMOUNT.format(step=CASHOUT_STEP, min=CASHOUT_MIN))
 
 
 @r.message(CashoutStates.waiting_amount)
@@ -108,7 +103,7 @@ async def cashout_amount_handler(msg: Message, state: FSMContext, user):
 async def cashout_card_handler(call: CallbackQuery, state: FSMContext):
     await call.answer()
     await state.set_state(CashoutStates.waiting_card_number)
-    await call.message.edit_text(texts.cashout.ENTER_CARD)
+    await safe_edit(call.message, texts.cashout.ENTER_CARD)
 
 
 @r.message(CashoutStates.waiting_card_number)
@@ -165,7 +160,7 @@ async def cashout_status_start(call: CallbackQuery, state: FSMContext):
     """Кнопка 'Узнать статус заявки' → просим ввести ID."""
     await call.answer()
     await state.set_state(CashoutStates.waiting_status_id)
-    await call.message.edit_text(texts.cashout.ENTER_STATUS_ID)
+    await safe_edit(call.message, texts.cashout.ENTER_STATUS_ID)
 
 
 @r.message(CashoutStates.waiting_status_id)
@@ -211,10 +206,7 @@ async def cashout_history_handler(call: CallbackQuery, user):
         many=True,
     )
     
-    await call.message.edit_text(
-        texts.cashout.HISTORY_TITLE,
-        reply_markup=buttons.cashout.history_list(cashouts),
-    )
+    await safe_edit(call.message, texts.cashout.HISTORY_TITLE, reply_markup=buttons.cashout.history_list(cashouts))
  
  
 @r.callback_query(F.data.startswith("cashout_history_"))
@@ -226,7 +218,7 @@ async def cashout_history_detail_handler(call: CallbackQuery, user):
     await call.answer()
  
     if not cashout or cashout.user_id != user.telegram_id:
-        await call.message.edit_text(texts.cashout.STATUS_NOT_FOUND)
+        await safe_edit(call.message, texts.cashout.STATUS_NOT_FOUND)
         return
  
     status_text = STATUS_TEXTS.get(cashout.status, lambda t: "")(texts)
@@ -252,8 +244,5 @@ async def cashout_history_detail_handler(call: CallbackQuery, user):
             status=status_text,
         )
  
-    await call.message.edit_text(
-        text,
-        reply_markup=buttons.cashout.history_detail_back(),
-    )
+    await safe_edit(call.message, text, reply_markup=buttons.cashout.history_detail_back())
  

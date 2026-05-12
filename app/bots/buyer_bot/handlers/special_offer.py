@@ -8,7 +8,7 @@ from app.shared import db
 from app.shared.constants import KEY_PRICE_BUYER
 from app.utils import to_msk
 from .payment import confirm_order_handler
-from ..utils import send_offer
+from ..utils import send_offer, safe_edit
 from ..texts import Texts
 from ..keyboards import InlineKeyboards
 
@@ -28,12 +28,9 @@ async def offer_view_handler(call: CallbackQuery, user):
     await call.answer()
 
     if not offer:
-        await call.message.edit_text(
-            texts.special_offer.NO_OFFER,
-            reply_markup=buttons.special_offer.back_to_profile(),
-        )
+        await safe_edit(call.message, texts.special_offer.NO_OFFER, reply_markup=buttons.special_offer.back_to_profile())
         return
-    
+
     await send_offer(call, offer.keys_count, offer.expires_at, offer.custom_text)
 
 
@@ -46,7 +43,8 @@ async def offer_decline_handler(call: CallbackQuery, user):
 
     await call.answer()
 
-    await call.message.edit_text(
+    await safe_edit(
+        call.message,
         texts.special_offer.OFFER_DECLINED.format(
             expires_at=to_msk(offer.expires_at).strftime("%d.%m.%Y %H:%M") if offer else "—",
         ),
@@ -64,10 +62,7 @@ async def offer_accept_handler(call: CallbackQuery, state: FSMContext, user):
     await call.answer()
 
     if not offer:
-        await call.message.edit_text(
-            texts.special_offer.NO_OFFER,
-            reply_markup=buttons.special_offer.back_to_profile(),
-        )
+        await safe_edit(call.message, texts.special_offer.NO_OFFER, reply_markup=buttons.special_offer.back_to_profile())
         return
 
     # Деактивируем оффер — он использован

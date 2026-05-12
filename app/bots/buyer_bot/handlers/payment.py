@@ -9,7 +9,7 @@ from app.shared import db, bots
 from app.db.enums import PaymentStatus
 from app.services import payment_service
 from app.utils import notify_admins
-from ..utils import create_payment_and_notify, show_pending_payment
+from ..utils import create_payment_and_notify, show_pending_payment, safe_edit
 from ..texts import Texts
 from ..keyboards import InlineKeyboards
 
@@ -25,10 +25,7 @@ buttons = InlineKeyboards()
 async def confirm_order_handler(call: CallbackQuery):
     """Купить → выбор метода оплаты."""
     await call.answer()
-    await call.message.edit_text(
-        texts.payment.CHOOSE_METHOD,
-        reply_markup=buttons.payment.choose_method
-    )
+    await safe_edit(call.message, texts.payment.CHOOSE_METHOD, reply_markup=buttons.payment.choose_method)
 
 
 @r.callback_query(F.data == "pay_spb")
@@ -60,10 +57,7 @@ async def pay_spb_handler(call: CallbackQuery, state: FSMContext, user):
 async def cancel_payment_handler(call: CallbackQuery):
     """Отменить → запрос подтверждения."""
     await call.answer()
-    await call.message.edit_text(
-        texts.payment.CONFIRM_CANCEL_TEXT,
-        reply_markup=buttons.payment.confirm_cancel
-    )
+    await safe_edit(call.message, texts.payment.CONFIRM_CANCEL_TEXT, reply_markup=buttons.payment.confirm_cancel)
 
 
 @r.callback_query(F.data == "back_to_pending")
@@ -93,4 +87,4 @@ async def cancel_active_handler(call: CallbackQuery, state: FSMContext, user):
 
     await state.clear()
     await call.answer()
-    await call.message.edit_text(texts.payment.CANCELLED_TEXT)
+    await safe_edit(call.message, texts.payment.CANCELLED_TEXT)
