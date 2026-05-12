@@ -118,6 +118,6 @@ async def verify_confirm_handler(call: CallbackQuery):
     await bots.buyer.bot.send_document(
         chat_id=payment.user_id,
         document=file,
-        caption=texts.verify.PAYMENT_COMPLETED,
+        caption=texts.verify.PAYMENT_COMPLETED.format(amount=payment.amount),
     )
 
