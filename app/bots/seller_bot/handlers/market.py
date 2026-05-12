@@ -74,11 +74,11 @@ async def _process_keys(state: FSMContext, order, user, content: str) -> str:
     keys = parse_keys_file(content)
 
     if not keys or len(keys) != order.total_keys:
-        return texts.market.INVALID_FORMAT
+        return texts.market.INVALID_FORMAT.format(total_keys=order.total_keys)
 
     sold = await key_service.sell(keys, owner_id=user.telegram_id, order_id=order.id)
     if not sold:
-        return texts.market.INVALID_FORMAT
+        return texts.market.INVALID_FORMAT.format(total_keys=order.total_keys)
     
     
     # Начисляем баланс продавцу — при 2-й продаже замораживаем
@@ -125,7 +125,7 @@ async def market_keys_received(msg: Message, state: FSMContext, user):
 
     # Принимаем только .txt файлы
     if not is_text_file(msg.document):
-        await msg.answer(texts.market.INVALID_FORMAT)
+        await msg.answer( texts.market.INVALID_FORMAT.format(total_keys=order.total_keys) )
         return
 
     status_msg = await msg.answer(texts.market.CHECKING)
