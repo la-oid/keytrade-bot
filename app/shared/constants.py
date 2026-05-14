@@ -18,8 +18,8 @@ PIE_RANGES = [
 ]
 
 PIE_KEYS_STEP          = 25
-PIE_MIN_LIFETIME_HOURS = 1
-PIE_MAX_LIFETIME_HOURS = 4
+PIE_MIN_LIFETIME_HOURS = 2
+PIE_MAX_LIFETIME_HOURS = 16
 
 # ── Проверка ключей ───────────────────────────────────────────────────────────────────
 KEY_CHECK_DURATION = 15         # Длительность проверки ключей в seller-боте (сек)

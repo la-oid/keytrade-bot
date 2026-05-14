@@ -77,8 +77,8 @@ class OrderRepository:
             order.is_active = is_active
             return True
         
-    async def deactivate_expired(self) -> int:
-        """Деактивирует все истёкшие паи. Вызывается из scheduler."""
+    async def deactivate_expired(self) -> list[Order]:
+        """Деактивирует все истёкшие паи и возвращает их список. Вызывается из scheduler."""
         async with self.db.async_session() as session, session.begin():
             expired = (await session.execute(
                 select(Order).where(
@@ -88,7 +88,7 @@ class OrderRepository:
             )).scalars().all()
             for order in expired:
                 order.is_active = False
-            return len(expired)
+            return list(expired)
 
     # ─── DELETE ──────────────────────────────────────────────────────────────
 

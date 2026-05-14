@@ -6,7 +6,7 @@ from app.shared import db
 from app.db import Database
 from app.db.models.order import Order
 from app.utils import random_lifetime, lifetime_from_hours
-from app.shared.constants import PIE_RANGES, PIE_KEYS_STEP
+from app.shared.constants import PIE_RANGES, PIE_KEYS_STEP, TENDER_MAX_PIE_KEYS
 
 
 class OrderService:
@@ -29,9 +29,14 @@ class OrderService:
         Поддерживает нужное кол-во паёв в каждом диапазоне из PIE_RANGES.
         Вызывается из scheduler каждые 5 минут.
         """
-        deactivated = await self.db.order.deactivate_expired()
-        if deactivated:
-            logger.info(f"Orders: deactivated {deactivated} expired")
+        from app.services.tender_service import tender_service
+
+        expired = await self.db.order.deactivate_expired()
+        if expired:
+            logger.info(f"Orders: deactivated {len(expired)} expired")
+            for order in expired:
+                if order.is_fake and order.total_keys <= TENDER_MAX_PIE_KEYS:
+                    await tender_service.add_keys_from_order(order.total_keys)
 
         total_added = 0
 

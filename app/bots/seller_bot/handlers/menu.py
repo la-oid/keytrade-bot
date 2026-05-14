@@ -55,7 +55,12 @@ async def market_handler(event: Message | CallbackQuery, state: FSMContext):
     capacity = tender.total_keys   if tender else 0
     progress = round(filled / capacity * 100, 1) if capacity else 0.0
 
-    text = texts.market.MARKET_INTRO.format(rate=KEY_PRICE_SELLER)
+    text = texts.market.MARKET_INTRO.format(
+        filled=filled,
+        capacity=capacity,
+        progress=progress,
+        rate=KEY_PRICE_SELLER,
+    )
     photo = FSInputFile(SellerImages.ORDERS)
 
     if isinstance(event, CallbackQuery):
